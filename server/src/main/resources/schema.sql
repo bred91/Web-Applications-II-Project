@@ -5,9 +5,9 @@ create table products
     brand varchar(255)
 );
 
-CREATE TABLE users (
+CREATE TABLE profiles (
     email VARCHAR(255) PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
-    surname VARCHAR(255) NOT NULL,
-    birthdate DATE NOT NULL
+    surname VARCHAR(255) NOT NULL
 );
