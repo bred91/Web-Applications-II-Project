@@ -1,9 +1,11 @@
+package it.polito.server.profiles
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
 class ProfileService(private val profileRepository: IProfileRepository):IProfileService {
     override fun getProfile(email: String): ProfileDTO? {
+        println("EMAIL = $email")
         return profileRepository.findByIdOrNull(email)?.toDTO()
     }
 

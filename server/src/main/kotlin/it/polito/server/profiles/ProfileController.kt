@@ -1,3 +1,4 @@
+package it.polito.server.profiles
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -20,6 +21,7 @@ class ProfileController(private val profileService: IProfileService) {
 
     @PutMapping("/api/profiles/{email}")
     fun updateProfile(@PathVariable email:String, @RequestBody profile:ProfileDTO):Any? {
+
         return profileService.updateProfile(email, profile)
     }
 

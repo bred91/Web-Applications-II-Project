@@ -1,3 +1,4 @@
+package it.polito.server.profiles
 interface IProfileService {
 
 
