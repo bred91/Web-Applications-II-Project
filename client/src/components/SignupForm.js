@@ -8,7 +8,6 @@ function SignupForm() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // Replace this with your actual data fetching function
         fetch("http://localhost:8080/api/profiles/", {
             method: "POST",
             headers: {
