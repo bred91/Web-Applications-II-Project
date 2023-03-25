@@ -1,17 +1,25 @@
 package it.polito.server.profiles
 import jakarta.validation.Valid
 import jakarta.validation.executable.ValidateOnExecution
+import org.springframework.http.HttpHeaders
+import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 
 @Validated
+@CrossOrigin(origins = ["http://localhost:3000"])
 @RestController
 class ProfileController(private val profileService: IProfileService) {
+
+
 
     @GetMapping("/api/profiles")
     fun getProfiles():List<ProfileDTO> {
@@ -21,6 +29,9 @@ class ProfileController(private val profileService: IProfileService) {
     fun getProfile(@PathVariable email:String):ProfileDTO? {
         return profileService.getProfile(email)
     }
+
+
+
 
     @PostMapping("/api/profiles/")
     fun createProfile(@Valid @RequestBody profile: ProfileDTO):Boolean {
@@ -32,6 +43,8 @@ class ProfileController(private val profileService: IProfileService) {
 
         return profileService.updateProfile(email, profile)
     }
+
+
 
 }
 
