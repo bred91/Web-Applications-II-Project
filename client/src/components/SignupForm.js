@@ -12,7 +12,7 @@ function SignupForm() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        fetch("http://localhost:3003/api/profiles/", {
+        fetch("http://localhost:8080/api/profiles/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

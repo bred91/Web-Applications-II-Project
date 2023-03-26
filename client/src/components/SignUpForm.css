@@ -1,0 +1,18 @@
+.container-wrapper{
+    background-color: #ede4e3;
+    width:fit-content;
+    margin: auto;
+}
+
+.pt-3{
+    height: 100vh !important;
+}
+
+.w-100 {
+    margin-top: 1rem;
+}
+@media (min-width: 992px) { 
+    .p-5{
+      width: 30vw;
+    }
+}
