@@ -7,7 +7,7 @@ function Search() {
     const [matchedItems, setMatchedItems] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:8080/api/profiles")
+        fetch("http://localhost:3003/api/profiles")
             .then((response) => response.json())
             .then((data) => {
                 setAllItems(data);
@@ -22,10 +22,12 @@ function Search() {
         if (term === "") {
             matched = [];
         } else {
+            console.log(allItems)
             matched = allItems.filter((item) =>
-                item.name.toLowerCase().includes(term)
+                item.email.toLowerCase().includes(term)
             );
         }
+
         setMatchedItems(matched);
     };
 
