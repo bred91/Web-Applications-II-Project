@@ -1,0 +1,15 @@
+.rounded-corners {
+    border-radius: 10px;
+    text-align: left;
+    width: 80%;
+    border-bottom: 1px #ccc solid;
+    padding: .5rem 1rem;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    background-color: #D3D3D3;
+    pointer-events: none;
+  }
+
+#col{
+    width: 30%;
+}

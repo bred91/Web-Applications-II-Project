@@ -3,34 +3,25 @@ import { Button, Container, Form } from "react-bootstrap";
 import './SignUpForm.css';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
+import { createProfile } from './../API';
+import { useNavigate } from "react-router-dom";
 
 function SignupForm() {
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [name, setName] = useState("");
     const [surname, setSurname] = useState("");
+    const navigate = useNavigate();
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        fetch("http://localhost:8080/api/profiles/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, username, name, surname }),
-        })
-            .then((response) => {
-                if(response.ok){
-                    toast.success('Profile created successfully', { position: "top-center" });
-                }else{
-                    response.json().then((data)=>{
-                        console.log(data);
-                        toast.error(data.detail, { position: "top-center" })
-                    }).catch((error)=>console.log(error));
-                    
-                }
-
-            });
+        try{
+            await createProfile(email, username, name, surname);
+            toast.success('Profile created successfully', {position: "top-center"});
+            navigate('/');
+        }catch(err){
+            toast.error(err, {position: "top-center"});
+        }
     };
 
     return (

@@ -1,14 +1,25 @@
 import React from "react";
 import { Link } from "react-router-dom";
-function Navbar() {
+import { Container, Navbar, Nav } from "react-bootstrap";
+
+
+function TSNavbar() {
     return (
-        <nav className="navbar navbar-light bg-light">
-            <Link to={"/"} style={{ textDecoration: "none" }}><span className="navbar-brand mb-0 h1">Ticketing Platform</span></Link>
-            <Link to="/signup">
-                <button className="btn btn-primary"> Signup </button>
-            </Link>
-        </nav>
-    );
+        <Navbar bg="light">
+          <Container>
+            <Navbar.Brand href="/">Ticketing Platform</Navbar.Brand>
+            <Nav className="me-auto">
+                <Nav.Link href="/updateProfile">Update Profile</Nav.Link>
+                <Nav.Link href="/searchProfile">Search Profile</Nav.Link>
+            </Nav>
+            <Navbar.Collapse className="justify-content-end">
+                <Link to="/signup">
+                    <button className="btn btn-primary"> Signup </button>
+                </Link>
+            </Navbar.Collapse>
+          </Container>
+        </Navbar>
+      );
 }
 
-export default Navbar;
+export default TSNavbar;
