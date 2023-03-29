@@ -1,4 +1,4 @@
-const SERVER_URL = 'http://localhost:8080';
+const SERVER_URL = 'http://localhost:3003';
 
 const updateProfile = async(email, username, name, surname) => {
     const res = await fetch(SERVER_URL+ "/api/profiles/"+email, {

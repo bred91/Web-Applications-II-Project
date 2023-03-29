@@ -22,6 +22,7 @@ function SearchProfile(props) {
             try{
                 const profiles = await getProfiles();
                 setAllProfiles(profiles);
+                setMatchingProfiles(profiles);
             }catch(err){
                 console.log(err);
             }
