@@ -1,7 +1,5 @@
-const SERVER_URL = 'http://localhost:3003';
-
 const updateProfile = async(email, username, name, surname) => {
-    const res = await fetch(SERVER_URL+ "/api/profiles/"+email, {
+    const res = await fetch( "/api/profiles/"+email, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -19,7 +17,7 @@ const updateProfile = async(email, username, name, surname) => {
 }
 
 const getProfiles = async() => {
-    const res = await fetch(SERVER_URL+'/api/profiles');
+    const res = await fetch('/api/profiles');
      const allProfiles = await res.json();
      if(res.ok){
         return allProfiles;
@@ -29,7 +27,7 @@ const getProfiles = async() => {
 }
 
 const createProfile = async(email, username, name, surname) => {
-    const res = await fetch(SERVER_URL+ "/api/profiles/", {
+    const res = await fetch( "/api/profiles/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -47,7 +45,7 @@ const createProfile = async(email, username, name, surname) => {
 }
 
 const getProfileByEmail = async(email) => {
-    const res = await fetch(SERVER_URL+'/api/profiles/'+email);
+    const res = await fetch('/api/profiles/'+email);
      const profile = await res.json();
      if(res.ok){
         return profile;
