@@ -2,3 +2,6 @@
 */.gradle
 */gradle/wrapper/gradle-wrapper.jar
 */build
+server/build
+server/.gradle
+server/gradle/wrapper/gradle-wrapper.jar
