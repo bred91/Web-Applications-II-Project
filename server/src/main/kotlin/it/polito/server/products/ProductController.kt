@@ -20,9 +20,9 @@ class ProductController(
 
     @PostMapping("/API/products")
     @ResponseStatus(HttpStatus.CREATED)
-    fun createProduct(@Valid @RequestBody product: ProductDTO?){
-        if(product != null)
-            productService.addProduct(product)
+    fun createProduct(@Valid @RequestBody product: ProductDTO){
+        //if(product != null)
+        productService.createProduct(product)
         // todo: else throw exception
     }
 }

@@ -1,5 +1,7 @@
 package it.polito.server.products.exception
 
+import it.polito.server.DuplicateException
+import it.polito.server.NotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ProblemDetail
 import org.springframework.http.ResponseEntity
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 
+/*
 @RestControllerAdvice
 class ProductExceptionHandlerController {
     @ExceptionHandler(MethodArgumentNotValidException::class)
@@ -19,10 +22,12 @@ class ProductExceptionHandlerController {
         return ResponseEntity.badRequest().body(ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Validation failed:\n\t$errorMessage"))
     }
 }
+*/
 
-class ProductNotFoundException(message:String):RuntimeException(message)
-class ProductDuplicateException(message: String):RuntimeException(message)
+class ProductNotFoundException(message:String):NotFoundException(message)
+class ProductDuplicateException(message: String):DuplicateException(message)
 
+/*
 @RestControllerAdvice
 class ProductProblemDetailsHandler:ResponseEntityExceptionHandler() {
 
@@ -34,3 +39,4 @@ class ProductProblemDetailsHandler:ResponseEntityExceptionHandler() {
     fun handleDuplicateProfile(e:ProductDuplicateException) = ProblemDetail
         .forStatusAndDetail(HttpStatus.CONFLICT, e.message!!)
 }
+*/

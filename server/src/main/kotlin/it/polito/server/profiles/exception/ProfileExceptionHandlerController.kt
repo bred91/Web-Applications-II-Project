@@ -1,5 +1,7 @@
 package it.polito.server.profiles.exception
 
+import it.polito.server.DuplicateException
+import it.polito.server.NotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ProblemDetail
 import org.springframework.http.ResponseEntity
@@ -9,8 +11,9 @@ import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 
+/*
 @RestControllerAdvice
-class ExceptionHandlerController {
+class ProfileExceptionHandlerController {
     @ExceptionHandler(MethodArgumentNotValidException::class)
     @ResponseBody
     fun handleMethodArgumentNotValidException(ex: MethodArgumentNotValidException): ResponseEntity<ProblemDetail> {
@@ -19,10 +22,12 @@ class ExceptionHandlerController {
         return ResponseEntity.badRequest().body(ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Validation failed:\n\t$errorMessage"))
     }
 }
+*/
 
-class ProfileNotFoundException(message:String):RuntimeException(message)
-class DuplicateProfileException(message: String):RuntimeException(message)
+class ProfileNotFoundException(message:String):NotFoundException(message)
+class DuplicateProfileException(message: String): DuplicateException(message)
 
+/*
 @RestControllerAdvice
 class ProblemDetailsHandler:ResponseEntityExceptionHandler() {
 
@@ -35,4 +40,4 @@ class ProblemDetailsHandler:ResponseEntityExceptionHandler() {
         .forStatusAndDetail(HttpStatus.CONFLICT, e.message!!)
 
 }
-
+*/

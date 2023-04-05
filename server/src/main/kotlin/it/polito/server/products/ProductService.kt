@@ -24,8 +24,8 @@ class ProductService(
 
     // todo: @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional
-    override fun addProduct(product: ProductDTO) {
-        if(getProduct(product.ean) != null){
+    override fun createProduct(product: ProductDTO) {
+        if(productRepository.existsById(product.ean)){
             throw ProductDuplicateException("Product with ean ${product.ean} already exists!")
         }
         productRepository.save(product.toEntity())
