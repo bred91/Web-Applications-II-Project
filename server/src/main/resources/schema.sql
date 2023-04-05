@@ -1,3 +1,5 @@
+--create database project_db;
+
 create table products
 (
     id VARCHAR(23) primary key,

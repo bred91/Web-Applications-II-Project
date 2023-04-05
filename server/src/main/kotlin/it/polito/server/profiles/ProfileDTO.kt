@@ -24,7 +24,7 @@ fun Profile.toDTO():ProfileDTO {
 }
 
 fun ProfileDTO.toProfile():Profile{
-    var profile = Profile()
+    val profile = Profile()
     profile.email = email
     profile.name = name
     profile.surname = surname

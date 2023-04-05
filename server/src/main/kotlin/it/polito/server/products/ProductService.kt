@@ -1,12 +1,16 @@
 package it.polito.server.products
 
+import it.polito.server.products.exception.ProductDuplicateException
+import it.polito.server.products.exception.ProductNotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ProductService(
     private val productRepository: IProductRepository
 ): IProductService {
+
     override fun getAll(): List<ProductDTO> {
         return productRepository.findAll()
             .map{it.toDTO()}
@@ -15,13 +19,15 @@ class ProductService(
     override fun getProduct(ean: String): ProductDTO? {
         return productRepository.findByIdOrNull(ean)
             ?.toDTO()
+            ?: throw ProductNotFoundException("Product with ean $ean not found")
     }
 
-    override fun addProduct(product: ProductDTO): Boolean {
+    // todo: @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Transactional
+    override fun addProduct(product: ProductDTO) {
         if(getProduct(product.ean) != null){
-            return false
+            throw ProductDuplicateException("Product with ean ${product.ean} already exists!")
         }
         productRepository.save(product.toEntity())
-        return true
     }
 }
