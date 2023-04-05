@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*
 class ProductController(
     private val productService: ProductService
 ) {
-    @GetMapping("/API/products/")
+    @GetMapping("/API/products")
     fun getAll(): List<ProductDTO>{
         return productService.getAll()
     }

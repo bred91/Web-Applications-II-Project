@@ -11,6 +11,7 @@ function TSNavbar() {
             <Nav className="me-auto">
                 <Nav.Link href="/updateProfile">Update Profile</Nav.Link>
                 <Nav.Link href="/searchProfile">Search Profile</Nav.Link>
+                <Nav.Link href="/searchProduct">Search Product</Nav.Link>
             </Nav>
             <Navbar.Collapse className="justify-content-end">
                 <Link to="/signup">
