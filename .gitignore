@@ -1,7 +1,5 @@
 .idea
-*/.gradle/*
-*/gradle/wrapper/gradle-wrapper.jar
-*/build/*
-*/server/build/*
-*/server/.gradle/*
+server/build/
+server/.gradle/
+server/.idea/
 server/gradle/wrapper/gradle-wrapper.jar
