@@ -6,6 +6,7 @@ import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { getProfiles,  getProfileByEmail } from '../API';
 import './ShowProfile.css'
+import CsvDownloadButton from "react-json-to-csv";
 
 
 function SearchProfile(props) {
@@ -33,6 +34,11 @@ function SearchProfile(props) {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        if (email === "") {
+            toast("Please enter an email", {position: "top-center"})
+            return;
+        }
+
         try{
             const profile = await getProfileByEmail(email);
             setProfile(profile);
@@ -61,6 +67,12 @@ function SearchProfile(props) {
         navigate('/updateProfile');
     }
 
+    const handleDownloadCSV = async (event) => {
+        event.preventDefault();
+        const csv = document.getElementById('csv');
+        csv.click()
+    };
+
 
     return (
         <Container className="pt-3">
@@ -76,7 +88,10 @@ function SearchProfile(props) {
             </datalist>
                 </Form.Group>
                 <Button variant="success" className="w-100" type="submit">Search</Button>
-                </Form>
+                <Button variant="warning" className="w-100" onClick={handleDownloadCSV}>Download all</Button>
+            </Form>
+            <CsvDownloadButton id="csv" data={allProfiles} delimiter={","}
+                               filename={"AllProfiles.csv"} style={{display:"none"}}/>
                { showProfile && <div>
                 <center><div className="col">
                     <button className="button rounded-corners disabled"><strong>Email: </strong>{profile.email}</button>
@@ -90,7 +105,7 @@ function SearchProfile(props) {
                 <center><div className="col">
                     <button className="button rounded-corners disabled"><strong>Surname: </strong>{profile.surname}</button>
                 </div></center>
-                <Button variant="primary" className="editButton" onClick={handleUpdateClick} >Edit</Button>
+                <Button variant="primary" className="editButton mb-3" onClick={handleUpdateClick} >Edit</Button>
                 </div>}
             </Container>
         </Container>

@@ -6,6 +6,7 @@ import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { getProduct,  getProductByEan } from '../API';
 import './ShowProfile.css'
+import CsvDownloadButton from 'react-json-to-csv'
 
 
 function SearchProduct(props) {
@@ -20,9 +21,9 @@ function SearchProduct(props) {
     useEffect(() => {
         const fetchProducts = async() => {
             try{
-                const profiles = await getProduct();
-                setAllProducts(profiles);
-                setMatchingProducts(profiles);
+                const products = await getProduct();
+                setAllProducts(products);
+                setMatchingProducts(products);
             }catch(err){
                 console.log(err);
             }
@@ -33,8 +34,10 @@ function SearchProduct(props) {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if (ean === "")
+        if (ean === "") {
             toast("Please enter a EAN", {position: "top-center"})
+            return;
+        }
 
         try{
             const product = await getProductByEan(ean);
@@ -64,6 +67,13 @@ function SearchProduct(props) {
         navigate('/updateProduct');
     }
 
+    const handleDownloadCSV = async (event) => {
+        event.preventDefault();
+        const csv = document.getElementById('csv');
+        csv.click()
+    };
+
+
 
     return (
         <Container className="pt-3">
@@ -79,7 +89,10 @@ function SearchProduct(props) {
                         </datalist>
                     </Form.Group>
                     <Button variant="success" className="w-100" type="submit">Search</Button>
+                    <Button variant="warning" className="w-100" onClick={handleDownloadCSV}>Download all</Button>
                 </Form>
+                <CsvDownloadButton id="csv" data={allProducts} delimiter={","}
+                                   filename={"AllProducts.csv"} style={{display:"none"}}/>
                 { showProduct && <div>
                     <center><div className="col">
                         <button className="button rounded-corners disabled"><strong>EAN: </strong>{product.ean}</button>
@@ -90,7 +103,7 @@ function SearchProduct(props) {
                     <center><div className="col">
                         <button className="button rounded-corners disabled"><strong>Brand: </strong>{product.brand}</button>
                     </div></center>
-                    <Button variant="primary" className="editButton" onClick={handleUpdateClick} >Edit</Button>
+                    <Button variant="primary" className="editButton mb-3" onClick={handleUpdateClick} >Edit</Button>
                 </div>}
             </Container>
         </Container>
