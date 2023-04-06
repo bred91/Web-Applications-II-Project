@@ -1,15 +1,7 @@
 package it.polito.server.products.exception
 
-import it.polito.server.DuplicateException
-import it.polito.server.NotFoundException
-import org.springframework.http.HttpStatus
-import org.springframework.http.ProblemDetail
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.MethodArgumentNotValidException
-import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.bind.annotation.ResponseBody
-import org.springframework.web.bind.annotation.RestControllerAdvice
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
+import it.polito.server.Exceptions.DuplicateException
+import it.polito.server.Exceptions.NotFoundException
 
 /*
 @RestControllerAdvice
@@ -24,8 +16,8 @@ class ProductExceptionHandlerController {
 }
 */
 
-class ProductNotFoundException(message:String):NotFoundException(message)
-class ProductDuplicateException(message: String):DuplicateException(message)
+class ProductNotFoundException(message:String): NotFoundException(message)
+class ProductDuplicateException(message: String): DuplicateException(message)
 
 /*
 @RestControllerAdvice

@@ -1,7 +1,5 @@
-package it.polito.server
+package it.polito.server.Exceptions
 
-import it.polito.server.profiles.exception.DuplicateProfileException
-import it.polito.server.profiles.exception.ProfileNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ProblemDetail
 import org.springframework.http.ResponseEntity
