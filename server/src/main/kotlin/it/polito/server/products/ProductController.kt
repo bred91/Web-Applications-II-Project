@@ -21,8 +21,12 @@ class ProductController(
     @PostMapping("/API/products")
     @ResponseStatus(HttpStatus.CREATED)
     fun createProduct(@Valid @RequestBody product: ProductDTO){
-        //if(product != null)
         productService.createProduct(product)
-        // todo: else throw exception
+    }
+
+    @PutMapping("/API/products/{ean}")
+    fun updateProduct(@PathVariable ean: String,
+                      @Valid @RequestBody product: ProductDTO): ProductDTO?{
+        return productService.updateProduct(ean, product)
     }
 }

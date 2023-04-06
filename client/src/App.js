@@ -9,6 +9,7 @@ import SearchProduct from './components/SearchProduct';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
 import { useState } from 'react';
+import CreateProduct from "./components/CreateProduct";
 
 function App() {
 
@@ -25,6 +26,7 @@ function App() {
                 <Route path="/updateProfile" element={<UpdateProfileForm profile={profile} setProfile={setProfile}/>} />
                 <Route path="/searchProfile" element={<SearchProfile setProfile={setProfile} />} />
                 <Route path="/searchProduct" element={<SearchProduct setProduct={setProduct} />} />
+                <Route path="/createProduct" element={<CreateProduct />} />
             </Routes>
         </BrowserRouter>
     </div>

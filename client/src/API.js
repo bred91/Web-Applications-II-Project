@@ -78,7 +78,7 @@ const getProductByEan = async(ean) => {
 }
 
 const createProduct = async(ean, name, brand) => {
-    const res = await fetch( "/API/products/", {
+    const res = await fetch( "/API/products", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

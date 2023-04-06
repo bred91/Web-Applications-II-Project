@@ -1,5 +1,18 @@
-GET http://localhost:8080/API/products/12222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
+GET http://localhost:8080/API/products/123
 Accept: application/json
 
+###
 
+PUT http://localhost:8080/API/products/123
+Content-Type: application/json
 
+{
+  "ean": "123",
+  "name": "testN",
+  "brand": "superB"
+}
+
+###
+
+GET http://localhost:8080/API/products/123
+Accept: application/json

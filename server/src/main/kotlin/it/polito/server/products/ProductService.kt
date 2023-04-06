@@ -30,4 +30,14 @@ class ProductService(
         }
         productRepository.save(product.toEntity())
     }
+
+    @Transactional
+    override fun updateProduct(ean: String, product: ProductDTO): ProductDTO? {
+        return when (productRepository.findByIdOrNull(ean)?.toDTO()) {
+            null -> {throw ProductNotFoundException("Profile with email $ean not found")}
+            else -> {productRepository.save(product.toEntity()).toDTO()}
+        }
+    }
+
+
 }

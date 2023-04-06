@@ -73,7 +73,7 @@ function SearchProduct(props) {
                     <h3>Search Product</h3>
                     <Form.Group controlId="ean">
                         <Form.Label>EAN</Form.Label>
-                        <Form.Control type="ean" value={ean} onChange={handleChange} list="matching-eans"
+                        <Form.Control type="text" value={ean} onChange={handleChange} list="matching-eans"
                         />
                         <datalist id="matching-eans">
                             {matchingProducts.map((product) => (<option key={product.ean} value={product.ean} />))}
