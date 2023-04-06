@@ -28,7 +28,7 @@ fun Profile.toDTO():ProfileDTO {
     return ProfileDTO(email, username, name, surname)
 }
 
-fun ProfileDTO.toProfile():Profile{
+fun ProfileDTO.toEntity():Profile{
     val profile = Profile()
     profile.email = email
     profile.name = name

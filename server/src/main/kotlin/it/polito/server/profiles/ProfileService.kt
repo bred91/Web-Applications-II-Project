@@ -3,6 +3,7 @@ import it.polito.server.profiles.exception.DuplicateProfileException
 import it.polito.server.profiles.exception.ProfileNotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 
 @Service
@@ -18,20 +19,21 @@ class ProfileService(private val profileRepository: IProfileRepository):IProfile
             ?: throw ProfileNotFoundException("Profile with email $email not found")
     }
 
-    override fun createProfile(profile: ProfileDTO):Boolean {
+    @Transactional
+    override fun createProfile(profile: ProfileDTO) {
         if(profileRepository.existsById(profile.email)) {
             throw DuplicateProfileException("Profile with email ${profile.email} already exists!")
         }
 
-        profileRepository.save(profile.toProfile())
-        return true
+        profileRepository.save(profile.toEntity())
     }
 
-    override fun updateProfile(email:String, profile: ProfileDTO): Any? {
+    @Transactional
+    override fun updateProfile(email:String, profile: ProfileDTO): ProfileDTO? {
         return when (profileRepository.findByIdOrNull(email)?.toDTO()) {
             null -> {throw ProfileNotFoundException("Profile with email $email not found")}
             else -> {
-                profileRepository.save(profile.toProfile())
+                profileRepository.save(profile.toEntity()).toDTO()
             }
         }
     }

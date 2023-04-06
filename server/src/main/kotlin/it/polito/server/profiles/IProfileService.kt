@@ -5,8 +5,8 @@ interface IProfileService {
     
     fun getProfile(email:String):ProfileDTO?
 
-    fun createProfile(profile:ProfileDTO):Boolean
+    fun createProfile(profile:ProfileDTO)
 
-    fun updateProfile(email:String, profile:ProfileDTO):Any?
+    fun updateProfile(email:String, profile:ProfileDTO):ProfileDTO?
 
 }

@@ -46,13 +46,13 @@ const createProfile = async(email, username, name, surname) => {
 
 const getProfileByEmail = async(email) => {
     const res = await fetch('/API/profiles/'+email);
-     const profile = await res.json();
-     if(res.ok){
+    const profile = await res.json();
+    if(res.ok){
         return profile;
-     }else{
+    }else{
         console.log(profile);
         throw profile.detail;
-     }
+    }
 }
 
 // Products API
@@ -94,4 +94,22 @@ const createProduct = async(ean, name, brand) => {
     else return null;
 }
 
-export{updateProfile, getProfiles, createProfile, getProfileByEmail, getProduct, getProductByEan, createProduct}
+const updateProduct = async(ean, name, brand) => {
+    const res = await fetch( "/API/products/"+ean, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ean, name, brand }),
+    });
+
+    if(!res.ok){
+        const errorMessage = await res.json();
+        console.log(errorMessage);
+        throw errorMessage.detail;
+    }
+    else return null;
+
+}
+
+export{updateProfile, getProfiles, createProfile, getProfileByEmail, getProduct, getProductByEan, createProduct, updateProduct}

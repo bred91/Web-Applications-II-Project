@@ -31,6 +31,7 @@ class ProductService(
         productRepository.save(product.toEntity())
     }
 
+    // todo: @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional
     override fun updateProduct(ean: String, product: ProductDTO): ProductDTO? {
         return when (productRepository.findByIdOrNull(ean)?.toDTO()) {

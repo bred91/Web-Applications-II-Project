@@ -61,8 +61,7 @@ function SearchProduct(props) {
 
     const handleUpdateClick = async() => {
         props.setProduct(product);
-        //navigate('/updateProduct');
-        navigate('#');
+        navigate('/updateProduct');
     }
 
 

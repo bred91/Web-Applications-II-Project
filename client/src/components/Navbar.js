@@ -9,7 +9,6 @@ function TSNavbar() {
           <Container>
             <Navbar.Brand href="/">Ticketing Platform</Navbar.Brand>
             <Nav className="me-auto">
-                <Nav.Link href="/updateProfile">Update Profile</Nav.Link>
                 <Nav.Link href="/searchProfile">Search Profile</Nav.Link>
                 <Nav.Link href="/searchProduct">Search Product</Nav.Link>
                 <Nav.Link href="/createProduct">Create Product</Nav.Link>

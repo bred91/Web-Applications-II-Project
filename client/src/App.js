@@ -10,10 +10,12 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
 import { useState } from 'react';
 import CreateProduct from "./components/CreateProduct";
+import UpdateProductForm from "./components/UpdateProductForm";
 
 function App() {
 
-  const [profile, setProfile, setProduct] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const [product, setProduct] = useState(null);
 
   return (
     <div className="App">
@@ -27,6 +29,7 @@ function App() {
                 <Route path="/searchProfile" element={<SearchProfile setProfile={setProfile} />} />
                 <Route path="/searchProduct" element={<SearchProduct setProduct={setProduct} />} />
                 <Route path="/createProduct" element={<CreateProduct />} />
+                <Route path="/updateProduct" element={<UpdateProductForm product={product} setProduct={setProduct}/>} />
             </Routes>
         </BrowserRouter>
     </div>

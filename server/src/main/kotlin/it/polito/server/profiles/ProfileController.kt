@@ -32,13 +32,12 @@ class ProfileController(private val profileService: IProfileService) {
 
     @PostMapping("/API/profiles/")
     @ResponseStatus(HttpStatus.CREATED)
-    // todo cambiare boolean
-    fun createProfile(@Valid @RequestBody profile: ProfileDTO):Boolean {
-        return profileService.createProfile(profile)
+    fun createProfile(@Valid @RequestBody profile: ProfileDTO) {
+        profileService.createProfile(profile)
     }
 
     @PutMapping("/API/profiles/{email}")
-    fun updateProfile(@PathVariable email:String, @Valid @RequestBody profile:ProfileDTO):Any? {
+    fun updateProfile(@PathVariable email:String, @Valid @RequestBody profile:ProfileDTO):ProfileDTO? {
 
         return profileService.updateProfile(email, profile)
     }

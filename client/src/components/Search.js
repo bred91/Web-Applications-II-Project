@@ -2,6 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Card, ListGroup } from "react-bootstrap";
 
 function Search() {
+    return(
+        <>
+            <br/>
+            <br/>
+            <h1>Welcome to the Ticketing platform</h1>
+        </>
+    )
+    /*
     const [searchTerm, setSearchTerm] = useState("");
     const [allItems, setAllItems] = useState([]);
     const [matchedItems, setMatchedItems] = useState([]);
@@ -54,6 +62,7 @@ function Search() {
             </ListGroup>
         </div>
     );
+     */
 }
 
 
