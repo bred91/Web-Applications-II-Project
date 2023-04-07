@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
-@Validated
-@CrossOrigin(origins = ["http://localhost:3000"])
 @RestController
 class ProfileController(private val profileService: IProfileService) {
 
