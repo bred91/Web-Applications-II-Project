@@ -78,19 +78,21 @@ function SearchProduct(props) {
     return (
         <Container className="pt-3">
             <Container className="container-wrapper">
-                <Form className='p-5' onSubmit={handleSubmit}>
-                    <h3>Search Product</h3>
-                    <Form.Group controlId="ean">
-                        <Form.Label>EAN</Form.Label>
-                        <Form.Control type="text" value={ean} onChange={handleChange} list="matching-eans"
-                        />
-                        <datalist id="matching-eans">
-                            {matchingProducts.map((product) => (<option key={product.ean} value={product.ean} />))}
-                        </datalist>
-                    </Form.Group>
-                    <Button variant="success" className="w-100" type="submit">Search</Button>
-                    <Button variant="warning" className="w-100" onClick={handleDownloadCSV}>Download all</Button>
-                </Form>
+                <center>
+                    <Form className='p-5' onSubmit={handleSubmit}>
+                        <h3>Search Product</h3>
+                        <Form.Group controlId="ean">
+                            <Form.Label>EAN</Form.Label>
+                            <Form.Control type="text" value={ean} onChange={handleChange} list="matching-eans"
+                            />
+                            <datalist id="matching-eans">
+                                {matchingProducts.map((product) => (<option key={product.ean} value={product.ean} />))}
+                            </datalist>
+                        </Form.Group>
+                        <Button variant="success" className="w-100" type="submit">Search</Button>
+                        <Button variant="warning" className="w-100" onClick={handleDownloadCSV}>Download all</Button>
+                    </Form>
+                </center>
                 <CsvDownloadButton id="csv" data={allProducts} delimiter={","}
                                    filename={"AllProducts.csv"} style={{display:"none"}}/>
                 { showProduct && <div>
