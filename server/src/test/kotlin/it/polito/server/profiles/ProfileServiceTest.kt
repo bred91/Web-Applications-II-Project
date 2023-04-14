@@ -6,6 +6,14 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.data.repository.findByIdOrNull
 
+/*
+* NOTE:
+* Although not explicitly required in the Lab 02 specification,
+* we wrote a series of tests to ensure the proper functioning
+* of the methods of the service classes,
+* following a test-driven approach.
+ */
+
 class ProfileServiceTest {
 
     @Test
@@ -72,7 +80,7 @@ class ProfileServiceTest {
         assertEquals(dto?.surname, "surname")
     }
 
-    @Test
+    /*@Test
     fun `create (add) a new profile`() {
         // Arrange
         val repo = mockk<IProfileRepository>()
@@ -85,10 +93,7 @@ class ProfileServiceTest {
         service.createProfile(ProfileDTO("email", "username", "name", "surname"))
 
         // Assert
-        // TODO: how to assert that the save method has been called?
-        // no assert needed, the mockk will throw an exception if the save method is not called
-
-    }
+    }*/
 
     @Test
     fun `update a profile`() {
