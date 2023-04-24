@@ -7,13 +7,13 @@ data class ProductDTO(
 
     @field:NotBlank(message="Not a valid ean")
     @field:Size(max = 23, message = "EAN too long")
-    val ean: String,
+    var ean: String,
     @field:NotBlank(message="Not a valid name")
     @field:Size(max = 255, message = "Product name too long")
-    val name: String,
+    var name: String,
     @field:NotBlank(message="Not a valid brand")
     @field:Size(max = 255, message = "Brand name too long")
-    val brand: String
+    var brand: String
 )
 
 fun ProductDTO.toEntity(): Product{
