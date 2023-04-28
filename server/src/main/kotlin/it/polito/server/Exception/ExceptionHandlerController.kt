@@ -1,4 +1,4 @@
-package it.polito.server.exceptions
+package it.polito.server.Exception
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ProblemDetail

@@ -16,6 +16,6 @@ class Purchase : EntityBase<Long>(){
     var ean: Product? = null
 
     // TODO: pensiamoci
-    var warranty: Any? = null
+    //var warranty: Any? = null
     var length: Int? = null
 }

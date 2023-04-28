@@ -19,6 +19,9 @@ class Ticket : EntityBase<Long>() {
     var lastModification: Date? = null
 
     @ManyToOne
+    var state: State? = null
+
+    @ManyToOne
     var customer: Profile? = null
 
     @ManyToOne

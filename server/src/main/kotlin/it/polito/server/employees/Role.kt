@@ -11,6 +11,8 @@ class Role {
     @Column(updatable = false, nullable = false)
     var id: Long? = null
 
+    var name: String = ""
+
     @OneToMany(mappedBy = "role")
-    var name: MutableSet<Employee>? = null
+    var employees: MutableSet<Employee>? = null
 }

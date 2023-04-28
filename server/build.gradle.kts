@@ -29,8 +29,16 @@ dependencies {
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 	runtimeOnly("org.postgresql:postgresql")
 	testImplementation("io.mockk:mockk:1.13.4")
+	testImplementation ("org.testcontainers:junit-jupiter:1.16.3")
+	testImplementation("org.testcontainers:postgresql:1.16.3")
 	testImplementation("org.springframework.boot:spring-boot-starter-test") {
 		exclude(module = "mockito-core")
+	}
+}
+
+dependencyManagement {
+	imports {
+		mavenBom("org.testcontainers:testcontainers-bom:1.16.3")
 	}
 }
 

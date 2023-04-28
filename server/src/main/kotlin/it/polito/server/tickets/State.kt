@@ -15,4 +15,7 @@ class State{
 
     @OneToMany(mappedBy = "state")
     var historyList: MutableSet<History>? = null
+
+    @OneToMany(mappedBy = "state")
+    var ticketList: MutableSet<Ticket>? = null
 }

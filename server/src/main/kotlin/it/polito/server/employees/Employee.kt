@@ -1,10 +1,11 @@
 package it.polito.server.employees
 
+import it.polito.server.base.EntityBase
 import it.polito.server.tickets.History
 import it.polito.server.tickets.Ticket
 import jakarta.persistence.*
 @Entity
-class Employee {
+class Employee : EntityBase<Long>(){
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(updatable = false, nullable = false)
