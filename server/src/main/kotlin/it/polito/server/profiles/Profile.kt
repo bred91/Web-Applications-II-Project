@@ -1,8 +1,6 @@
 package it.polito.server.profiles
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import it.polito.server.tickets.Ticket
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "profiles")
@@ -13,4 +11,15 @@ class Profile {
     var username:String=""
     var name:String=""
     var surname:String=""
+    var phoneNumber: String=""
+
+
+    @OneToMany(mappedBy = "profile")
+    var addresses = mutableSetOf<Address>()
+
+    @OneToMany(mappedBy = "customer")
+    var tickets = mutableSetOf<Ticket>()
+
+    @OneToMany(mappedBy = "customer")
+    var purchases: MutableSet<Purchase>? = null
 }
