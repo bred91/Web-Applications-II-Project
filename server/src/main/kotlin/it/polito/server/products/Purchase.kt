@@ -16,7 +16,7 @@ class Purchase : EntityBase<Long>(){
     var customer: Profile? = null
 
     @ManyToOne
-    var ean: Product? = null
+    var product: Product? = null
 
     @Column(updatable = false, nullable = false)
     var purchaseDate: Date? = null

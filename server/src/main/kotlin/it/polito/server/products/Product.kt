@@ -11,6 +11,6 @@ class Product {
     var name: String = ""
     var brand: String = ""
 
-    @OneToMany(mappedBy = "ean")
+    @OneToMany(mappedBy = "product")
     var purchases: MutableSet<Purchase>? = null
 }
