@@ -19,7 +19,7 @@ class Purchase : EntityBase<Long>(){
     var ean: Product? = null
 
     @Column(updatable = false, nullable = false)
-    var date: Date? = null
+    var purchaseDate: Date? = null
     @Column(updatable = false, nullable = false)
     var warrantyCode : String? = null
     @Column(updatable = false, nullable = false)
