@@ -6,7 +6,7 @@ import jakarta.persistence.*
 @Entity
 class Address : EntityBase<Long>(){
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(updatable = false, nullable = false)
     var id: Long? = null
     var address: String = ""

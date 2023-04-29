@@ -9,7 +9,7 @@ import java.util.*
 @Entity
 class Message : EntityBase<Long>(){
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(updatable = false, nullable = false)
     var id: Long? = null
 

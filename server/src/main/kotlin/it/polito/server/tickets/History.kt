@@ -1,12 +1,13 @@
 package it.polito.server.tickets
+import it.polito.server.base.EntityBase
 import it.polito.server.employees.Employee
 import jakarta.persistence.*
 import java.util.*
 
 @Entity
-class History {
+class History : EntityBase<Long>(){
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(updatable = false, nullable = false)
     var id: Long? = null
 
