@@ -27,9 +27,9 @@ fun EmployeeDTO.toEntity(): Employee{
     employee.name = name
     employee.surname = surname
     employee.email = email
-    employee.role = role.toEntity()
+    employee.role = role?.toEntity()
     return employee
 }
 
-fun Employee.toDTO() = EmployeeDTO(id, name, surname, email, role)
+fun Employee.toDTO() = EmployeeDTO(id, name, surname, email, role?.toDTO())
 
