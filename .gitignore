@@ -3,3 +3,6 @@ server/build/
 server/.gradle/
 server/.idea/
 server/gradle/wrapper/gradle-wrapper.jar
+ticketing/gradle/wrapper/
+ticketing/.idea/
+ticketing/build/

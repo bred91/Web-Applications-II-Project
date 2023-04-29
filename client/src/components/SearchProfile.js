@@ -77,20 +77,21 @@ function SearchProfile(props) {
     return (
         <Container className="pt-3">
             <Container className="container-wrapper">
-            <Form className='p-5' onSubmit={handleSubmit}>
-                <h3>Search Profile</h3>
-                <Form.Group controlId="email">
-                    <Form.Label>Email</Form.Label>
-                    <Form.Control type="email" value={email} onChange={handleChange} list="matching-emails"
-            />
-            <datalist id="matching-emails">
-              {matchingProfiles.map((profile) => (<option key={profile.email} value={profile.email} />))}
-            </datalist>
-                </Form.Group>
-                <Button variant="success" className="w-100" type="submit">Search</Button>
-                <Button variant="warning" className="w-100" onClick={handleDownloadCSV}>Download all</Button>
-            </Form>
-            <CsvDownloadButton id="csv" data={allProfiles} delimiter={","}
+                <center>
+                    <Form className='p-5' onSubmit={handleSubmit}>
+                        <h3>Search Profile</h3>
+                        <Form.Group controlId="email">
+                            <Form.Label>Email</Form.Label>
+                            <Form.Control type="email" value={email} onChange={handleChange} list="matching-emails"/>
+                        <datalist id="matching-emails">
+                          {matchingProfiles.map((profile) => (<option key={profile.email} value={profile.email} />))}
+                        </datalist>
+                        </Form.Group>
+                        <Button variant="success" className="w-100" type="submit">Search</Button>
+                        <Button variant="warning" className="w-100" onClick={handleDownloadCSV}>Download all</Button>
+                    </Form>
+                </center>
+                <CsvDownloadButton id="csv" data={allProfiles} delimiter={","}
                                filename={"AllProfiles.csv"} style={{display:"none"}}/>
                { showProfile && <div>
                 <center><div className="col">

@@ -6,6 +6,8 @@ plugins {
 	kotlin("jvm") version "1.7.22"
 	kotlin("plugin.spring") version "1.7.22"
 	kotlin("plugin.jpa") version "1.7.22"
+	id("org.jetbrains.kotlin.plugin.noarg") version "1.8.20"
+	id("org.jetbrains.kotlin.plugin.allopen") version "1.8.20"
 }
 
 group = "it.polito"
@@ -22,8 +24,22 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
+	testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 	runtimeOnly("org.postgresql:postgresql")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("io.mockk:mockk:1.13.4")
+	testImplementation ("org.testcontainers:junit-jupiter:1.16.3")
+	testImplementation("org.testcontainers:postgresql:1.16.3")
+	testImplementation("org.springframework.boot:spring-boot-starter-test") {
+		exclude(module = "mockito-core")
+	}
+}
+
+dependencyManagement {
+	imports {
+		mavenBom("org.testcontainers:testcontainers-bom:1.16.3")
+	}
 }
 
 tasks.withType<KotlinCompile> {

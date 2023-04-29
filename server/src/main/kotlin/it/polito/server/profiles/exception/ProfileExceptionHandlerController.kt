@@ -1,7 +1,7 @@
 package it.polito.server.profiles.exception
 
-import it.polito.server.Exceptions.DuplicateException
-import it.polito.server.Exceptions.NotFoundException
+import it.polito.server.Exception.DuplicateException
+import it.polito.server.Exception.NotFoundException
 
 /*
 @RestControllerAdvice
