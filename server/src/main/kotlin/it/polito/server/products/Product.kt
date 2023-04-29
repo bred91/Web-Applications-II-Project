@@ -1,6 +1,5 @@
 package it.polito.server.products
 
-import it.polito.server.profiles.Purchase
 import jakarta.persistence.*
 
 @Entity

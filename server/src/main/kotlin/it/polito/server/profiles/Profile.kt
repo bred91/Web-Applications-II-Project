@@ -1,4 +1,5 @@
 package it.polito.server.profiles
+import it.polito.server.products.Purchase
 import it.polito.server.tickets.Ticket
 import jakarta.persistence.*
 

@@ -14,7 +14,7 @@ class Attachment : EntityBase<Long>(){
     var type: String = ""
     // NOTE: we decide to temporally save them as binary data
     // a better solution would be to save them in NoSQL DBMS, like MongoDB
-    var binary_string: String = ""
+    var binaryString: String = ""
 
     @ManyToOne
     var message: Message? = null

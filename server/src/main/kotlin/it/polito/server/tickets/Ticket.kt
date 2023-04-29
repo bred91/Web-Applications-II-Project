@@ -7,6 +7,7 @@ import jakarta.persistence.*
 import java.util.*
 
 @Entity
+//@Index(name = "idx_ticket", columnList = "customer_email")
 class Ticket : EntityBase<Long>() {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
