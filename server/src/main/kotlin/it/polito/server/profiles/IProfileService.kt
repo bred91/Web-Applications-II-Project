@@ -9,4 +9,6 @@ interface IProfileService {
 
     fun updateProfile(email:String, profile:ProfileDTO):ProfileDTO?
 
+    fun getAddresses(email:String):MutableSet<AddressDTO>?
+
 }

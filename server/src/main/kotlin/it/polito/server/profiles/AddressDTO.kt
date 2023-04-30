@@ -18,19 +18,22 @@ data class AddressDTO(
     var region: String,
     @field:NotBlank(message="Not a valid state")
     var state: String,
-    @field:NotNull(message="Not a valid profile")
-    var profile: Profile?
+    /*@field:NotNull(message="Not a valid profile")
+    var profile: Profile*/
 )
 
+fun Address.toDTO() : AddressDTO {
+    return AddressDTO(id, address, number, additionalInfo, zip, city, region, state)
+}
 fun AddressDTO.toEntity() : Address{
     val address = Address()
     address.id = id
-    address.profile = profile
+    //address.profile = profile
     address.additionalInfo=additionalInfo
     address.zip = zip
     address.city = city
     address.region = region
     address.state = state
-    address.profile = profile
+    address.number=number
     return address;
 }

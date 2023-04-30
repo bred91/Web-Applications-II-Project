@@ -17,6 +17,8 @@ class Address : EntityBase<Long>(){
     var region: String = ""
     var state: String = ""
 
+    /*@ManyToOne
+    lateinit var profile: Profile*/
     @ManyToOne
-    var profile: Profile? = null
+    val profile:Profile? = null
 }

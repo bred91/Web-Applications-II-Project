@@ -26,6 +26,10 @@ class ProfileController(private val profileService: IProfileService) {
     }
 
 
+    @GetMapping("/API/profiles/{email}/addresses")
+    fun getAddressesByProfile(@PathVariable email: String) : MutableSet<AddressDTO>? {
+        return profileService.getAddresses(email)
+    }
 
 
     @PostMapping("/API/profiles/")

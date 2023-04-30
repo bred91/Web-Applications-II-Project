@@ -38,4 +38,12 @@ class ProfileService(private val profileRepository: IProfileRepository):IProfile
         }
     }
 
+    @Transactional
+    override fun getAddresses(email: String): MutableSet<AddressDTO>?{
+        val profile = profileRepository.findByIdOrNull(email)
+        return profile?.addresses?.map{it.toDTO()}?.toMutableSet()
+        //return profileRepository.findAddressesByemail(email).map{it.toDTO()}.toMutableSet()
+    }
+
+
 }

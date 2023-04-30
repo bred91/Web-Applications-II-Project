@@ -14,8 +14,8 @@ class Profile {
     var surname:String=""
     var phoneNumber: String=""
 
-
     @OneToMany(mappedBy = "profile")
+    //@OneToMany
     var addresses = mutableSetOf<Address>()
 
     @OneToMany(mappedBy = "customer")
