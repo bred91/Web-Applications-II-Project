@@ -19,7 +19,7 @@ data class TicketDTO (
     val actualExpert: EmployeeDTO? = null,
 
     val chat: List<MessageDTO>? = null,
-    val history: List<HistoryDTO>? = null
+    val history: List<HistoryFromTicketDTO>? = null
 )
 
 fun TicketDTO.toEntity(): Ticket{
@@ -35,4 +35,13 @@ fun TicketDTO.toEntity(): Ticket{
     return ticket
 }
 
-fun Ticket.toDTO() = TicketDTO(id, creationDate, lastModification, state?.toDTO(), customer?.toDTO(), actualExpert?.toDTO(), chat?.map { it.toDTO() }, history?.map { it.toDTO() })
+fun Ticket.toDTO() = TicketDTO(
+    id,
+    creationDate,
+    lastModification,
+    state?.toDTO(),
+    customer?.toDTO(),
+    actualExpert?.toDTO(),
+    chat?.map { it.toDTO() },
+    //history?.map { it.toHistoryFromTicketDTO() }
+)

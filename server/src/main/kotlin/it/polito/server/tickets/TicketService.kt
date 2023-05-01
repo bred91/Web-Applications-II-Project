@@ -21,8 +21,6 @@ class TicketService (private val ticketRepository: ITicketRepository,
     @Transactional
     override fun createTicket(ticket: TicketDTO) {
         if(ticket.id == null) {
-            println(ticket)
-            println(ticket.toEntity())
             ticketRepository.save(ticket.toEntity())
         }
 
