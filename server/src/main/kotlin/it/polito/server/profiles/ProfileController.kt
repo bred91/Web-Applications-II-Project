@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class ProfileController(private val profileService: IProfileService) {
+class ProfileController(private val profileService: IProfileService, private val addressRepository: IAddressRepository) {
 
 
 
@@ -27,8 +27,8 @@ class ProfileController(private val profileService: IProfileService) {
 
 
     @GetMapping("/API/profiles/{email}/addresses")
-    fun getAddressesByProfile(@PathVariable email: String) : MutableSet<AddressDTO>? {
-        return profileService.getAddresses(email)
+    fun getAddressesByProfile(@PathVariable email: String) : List<AddressDTO> {
+        return addressRepository.findByProfileEmail(email).map { it.toDTO()}
     }
 
 
@@ -43,7 +43,6 @@ class ProfileController(private val profileService: IProfileService) {
 
         return profileService.updateProfile(email, profile)
     }
-
 
 
 }

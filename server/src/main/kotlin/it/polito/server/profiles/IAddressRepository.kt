@@ -5,10 +5,7 @@ import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 @Repository
 interface IAddressRepository : JpaRepository<Address, Long>{
-
-    /*
-    @Query("SELECT a FROM Address a WHERE a.Profile.email = :profile")
-            fun getAddressByProfile(@Param("profile") profile: Profile): List<AddressDTO>*/
+    fun findByProfileEmail(email:String):List<Address>
 }
 
 

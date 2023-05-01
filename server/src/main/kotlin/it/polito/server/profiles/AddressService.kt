@@ -16,16 +16,20 @@ class AddressService (private val addressRepository: IAddressRepository, private
         ?: throw NotFoundException("Address with id $id not found")
     }
 
+    /*
     @Transactional
     override fun createAddress(address: AddressDTO) {
-
         addressRepository.save(address.toEntity())
-        /*when(profileRepository.existsById(address.profile.email)) {
-                true -> addressRepository.save(address.toEntity())
-                false -> throw ProfileNotFoundException("Customer with id ${address.profile.email} doesn't exists")
-        }*/
-
+    }*/
+    @Transactional
+    override fun createAddress(email: String, address: AddressDTO) {
+        val profile = profileRepository.findByIdOrNull(email)
+            ?: throw NotFoundException("Profile with email $email not found")
+        var addressEntity = address.toEntity()
+        addressEntity.profile = profile
+        addressRepository.save(addressEntity)
     }
+
 
     @Transactional
     override fun updateAddress(id: Long, address: AddressDTO): AddressDTO? {
