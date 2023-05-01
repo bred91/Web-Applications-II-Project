@@ -5,18 +5,17 @@ class AttachmentDTO (
     val name: String = "",
     val type: String = "",
     val binaryString: String = "",
-    val message: MessageDTO? = null,
+    //val message: MessageDTO? = null,
 )
 
-/*
 fun AttachmentDTO.toEntity(): Attachment{
     val attachment = Attachment()
     attachment.id = id
     attachment.name = name
     attachment.type = type
     attachment.binaryString = binaryString
-    attachment.message = message?.toEntity()
+    //attachment.message = message?.toEntity()
     return attachment
 }
 
-fun Attachment.toDTO() = AttachmentDTO(id, name, type, binaryString, message?.toDTO())*/
+fun Attachment.toDTO() = AttachmentDTO(id, name, type, binaryString)
