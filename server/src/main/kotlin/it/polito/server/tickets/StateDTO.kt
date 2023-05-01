@@ -14,4 +14,6 @@ fun StateDTO.toEntity() : State{
     return state;
 }
 
-fun State.toDTO() = StateDTO(id, name)
+fun State.toDTO() : StateDTO {
+    return StateDTO(id, name)
+}

@@ -19,12 +19,12 @@ class TicketController(private val ticketService: ITicketService) {
 
     @PostMapping("/API/tickets/")
     @ResponseStatus(HttpStatus.CREATED)
-    fun createIssue(@Valid @RequestBody ticket: TicketDTO) {
+    fun createIssue(@Valid @RequestBody ticket: JustTicketDTO) {
         ticketService.createTicket(ticket)
     }
 
     @PutMapping("/API/tickets/{id}")
-    fun startProgress(@PathVariable id: Long, @Valid @RequestBody ticket: TicketDTO):TicketDTO? {
+    fun startProgress(@PathVariable id: Long, @Valid @RequestBody ticket: JustTicketDTO): TicketDTO? {
         return ticketService.startProgress(id, ticket)
     }
 

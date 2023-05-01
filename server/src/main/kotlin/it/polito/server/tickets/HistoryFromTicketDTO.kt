@@ -27,4 +27,6 @@ fun HistoryFromTicketDTO.toEntity() : History{
     return history
 }
 
-fun HistoryFromTicketDTO.toHistoryFromTicketDTO() = HistoryFromTicketDTO(id, state, timestamp, expert)
+fun History.toHistoryFromTicketDTO(): HistoryFromTicketDTO {
+    return HistoryFromTicketDTO(id, state, timestamp, expert)
+}

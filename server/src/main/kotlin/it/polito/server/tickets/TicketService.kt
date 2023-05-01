@@ -1,5 +1,6 @@
 package it.polito.server.tickets
 
+import it.polito.server.tickets.exception.NullTicketIdException
 import it.polito.server.tickets.exception.TicketNotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -18,25 +19,33 @@ class TicketService (private val ticketRepository: ITicketRepository,
             ?: throw TicketNotFoundException("Ticket with id $id not found")
     }
 
-    @Transactional
-    override fun createTicket(ticket: TicketDTO) {
-        if(ticket.id == null) {
-            ticketRepository.save(ticket.toEntity())
-        }
-
-    }
-
     // todo: @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @Transactional
-    override fun startProgress(id: Long, ticket: TicketDTO): TicketDTO? {
+    override fun createTicket(ticket: JustTicketDTO) {
+        if(ticket.id == null) {
+            val newTicket = ticketRepository.save(ticket.toEntity())
+
+            historyRepository.save(HistoryDTO(null, newTicket.state, newTicket, ticket.lastModification, newTicket.actualExpert).toEntity())
+        }
+        else {
+            throw NullTicketIdException("Ticket id must be null")
+        }
+    }
+
+    // todo: @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @Transactional
+    override fun startProgress(id: Long, ticket: JustTicketDTO): TicketDTO? {
         return when (ticketRepository.findByIdOrNull(id)?.toDTO()) {
             null -> {throw TicketNotFoundException("Ticket with id $id not found")}
             else -> {
-                if(ticket.state?.equals("OPEN") == true) {
+                if(ticket.state != 2.toLong()) {
                     throw IllegalStateException("Ticket with id $id is not in OPEN state")
                 }
-                //TODO("add history save")
-                ticketRepository.save(ticket.toEntity()).toDTO()
+
+                val newTicket = ticketRepository.save(ticket.toEntity())
+
+                historyRepository.save(HistoryDTO(null, newTicket.state, newTicket, ticket.lastModification, newTicket.actualExpert).toEntity())
+                newTicket.toDTO()
             }
         }
     }
@@ -44,7 +53,7 @@ class TicketService (private val ticketRepository: ITicketRepository,
     override fun updateTicket(id: Long, ticket: TicketDTO): TicketDTO? {
         TODO("Not yet implemented")
     }
-
+/*
     override fun getHistory(id: Long): List<HistoryDTO> {
         TODO("Not yet implemented")
     }
@@ -75,5 +84,5 @@ class TicketService (private val ticketRepository: ITicketRepository,
 
     override fun updateState(id: String, state: StateDTO): StateDTO? {
         TODO("Not yet implemented")
-    }
+    }*/
 }

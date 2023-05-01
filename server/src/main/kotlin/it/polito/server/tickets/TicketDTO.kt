@@ -43,5 +43,5 @@ fun Ticket.toDTO() = TicketDTO(
     customer?.toDTO(),
     actualExpert?.toDTO(),
     chat?.map { it.toDTO() },
-    //history?.map { it.toHistoryFromTicketDTO() }
+    history?.map { it.toHistoryFromTicketDTO() }
 )

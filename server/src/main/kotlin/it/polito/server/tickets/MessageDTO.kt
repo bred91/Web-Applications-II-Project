@@ -27,5 +27,7 @@ fun MessageDTO.toEntity(): Message{
     return message
 }
 
-fun Message.toDTO() = MessageDTO(id, sentTS, text, isSenderCustomer, expert?.toDTO(), attachments?.map { it.toDTO() } ?: listOf())
+fun Message.toDTO() : MessageDTO {
+    return MessageDTO(id, sentTS, text, isSenderCustomer, expert?.toDTO(), attachments?.map { it.toDTO() } ?: listOf())
+}
 

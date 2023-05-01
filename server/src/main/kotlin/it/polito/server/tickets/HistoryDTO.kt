@@ -28,4 +28,6 @@ fun HistoryDTO.toEntity() : History{
     return history
 }
 
-fun History.toDTO() = HistoryDTO(id, state, ticket, timestamp, expert)
+fun History.toDTO() : HistoryDTO{
+    return HistoryDTO(id, state, ticket, timestamp, expert)
+}

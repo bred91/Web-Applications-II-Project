@@ -1,6 +1,5 @@
 package it.polito.server.profiles
 import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.NotNull
 
 data class AddressDTO(
 
@@ -23,7 +22,7 @@ data class AddressDTO(
 )
 
 fun Address.toDTO() : AddressDTO {
-    return AddressDTO(id, address, number, additionalInfo, zip, city, region, state)
+    return AddressDTO(id, streetAddress, number, additionalInfo, zip, city, region, state)
 }
 fun AddressDTO.toEntity() : Address{
     val address = Address()
