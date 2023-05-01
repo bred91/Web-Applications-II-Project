@@ -1,8 +1,10 @@
 package it.polito.server.profiles
+import it.polito.server.products.PurchaseDTO
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.CrossOrigin
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -32,6 +34,11 @@ class ProfileController(private val profileService: IProfileService, private val
         return profileService.getAddresses(email)
     }
 
+    @GetMapping("/API/profiles/{email}/purchases")
+    fun getPurchasesByProfile(@PathVariable email: String) : List<PurchaseDTO>{
+        return profileService.getPurchases(email)
+    }
+
 
     @PostMapping("/API/profiles/")
     @ResponseStatus(HttpStatus.CREATED)
@@ -39,7 +46,7 @@ class ProfileController(private val profileService: IProfileService, private val
         profileService.createProfile(profile)
     }
 
-    @PostMapping("/API/profiles/{email}/addresses")
+    @PostMapping("/API/profiles/{email}/address")
     @ResponseStatus(HttpStatus.CREATED)
     fun createAddress(@PathVariable email: String, @Valid @RequestBody address: AddressDTO ){
         profileService.createAddress(email, address)
@@ -49,6 +56,18 @@ class ProfileController(private val profileService: IProfileService, private val
     fun updateProfile(@PathVariable email:String, @Valid @RequestBody profile:ProfileDTO):ProfileDTO? {
 
         return profileService.updateProfile(email, profile)
+    }
+
+    @PutMapping("/API/profiles/{email}/addresses/{addressId}")
+    fun updateAddress(@PathVariable email: String, @PathVariable addressId: Long, @Valid @RequestBody address: AddressDTO) : AddressDTO?{
+        return profileService.updateAddress(email, addressId, address)
+    }
+
+
+    @DeleteMapping("/API/profiles/{email}/addresses/{addressId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteAddress(@PathVariable email: String, @PathVariable addressId: Long) {
+        profileService.deleteAddress(email, addressId)
     }
 
 

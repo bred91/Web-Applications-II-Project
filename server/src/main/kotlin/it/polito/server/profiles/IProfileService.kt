@@ -1,5 +1,6 @@
 package it.polito.server.profiles
 
+import it.polito.server.products.PurchaseDTO
 import org.springframework.web.bind.annotation.PathVariable
 
 interface IProfileService {
@@ -15,5 +16,11 @@ interface IProfileService {
     fun getAddresses(email: String) : List<AddressDTO>
 
     fun createAddress(email: String, address: AddressDTO)
+
+    fun updateAddress(email: String, addressId: Long, address: AddressDTO): AddressDTO?
+
+    fun deleteAddress(email:String, addressId:Long)
+
+    fun getPurchases(email: String): List<PurchaseDTO>
 
 }

@@ -11,10 +11,13 @@ data class PurchaseDTO(
 
 
     var id: Long?,
-    @field:NotNull(message="Not a valid customer")
-    var customer: Profile?,
-    @field:NotNull(message="Not a valid product")
-    var product: Product?,
+    //@field:NotNull(message="Not a valid customer")
+    //var customer: Profile?,
+    var customerEmail: String?,
+
+    //@field:NotNull(message="Not a valid product")
+    //var product: Product?,
+    var productId: String?,
     @field:NotNull(message="Not a valid purchase date")
     var purchaseDate: Date?,
     @field:NotBlank(message="Not a valid warrantyCode")
@@ -26,10 +29,13 @@ data class PurchaseDTO(
 
 )
 
+fun Purchase.toDTO() : PurchaseDTO{
+    return PurchaseDTO(id, customer?.email, product?.id, purchaseDate, warrantyCode, expiringDate)
+}
 fun PurchaseDTO.toEntity() : Purchase{
     val purchase = Purchase()
     purchase.purchaseDate=purchaseDate
-    purchase.customer=customer
+    //purchase.customer=customer
     purchase.expiringDate=expiringDate
     purchase.warrantyCode=warrantyCode
     purchase.id=id

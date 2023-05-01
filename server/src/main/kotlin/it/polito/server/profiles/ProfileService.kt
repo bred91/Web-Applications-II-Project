@@ -1,5 +1,8 @@
 package it.polito.server.profiles
 import it.polito.server.Exception.NotFoundException
+import it.polito.server.products.IPurchaseRepository
+import it.polito.server.products.PurchaseDTO
+import it.polito.server.products.toDTO
 import it.polito.server.profiles.exception.DuplicateProfileException
 import it.polito.server.profiles.exception.ProfileNotFoundException
 import org.springframework.data.repository.findByIdOrNull
@@ -10,7 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable
 
 @Service
 class ProfileService(private val profileRepository: IProfileRepository,
-                     private val addressRepository: IAddressRepository )
+                     private val addressRepository: IAddressRepository,
+                     private val purchaseRepository: IPurchaseRepository)
     :IProfileService {
 
 
@@ -59,6 +63,38 @@ class ProfileService(private val profileRepository: IProfileRepository,
         addressEntity.profile = profile
         addressRepository.save(addressEntity)
 
+    }
+
+    @Transactional
+    override fun updateAddress(email: String, addressId: Long, address: AddressDTO): AddressDTO? {
+        profileRepository.findById(email).orElseThrow {throw ProfileNotFoundException("Profile with email $email doesn't exist.")}
+
+        val old_address = addressRepository.findById(addressId).orElseThrow {throw NotFoundException("Address id $addressId doesn't exist")}
+        old_address.streetAddress=address.streetAddress
+        old_address.number=address.number
+        old_address.additionalInfo=address.additionalInfo
+        old_address.city=address.city
+        old_address.region=address.region
+        old_address.state=address.state
+        old_address.zip=address.zip
+
+
+        return addressRepository.save(old_address).toDTO()
+    }
+
+
+    @Transactional
+    override fun deleteAddress(email: String, addressId: Long) {
+        profileRepository.findById(email).orElseThrow {throw ProfileNotFoundException("Profile with email $email doesn't exist.")}
+        addressRepository.findById(addressId).orElseThrow {throw NotFoundException("Address id $addressId doesn't exist")}
+        addressRepository.deleteById(addressId)
+    }
+
+    override fun getPurchases(email: String): List<PurchaseDTO> {
+        if(!profileRepository.existsById(email)) {
+            throw ProfileNotFoundException("Profile with email ${email} does not exist")
+        }
+        return purchaseRepository.findPurchasesByCustomerEmail(email).map { it.toDTO() }
     }
 
 
