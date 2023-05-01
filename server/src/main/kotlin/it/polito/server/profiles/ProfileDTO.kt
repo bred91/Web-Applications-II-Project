@@ -19,13 +19,15 @@ data class ProfileDTO(
     var name:String,
     @field:NotBlank(message="Not a valid surname")
     @field:Size(max = 255, message = "Surname too long")
-    var surname:String
+    var surname:String,
+    //var addresses : List<AddressDTO>
 
 
 )
 
 fun Profile.toDTO():ProfileDTO {
-    return ProfileDTO(email, username, name, surname)
+    return ProfileDTO(email, username, name, surname )
+        //addresses.map { it.toDTO() })
 }
 
 fun ProfileDTO.toEntity():Profile{
@@ -34,5 +36,6 @@ fun ProfileDTO.toEntity():Profile{
     profile.name = name
     profile.surname = surname
     profile.username = username
+   // profile.addresses=addresses.map { it.toEntity() }
     return profile
 }

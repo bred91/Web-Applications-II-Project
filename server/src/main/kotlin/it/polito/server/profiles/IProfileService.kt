@@ -1,4 +1,7 @@
 package it.polito.server.profiles
+
+import org.springframework.web.bind.annotation.PathVariable
+
 interface IProfileService {
 
     fun getProfiles():List<ProfileDTO>
@@ -9,6 +12,8 @@ interface IProfileService {
 
     fun updateProfile(email:String, profile:ProfileDTO):ProfileDTO?
 
-    fun getAddresses(email:String):MutableSet<AddressDTO>?
+    fun getAddresses(email: String) : List<AddressDTO>
+
+    fun createAddress(email: String, address: AddressDTO)
 
 }

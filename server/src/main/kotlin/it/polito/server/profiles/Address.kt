@@ -9,7 +9,7 @@ class Address : EntityBase<Long>(){
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(updatable = false, nullable = false)
     var id: Long? = null
-    var address: String = ""
+    var streetAddress: String = ""
     var number: String = ""
     var additionalInfo: String = ""     // e.g. "int. 5" or "c/o John Doe"
     var zip: String = ""

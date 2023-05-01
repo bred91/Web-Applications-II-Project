@@ -16,7 +16,7 @@ class Profile {
 
     @OneToMany(mappedBy = "profile")
     //@OneToMany
-    var addresses = mutableSetOf<Address>()
+    var addresses = listOf<Address>()
 
     @OneToMany(mappedBy = "customer")
     var tickets = mutableSetOf<Ticket>()

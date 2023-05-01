@@ -6,7 +6,7 @@ data class AddressDTO(
 
     var id: Long?,
     @field:NotBlank(message="Not a valid address")
-    var address: String,
+    var streetAddress: String,
     @field:NotBlank(message="Not a valid number")
     var number: String,
     var additionalInfo: String,
@@ -23,7 +23,7 @@ data class AddressDTO(
 )
 
 fun Address.toDTO() : AddressDTO {
-    return AddressDTO(id, address, number, additionalInfo, zip, city, region, state)
+    return AddressDTO(id, streetAddress, number, additionalInfo, zip, city, region, state)
 }
 fun AddressDTO.toEntity() : Address{
     val address = Address()
@@ -35,5 +35,6 @@ fun AddressDTO.toEntity() : Address{
     address.region = region
     address.state = state
     address.number=number
+    address.streetAddress= streetAddress
     return address;
 }

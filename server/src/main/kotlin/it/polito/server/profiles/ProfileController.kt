@@ -28,7 +28,8 @@ class ProfileController(private val profileService: IProfileService, private val
 
     @GetMapping("/API/profiles/{email}/addresses")
     fun getAddressesByProfile(@PathVariable email: String) : List<AddressDTO> {
-        return addressRepository.findByProfileEmail(email).map { it.toDTO()}
+        //return addressRepository.findByProfileEmail(email).map { it.toDTO()}
+        return profileService.getAddresses(email)
     }
 
 
@@ -36,6 +37,12 @@ class ProfileController(private val profileService: IProfileService, private val
     @ResponseStatus(HttpStatus.CREATED)
     fun createProfile(@Valid @RequestBody profile: ProfileDTO) {
         profileService.createProfile(profile)
+    }
+
+    @PostMapping("/API/profiles/{email}/addresses")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun createAddress(@PathVariable email: String, @Valid @RequestBody address: AddressDTO ){
+        profileService.createAddress(email, address)
     }
 
     @PutMapping("/API/profiles/{email}")

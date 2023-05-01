@@ -1,13 +1,17 @@
 package it.polito.server.profiles
+import it.polito.server.Exception.NotFoundException
 import it.polito.server.profiles.exception.DuplicateProfileException
 import it.polito.server.profiles.exception.ProfileNotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.annotation.PathVariable
 
 
 @Service
-class ProfileService(private val profileRepository: IProfileRepository):IProfileService {
+class ProfileService(private val profileRepository: IProfileRepository,
+                     private val addressRepository: IAddressRepository )
+    :IProfileService {
 
 
     override fun getProfiles(): List<ProfileDTO> {
@@ -15,8 +19,10 @@ class ProfileService(private val profileRepository: IProfileRepository):IProfile
     }
 
     override fun getProfile(email: String): ProfileDTO? {
-        return profileRepository.findByIdOrNull(email)?.toDTO()
+        return  profileRepository.findByIdOrNull(email)?.toDTO()
             ?: throw ProfileNotFoundException("Profile with email $email not found")
+        //profile.addresses = getAddresses(email)
+        //return profile
     }
 
     @Transactional
@@ -38,11 +44,21 @@ class ProfileService(private val profileRepository: IProfileRepository):IProfile
         }
     }
 
+    override fun getAddresses(email: String) : List<AddressDTO>{
+        if(!profileRepository.existsById(email)) {
+            throw ProfileNotFoundException("Profile with email ${email} does not exist")
+        }
+        return addressRepository.findByProfileEmail(email).map { it.toDTO()}
+    }
+
     @Transactional
-    override fun getAddresses(email: String): MutableSet<AddressDTO>?{
+    override fun createAddress(email: String, address: AddressDTO) {
         val profile = profileRepository.findByIdOrNull(email)
-        return profile?.addresses?.map{it.toDTO()}?.toMutableSet()
-        //return profileRepository.findAddressesByemail(email).map{it.toDTO()}.toMutableSet()
+            ?: throw NotFoundException("Profile with email $email not found")
+        var addressEntity = address.toEntity()
+        addressEntity.profile = profile
+        addressRepository.save(addressEntity)
+
     }
 
 
