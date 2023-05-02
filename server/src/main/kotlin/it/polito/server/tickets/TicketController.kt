@@ -14,22 +14,24 @@ class TicketController(private val ticketService: ITicketService) {
 
     @GetMapping("/API/tickets/{id}")
     fun getTicket(@PathVariable id: Long):TicketDTO? {
-        return ticketService.getTicket(id)
+        return ticketService.getTicketById(id)
     }
 
     @PostMapping("/API/tickets/")
     @ResponseStatus(HttpStatus.CREATED)
-    fun createIssue(@Valid @RequestBody ticket: JustTicketDTO) {
-        ticketService.createTicket(ticket)
+    fun createIssue(@Valid @RequestBody ticketDTO: TicketToSaveDTO) {
+        ticketService.createTicket(ticketDTO)
     }
 
-    @PutMapping("/API/tickets/{id}")
-    fun startProgress(@PathVariable id: Long, @Valid @RequestBody ticket: JustTicketDTO): TicketDTO? {
-        return ticketService.startProgress(id, ticket)
+    @PutMapping("/API/tickets/startProgress/{id}")
+    fun startProgress(@PathVariable id: Long, @Valid @RequestBody ticketDTO: TicketToSaveDTO): TicketDTO? {
+        return ticketService.startProgress(id, ticketDTO)
     }
 
-    /*@GetMapping("/API/tickets/{id}/history")
-    fun getHistory(id: Long):List<HistoryDTO> {
-        return ticketService.getHistory(id)
-    }*/
+    /*-	Stop Progress (M)
+    -	Resolve Issue (C & E ?)*/
+
+
+    /*-	Close Issue (C) T	-> valutare batch (magari per il progetto finale)
+    -	Reopen Issue (C)*/
 }
