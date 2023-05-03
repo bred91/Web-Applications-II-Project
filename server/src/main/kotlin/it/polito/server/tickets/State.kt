@@ -8,7 +8,7 @@ import jakarta.persistence.Id
 class State{
     @Id
     @Column(updatable = false, nullable = false)
-    var id: Long? = null
+    var id: Long = -1
 
     @Column(updatable = false, nullable = false)
     var name: String = ""

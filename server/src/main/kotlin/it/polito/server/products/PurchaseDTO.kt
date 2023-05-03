@@ -1,10 +1,8 @@
 package it.polito.server.products
 
-import it.polito.server.profiles.Profile
-import jakarta.persistence.*
-import java.util.*
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
+import java.util.*
 
 
 data class PurchaseDTO(
@@ -26,7 +24,7 @@ data class PurchaseDTO(
     var expiringDate: Date?
 
 
-
+    /*var ticketList: MutableList<Ticket>?*/
 )
 
 fun Purchase.toDTO() : PurchaseDTO{

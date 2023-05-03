@@ -2,6 +2,7 @@ package it.polito.server.products
 
 import it.polito.server.base.EntityBase
 import it.polito.server.profiles.Profile
+import it.polito.server.tickets.Ticket
 import jakarta.persistence.*
 import java.util.*
 
@@ -17,6 +18,9 @@ class Purchase : EntityBase<Long>(){
 
     @ManyToOne
     var product: Product? = null
+
+    @OneToMany(mappedBy = "purchase")
+    var ticketList: MutableList<Ticket>? = null
 
     @Column(updatable = false, nullable = false)
     var purchaseDate: Date? = null

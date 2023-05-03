@@ -1,10 +1,8 @@
 package it.polito.server.products
 
 import it.polito.server.Exception.NotFoundException
-import it.polito.server.profiles.IProfileRepository
 import it.polito.server.profiles.ProfileService
 import it.polito.server.profiles.toEntity
-import org.aspectj.weaver.ast.Not
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.*
@@ -23,7 +21,7 @@ class PurchaseService(private val purchaseRepository: IPurchaseRepository,
     }
 
     override fun createPurchase(email:String, productId: String, purchase: PurchaseDTO) {
-        val profile = profileService.getProfile(email)
+        val profile = profileService.getProfileByEmail(email)
         val product = productService.getProduct(productId)
         var purchase = purchase.toEntity()
         purchase.customer=profile?.toEntity()
