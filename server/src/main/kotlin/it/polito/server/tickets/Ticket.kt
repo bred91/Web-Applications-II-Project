@@ -31,6 +31,6 @@ class Ticket : EntityBase<Long>() {
     @OneToMany(mappedBy = "id")
     var chat: List<Message>? = null
 
-    @OneToMany(mappedBy = "ticket")
-    var history: List<History>? = null
+    @OneToMany(mappedBy = "ticket", cascade = [CascadeType.ALL])
+    var history: MutableList<History>? = null
 }

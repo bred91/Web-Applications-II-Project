@@ -22,8 +22,8 @@ class Message : EntityBase<Long>(){
     @ManyToOne
     var expert: Employee? = null
 
-    @ManyToOne
-    var ticket: Ticket? = null
+    /*@ManyToOne
+    var ticket: Ticket? = null*/
 
     @OneToMany(mappedBy = "id")
     var attachments: List<Attachment>? = null

@@ -14,7 +14,7 @@ class History : EntityBase<Long>(){
     @ManyToOne
     var state: State? = null
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     var ticket: Ticket? = null
 
     @Temporal(TemporalType.TIMESTAMP)

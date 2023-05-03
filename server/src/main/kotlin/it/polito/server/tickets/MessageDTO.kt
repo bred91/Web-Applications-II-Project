@@ -1,5 +1,8 @@
 package it.polito.server.tickets
 
+import it.polito.server.employees.EmployeeDTO
+import it.polito.server.employees.toDTO
+import it.polito.server.employees.toEntity
 import java.util.*
 
 data class MessageDTO (
@@ -7,12 +10,11 @@ data class MessageDTO (
     val sentTS: Date?,
     val text: String,
     val isSenderCustomer: Boolean,
-    /*val expert: EmployeeDTO?,
-    val ticket: TicketDTO?,*/
+    val expert: EmployeeDTO?,
+    /*val ticket: TicketDTO?,*/
     val attachments: List<AttachmentDTO> = listOf(),
 )
 
-/*
 fun MessageDTO.toEntity(): Message{
     val message = Message()
     message.id = id
@@ -20,11 +22,12 @@ fun MessageDTO.toEntity(): Message{
     message.text = text
     message.isSenderCustomer = isSenderCustomer
     message.expert = expert?.toEntity()
-    message.ticket = ticket?.toEntity()
+    /*message.ticket = ticket?.toEntity()*/
     message.attachments = attachments.map { it.toEntity() }
     return message
 }
 
-fun Message.toDTO() = MessageDTO(id, sentTS, text, isSenderCustomer, expert?.toDTO(), ticket?.toDTO(), attachments?.map { it.toDTO() } ?: listOf())
+fun Message.toDTO() : MessageDTO {
+    return MessageDTO(id, sentTS, text, isSenderCustomer, expert?.toDTO(), attachments?.map { it.toDTO() } ?: listOf())
+}
 
-*/

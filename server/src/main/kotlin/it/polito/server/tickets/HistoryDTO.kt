@@ -22,8 +22,12 @@ fun HistoryDTO.toEntity() : History{
     val history = History()
     history.id= id
     history.state = state
-    history.ticket=ticket
+    history.ticket= ticket
     history.timestamp = timestamp
     history.expert = expert
     return history
+}
+
+fun History.toDTO() : HistoryDTO{
+    return HistoryDTO(id, state, ticket, timestamp, expert)
 }
