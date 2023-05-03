@@ -6,9 +6,7 @@ data class StateDTO(
     val name: String
 )
 
-fun State.toDTO() : StateDTO{
-    return StateDTO(id, name)
-}
+
 fun StateDTO.toEntity() : State{
     val state = State()
     state.id = id

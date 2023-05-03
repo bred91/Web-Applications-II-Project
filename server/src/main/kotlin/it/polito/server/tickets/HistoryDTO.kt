@@ -1,6 +1,9 @@
 package it.polito.server.tickets
 
 import it.polito.server.employees.Employee
+import it.polito.server.employees.EmployeeDTO
+import it.polito.server.employees.toDTO
+import it.polito.server.employees.toEntity
 import jakarta.validation.constraints.NotNull
 import java.util.*
 
@@ -9,25 +12,67 @@ data class HistoryDTO(
 
     var id: Long?,
     @field:NotNull(message="Not a valid state")
-    var state: State?,
+    var state: StateDTO?,
     @field:NotNull(message="Not a valid ticket")
-    var ticket: Ticket?,
+    //var ticket: TicketDTO?,
+    /*@field:NotNull(message="Not a valid state")
+    var state_id: Long?,
+    @field:NotNull(message="Not a valid ticket")
+    var ticket_id: Long?,*/
+    var ticket_id:Long?,
     @field:NotNull(message="Not a valid date")
     var timestamp: Date?,
     @field:NotNull(message="Not a valid expert")
-    var expert: Employee?
+    var expert: EmployeeDTO?
 )
 
-fun HistoryDTO.toEntity() : History{
+
+fun HistoryDTO.toEntity(ticket: Ticket): History {
     val history = History()
-    history.id= id
-    history.state = state
-    history.ticket= ticket
+    history.id = id
+    history.state = state?.toEntity()
+    history.ticket = ticket
     history.timestamp = timestamp
-    history.expert = expert
+    history.expert = expert?.toEntity()
     return history
 }
 
-fun History.toDTO() : HistoryDTO{
-    return HistoryDTO(id, state, ticket, timestamp, expert)
+fun History.toDTO(): HistoryDTO {
+    return HistoryDTO(
+        id,
+        state?.toDTO(),
+        ticket?.id,
+        timestamp,
+        expert?.toDTO()
+    )
 }
+
+
+/*fun HistoryDTO.toEntity() : History{
+    val history = History()
+    history.id= id
+    history.state = state?.toEntity()
+    history.ticket=
+    ticket.history = historyIds?.mapNotNull { id ->
+        getHistoryById(id)
+    }?.toMutableList()
+    history.timestamp = timestamp
+    history.expert = expert?.toEntity()
+    return history
+}*/
+
+
+/*fun toDTO(history:History) : HistoryDTO {
+    return HistoryDTO(
+        id = history.id,
+        state = history.state?.toDTO(),
+        history.ticket?.id,
+        timestamp = history.timestamp,
+        expert = history.expert?.toDTO()
+    )
+}*/
+
+
+/*fun History.toDTO() : HistoryDTO{
+    return HistoryDTO(id, state?.toDTO(), ticket?.toDTO(), timestamp, expert?.toDTO())
+}*/

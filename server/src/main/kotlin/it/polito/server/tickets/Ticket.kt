@@ -34,3 +34,14 @@ class Ticket : EntityBase<Long>() {
     @OneToMany(mappedBy = "ticket", cascade = [CascadeType.ALL])
     var history: MutableList<History>? = null
 }
+
+
+fun Ticket.addHistory(history: History) : Ticket {
+    if (this.history == null)
+        this.history = mutableListOf()
+
+    //val historyEntity = history.toEntity()
+    history.ticket = this
+    this.history?.add(history)
+    return this
+}

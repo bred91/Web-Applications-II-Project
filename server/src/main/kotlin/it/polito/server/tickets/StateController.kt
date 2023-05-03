@@ -11,7 +11,7 @@ class StateController(private val stateService: IStateService) {
 
     @GetMapping("/API/state")
     fun getAll() : List<StateDTO> {
-        return stateService.getAll()
+        return stateService.getAllStates()
     }
 
     @GetMapping("/API/state/{id}")

@@ -18,6 +18,7 @@ data class TicketToSaveDTO (
 
     val chat: List<MessageDTO>? = null,
     var history: MutableList<HistoryToSaveDTO>? = null
+
 )
 
 fun TicketToSaveDTO.toEntity(): Ticket{
@@ -53,7 +54,8 @@ fun Ticket.toDTO() = TicketDTO(
     this.history?.add(history)
 }*/
 
-fun Ticket.addHistory(historyDTO: HistoryToSaveDTO) : Ticket{
+
+/*fun Ticket.addHistory(historyDTO: HistoryToSaveDTO) : Ticket{
     if(this.history == null)
         this.history = mutableListOf()
 
@@ -61,5 +63,5 @@ fun Ticket.addHistory(historyDTO: HistoryToSaveDTO) : Ticket{
     historyEntity.ticket = this
     this.history?.add(historyEntity)
     return this
-}
+}*/
 

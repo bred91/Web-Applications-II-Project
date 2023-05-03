@@ -19,10 +19,55 @@ data class TicketDTO (
     val actualExpert: EmployeeDTO? = null,
 
     val chat: List<MessageDTO>? = null,
-    var history: List<HistoryDTO>? = null
+    //var history: List<HistoryDTO>? = null
+    var history : MutableList<HistoryDTO>? = mutableListOf()
+    //var historyIds : List<Long>? = emptyList()
 )
 
-fun TicketDTO.toEntity(): Ticket{
+fun TicketDTO.toEntity(): Ticket {
+    val ticket = Ticket()
+    ticket.id = id
+    ticket.creationDate = creationDate
+    ticket.lastModification = lastModification
+    ticket.state = state?.toEntity()
+    ticket.customer = customer?.toEntity()
+    ticket.actualExpert = actualExpert?.toEntity()
+    ticket.chat = chat?.map { it.toEntity()}
+    ticket.history = history?.map{it.toEntity(ticket)}?.toMutableList()
+    return ticket
+}
+
+fun Ticket.toDTO(): TicketDTO {
+    return TicketDTO(
+        id,
+        creationDate,
+        lastModification,
+        state?.toDTO(),
+        customer?.toDTO(),
+        actualExpert?.toDTO(),
+        chat?.map{it.toDTO()},
+        history?.map { it.toDTO() }?.toMutableList()
+    )
+}
+
+/*fun toDTO(ticket: Ticket, historyId: Long?): TicketDTO {
+    val historyIds: MutableList<Long>? = null
+    if (historyId != null) {
+        historyIds?.add(historyId)
+    }
+    return TicketDTO(
+        ticket.id,
+        ticket.creationDate,
+        ticket.lastModification,
+        ticket.state?.toDTO(),
+        ticket.customer?.toDTO(),
+        ticket.actualExpert?.toDTO(),
+        ticket.chat?.map { it.toDTO() },
+        historyIds
+    )
+}*/
+
+/*fun TicketDTO.toEntity(): Ticket{
     val ticket = Ticket()
     ticket.id = id
     ticket.creationDate = creationDate
@@ -31,10 +76,34 @@ fun TicketDTO.toEntity(): Ticket{
     ticket.customer = customer?.toEntity()
     ticket.actualExpert = actualExpert?.toEntity()
     ticket.chat = chat?.map { it.toEntity() }
-    ticket.history = history?.map { it.toEntity() } as MutableList<History>?
+    ticket.history = historyIds?.mapNotNull { id ->
+        getHistoryById(id)
+    }?.toMutableList()
     return ticket
 }
 
+private fun getHistoryById(id: Long): History? {
+    // Query the database for the History entity with the given id
+    return null // Replace with actual implementation
+}
+
+
+
+fun toDTO(ticket:Ticket):TicketDTO {
+    return TicketDTO(
+        ticket.id,
+        ticket.creationDate,
+        ticket.lastModification,
+        ticket.state?.toDTO(),
+        ticket.customer?.toDTO(),
+        ticket.actualExpert?.toDTO(),
+        ticket.chat?.map { it.toDTO() },
+        ticket.history?.mapNotNull { it.id }
+    )
+}*/
+
+
+/*
 fun Ticket.toDTO() = TicketDTO(
     id,
     creationDate,
@@ -43,5 +112,5 @@ fun Ticket.toDTO() = TicketDTO(
     customer?.toDTO(),
     actualExpert?.toDTO(),
     chat?.map { it.toDTO() },
-    history?.map { it.toDTO() }
-)
+    history?.map { toDTO(it) }
+)*/
