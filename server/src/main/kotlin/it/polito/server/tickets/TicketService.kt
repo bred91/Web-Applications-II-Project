@@ -89,7 +89,7 @@ class TicketService (private val ticketRepository: ITicketRepository,
             ticket.addHistory(historyDTO.toEntity(ticket))
             return ticketRepository.save(ticket).toDTO()
         }
-        else throw StateNotValidException("Invalid ticket state")
+        else throw StateNotValidException("Invalid Request: The ticket is in state ${oldStateDTO?.name}")
     }
 
     /**
@@ -112,7 +112,7 @@ class TicketService (private val ticketRepository: ITicketRepository,
             ticket.addHistory(historyDTO.toEntity(ticket))
             return ticketRepository.save(ticket).toDTO()
         }
-        else throw StateNotValidException("Invalid ticket state")
+        else throw StateNotValidException("Invalid Request: The ticket is in state ${ticket.state?.name}")
     }
 
     /**
@@ -132,7 +132,7 @@ class TicketService (private val ticketRepository: ITicketRepository,
             ticket.addHistory(historyDTO.toEntity(ticket))
             return ticketRepository.save(ticket).toDTO()
         }
-        else throw StateNotValidException("Invalid ticket state")
+        else throw throw StateNotValidException("Invalid Request: The ticket is in state ${ticket.state?.name}")
     }
 
     /**
@@ -153,7 +153,7 @@ class TicketService (private val ticketRepository: ITicketRepository,
             ticket.addHistory(historyDTO.toEntity(ticket))
             return ticketRepository.save(ticket).toDTO()
         }
-        else throw StateNotValidException("Invalid ticket state")
+        else throw StateNotValidException("Invalid Request: The ticket is in state ${oldStateDTO?.name}")
     }
 
     /**
@@ -173,6 +173,6 @@ class TicketService (private val ticketRepository: ITicketRepository,
             ticket.addHistory(historyDTO.toEntity(ticket))
             return ticketRepository.save(ticket).toDTO()
         }
-        else throw StateNotValidException("Invalid ticket state")
+        else throw StateNotValidException("Invalid Request: The ticket is in state ${oldStateDTO?.name}")
     }
 }

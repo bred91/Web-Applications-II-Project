@@ -22,6 +22,9 @@ class ExceptionHandlerController {
 
 open class NotFoundException(message:String):RuntimeException(message)
 open class DuplicateException(message: String):RuntimeException(message)
+open class Exception(message: String) : RuntimeException(message)
+
+open class IllegalStateException(message: String) : RuntimeException(message)
 
 @RestControllerAdvice
 class ProblemDetailsHandler: ResponseEntityExceptionHandler() {
@@ -32,6 +35,14 @@ class ProblemDetailsHandler: ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(DuplicateException::class)
     fun handleDuplicate(e: DuplicateException) = ProblemDetail
+        .forStatusAndDetail(HttpStatus.CONFLICT, e.message!!)
+
+    @ExceptionHandler(Exception::class)
+    fun handleException(e: Exception) = ProblemDetail
+        .forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.message!!)
+
+    @ExceptionHandler(IllegalStateException::class)
+    fun handleIllegalStateException(e: IllegalStateException) = ProblemDetail
         .forStatusAndDetail(HttpStatus.CONFLICT, e.message!!)
 
 }

@@ -2,6 +2,7 @@ package it.polito.server.products.exception
 
 import it.polito.server.Exception.DuplicateException
 import it.polito.server.Exception.NotFoundException
+import it.polito.server.Exception.Exception
 
 /*
 @RestControllerAdvice
