@@ -1,17 +1,19 @@
 package it.polito.server.tickets
 
-import it.polito.server.Exception.NotFoundException
 import it.polito.server.employees.IEmployeeRepository
+import it.polito.server.employees.exception.EmployeeNotFoundException
 import it.polito.server.employees.toDTO
 import it.polito.server.products.PurchaseService
+import it.polito.server.products.exception.PurchaseNotAssociatedException
 import it.polito.server.profiles.ProfileService
 import it.polito.server.tickets.enums.StateEnum
 import it.polito.server.tickets.enums.toLong
+import it.polito.server.tickets.exception.PriorityNotFoundException
+import it.polito.server.tickets.exception.StateNotValidException
 import it.polito.server.tickets.exception.TicketNotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.MethodArgumentNotValidException
 import java.util.*
 
 @Service
@@ -36,6 +38,8 @@ class TicketService (private val ticketRepository: ITicketRepository,
 
     /**
      * Method to create a new ticket
+     * @param customerEmail email of the customer that creates the ticket
+     * @param purchaseId id of the purchase associated to the ticket
      */
     // todo: @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @Transactional
@@ -44,7 +48,7 @@ class TicketService (private val ticketRepository: ITicketRepository,
         val customer = profileService.getProfileByEmail(customerEmail)
         val purchase = purchaseService.getPurchaseById(purchaseId)
         if(purchase?.customerEmail != customerEmail){
-            throw IllegalStateException("The purchase $purchaseId does not belong to $customerEmail")
+            throw PurchaseNotAssociatedException("The purchase $purchaseId does not belong to $customerEmail")
         }
         val currentTimeMillis = Date()
         val newStateDTO = stateService.getStateById(StateEnum.OPEN.toLong())
@@ -60,14 +64,13 @@ class TicketService (private val ticketRepository: ITicketRepository,
      * @param idEmployee id of the employee that starts processing the ticket
      * @param priorityLevel priority level of the ticket
      */
-    // TODO va aggiunto il purchase
     // todo: @PreAuthorize("hasRole('ROLE_MANAGER')")
     @Transactional
-    override fun startProgress(idTicket: Long, idEmployee:Long, priorityLevel: String ): TicketDTO? {
+    override fun startProgress(idTicket: Long, idEmployee:Long, priorityLevel: Long ): TicketDTO? {
 
         val ticket = ticketRepository.findByIdOrNull(idTicket) ?: throw TicketNotFoundException("Ticket with id $idTicket not found!")
-        val employee = employeeRepository.findByIdOrNull(idEmployee) ?: throw NotFoundException("Employee with id $idEmployee doesn't exist!")
-        val priority = priorityRepository.findPriorityByName(priorityLevel) ?: throw NotFoundException("$priorityLevel Invalid priority level ")
+        val employee = employeeRepository.findByIdOrNull(idEmployee) ?: throw EmployeeNotFoundException("Employee with id $idEmployee doesn't exist!")
+        val priority = priorityRepository.findByIdOrNull(priorityLevel) ?: throw PriorityNotFoundException("Priority Level with id $priorityLevel doesn't exist!")
         val oldStateDTO = ticket.state
         if(oldStateDTO?.id == StateEnum.OPEN.toLong() || oldStateDTO?.id == StateEnum.REOPENED.toLong()) {
             val newStateDTO = stateService.getStateById(StateEnum.IN_PROGRESS.toLong())
@@ -80,7 +83,7 @@ class TicketService (private val ticketRepository: ITicketRepository,
             ticket.addHistory(historyDTO.toEntity(ticket))
             return ticketRepository.save(ticket).toDTO()
         }
-        else throw IllegalStateException("Invalid ticket state")
+        else throw StateNotValidException("Invalid ticket state")
     }
 
     /**
@@ -103,7 +106,7 @@ class TicketService (private val ticketRepository: ITicketRepository,
             ticket.addHistory(historyDTO.toEntity(ticket))
             return ticketRepository.save(ticket).toDTO()
         }
-        else throw IllegalStateException("Invalid ticket state")
+        else throw StateNotValidException("Invalid ticket state")
     }
 
     /**
@@ -123,7 +126,7 @@ class TicketService (private val ticketRepository: ITicketRepository,
             ticket.addHistory(historyDTO.toEntity(ticket))
             return ticketRepository.save(ticket).toDTO()
         }
-        else throw IllegalStateException("Invalid ticket state")
+        else throw StateNotValidException("Invalid ticket state")
     }
 
     /**
@@ -144,7 +147,7 @@ class TicketService (private val ticketRepository: ITicketRepository,
             ticket.addHistory(historyDTO.toEntity(ticket))
             return ticketRepository.save(ticket).toDTO()
         }
-        else throw IllegalStateException("Invalid ticket state")
+        else throw StateNotValidException("Invalid ticket state")
     }
 
     /**
@@ -164,6 +167,6 @@ class TicketService (private val ticketRepository: ITicketRepository,
             ticket.addHistory(historyDTO.toEntity(ticket))
             return ticketRepository.save(ticket).toDTO()
         }
-        else throw IllegalStateException("Invalid ticket state")
+        else throw StateNotValidException("Invalid ticket state")
     }
 }

@@ -28,7 +28,7 @@ class TicketController(private val ticketService: ITicketService) {
 
     @PutMapping("/API/tickets/startProgress/{id}")
     fun startProgress(@PathVariable id: Long, @Valid @RequestBody startProgressRequestDTO: StartProgressRequestDTO): TicketDTO? {
-        return ticketService.startProgress(id, startProgressRequestDTO.employee_id, startProgressRequestDTO.priority_level)
+        return ticketService.startProgress(id, startProgressRequestDTO.employee_id, startProgressRequestDTO.priorityLevel.id)
     }
 
     @PutMapping("/API/tickets/stopProgress/{id}")
