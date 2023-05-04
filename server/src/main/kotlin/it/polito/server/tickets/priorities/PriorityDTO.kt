@@ -1,11 +1,11 @@
-package it.polito.server.tickets
+package it.polito.server.tickets.priorities
 
 data class PriorityDTO (
     val id: Long,
     val name: String
     )
 
-fun PriorityDTO.toEntity() : Priority{
+fun PriorityDTO.toEntity() : Priority {
     var priority = Priority()
     priority.id = id
     priority.name = name

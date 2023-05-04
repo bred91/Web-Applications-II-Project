@@ -9,6 +9,11 @@ import it.polito.server.products.Purchase
 import it.polito.server.profiles.IProfileRepository
 import it.polito.server.profiles.Profile
 import it.polito.server.profiles.ProfileDTO
+import it.polito.server.tickets.priorities.IPriorityRepository
+import it.polito.server.tickets.priorities.Priority
+import it.polito.server.tickets.priorities.PriorityDTO
+import it.polito.server.tickets.states.IStateRepository
+import it.polito.server.tickets.states.State
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

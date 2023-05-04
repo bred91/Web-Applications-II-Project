@@ -3,13 +3,24 @@ package it.polito.server.tickets
 import it.polito.server.employees.EmployeeDTO
 import it.polito.server.employees.toDTO
 import it.polito.server.employees.toEntity
-import it.polito.server.products.Product
 import it.polito.server.products.PurchaseDTO
 import it.polito.server.products.toDTO
 import it.polito.server.products.toEntity
 import it.polito.server.profiles.ProfileDTO
 import it.polito.server.profiles.toDTO
 import it.polito.server.profiles.toEntity
+import it.polito.server.tickets.history.HistoryDTO
+import it.polito.server.tickets.history.toDTO
+import it.polito.server.tickets.history.toEntity
+import it.polito.server.tickets.messages.MessageDTO
+import it.polito.server.tickets.messages.toDTO
+import it.polito.server.tickets.messages.toEntity
+import it.polito.server.tickets.priorities.PriorityDTO
+import it.polito.server.tickets.priorities.toDTO
+import it.polito.server.tickets.priorities.toEntity
+import it.polito.server.tickets.states.StateDTO
+import it.polito.server.tickets.states.toDTO
+import it.polito.server.tickets.states.toEntity
 import java.util.*
 
 data class TicketDTO (

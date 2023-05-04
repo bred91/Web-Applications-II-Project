@@ -1,4 +1,4 @@
-package it.polito.server.tickets
+package it.polito.server.tickets.states
 
 import it.polito.server.tickets.exception.StateNotFoundException
 import org.springframework.data.repository.findByIdOrNull

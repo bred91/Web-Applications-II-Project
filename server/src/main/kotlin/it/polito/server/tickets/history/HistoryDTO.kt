@@ -1,9 +1,12 @@
-package it.polito.server.tickets
+package it.polito.server.tickets.history
 
-import it.polito.server.employees.Employee
 import it.polito.server.employees.EmployeeDTO
 import it.polito.server.employees.toDTO
 import it.polito.server.employees.toEntity
+import it.polito.server.tickets.states.StateDTO
+import it.polito.server.tickets.Ticket
+import it.polito.server.tickets.states.toDTO
+import it.polito.server.tickets.states.toEntity
 import jakarta.validation.constraints.NotNull
 import java.util.*
 

@@ -11,7 +11,6 @@ import it.polito.server.tickets.toDTO
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.PathVariable
 
 
 @Service

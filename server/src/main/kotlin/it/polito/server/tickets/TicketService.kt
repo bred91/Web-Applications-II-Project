@@ -11,6 +11,11 @@ import it.polito.server.tickets.enums.toLong
 import it.polito.server.tickets.exception.PriorityNotFoundException
 import it.polito.server.tickets.exception.StateNotValidException
 import it.polito.server.tickets.exception.TicketNotFoundException
+import it.polito.server.tickets.history.HistoryDTO
+import it.polito.server.tickets.history.toEntity
+import it.polito.server.tickets.priorities.IPriorityRepository
+import it.polito.server.tickets.states.StateService
+import it.polito.server.tickets.states.toEntity
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -22,7 +27,8 @@ class TicketService (private val ticketRepository: ITicketRepository,
                      private val priorityRepository: IPriorityRepository,
                      private val purchaseService: PurchaseService,
                      private val profileService: ProfileService,
-    private val stateService: StateService) : ITicketService {
+                     private val stateService: StateService
+) : ITicketService {
 
     override fun getTicketById(id: Long): TicketDTO? {
         val t = ticketRepository.findByIdOrNull(id)

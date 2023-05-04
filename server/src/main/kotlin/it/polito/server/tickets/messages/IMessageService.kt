@@ -1,4 +1,4 @@
-package it.polito.server.tickets
+package it.polito.server.tickets.messages
 
 interface IMessageService {
     fun getAllMessages(): List<MessageDTO>

@@ -1,4 +1,4 @@
-package it.polito.server.tickets
+package it.polito.server.tickets.states
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity

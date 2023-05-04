@@ -1,4 +1,6 @@
-package it.polito.server.tickets
+package it.polito.server.tickets.attachments
+
+import it.polito.server.tickets.attachments.AttachmentDTO
 
 interface IAttachmentService {
         fun getAllAttachments(): List<AttachmentDTO>

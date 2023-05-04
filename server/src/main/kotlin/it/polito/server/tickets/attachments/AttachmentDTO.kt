@@ -1,4 +1,4 @@
-package it.polito.server.tickets
+package it.polito.server.tickets.attachments
 
 class AttachmentDTO (
     val id: Long? = null,
@@ -8,7 +8,7 @@ class AttachmentDTO (
     //val message: MessageDTO? = null,
 )
 
-fun AttachmentDTO.toEntity(): Attachment{
+fun AttachmentDTO.toEntity(): Attachment {
     val attachment = Attachment()
     attachment.id = id
     attachment.name = name

@@ -1,6 +1,7 @@
-package it.polito.server.tickets
+package it.polito.server.tickets.attachments
 
 import it.polito.server.base.EntityBase
+import it.polito.server.tickets.messages.Message
 import jakarta.persistence.*
 
 @Entity

@@ -1,8 +1,11 @@
-package it.polito.server.tickets
+package it.polito.server.tickets.messages
 
 import it.polito.server.employees.EmployeeDTO
 import it.polito.server.employees.toDTO
 import it.polito.server.employees.toEntity
+import it.polito.server.tickets.attachments.AttachmentDTO
+import it.polito.server.tickets.attachments.toDTO
+import it.polito.server.tickets.attachments.toEntity
 import java.util.*
 
 data class MessageDTO (
@@ -15,7 +18,7 @@ data class MessageDTO (
     val attachments: List<AttachmentDTO> = listOf(),
 )
 
-fun MessageDTO.toEntity(): Message{
+fun MessageDTO.toEntity(): Message {
     val message = Message()
     message.id = id
     message.sentTS = sentTS

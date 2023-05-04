@@ -1,4 +1,6 @@
-package it.polito.server.tickets
+package it.polito.server.tickets.history
+
+import it.polito.server.tickets.history.HistoryDTO
 
 interface IHistoryService {
         fun getAllHistory(): List<HistoryDTO>

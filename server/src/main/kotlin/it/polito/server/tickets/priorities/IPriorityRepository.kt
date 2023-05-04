@@ -1,4 +1,4 @@
-package it.polito.server.tickets;
+package it.polito.server.tickets.priorities;
 
 
 import org.springframework.data.jpa.repository.JpaRepository

@@ -1,8 +1,8 @@
-package it.polito.server.tickets
+package it.polito.server.tickets.messages
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface IAttachmentRepository : JpaRepository<Attachment, Long> {
+interface IMessageRepository : JpaRepository<Message, Long> {
 }

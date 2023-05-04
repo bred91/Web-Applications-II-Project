@@ -1,4 +1,4 @@
-package it.polito.server.tickets
+package it.polito.server.tickets.states
 
 interface IStateService {
     fun getAllStates() : List<StateDTO>

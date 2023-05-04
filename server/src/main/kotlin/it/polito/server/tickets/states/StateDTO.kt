@@ -1,4 +1,4 @@
-package it.polito.server.tickets
+package it.polito.server.tickets.states
 
 data class StateDTO(
 
@@ -7,7 +7,7 @@ data class StateDTO(
 )
 
 
-fun StateDTO.toEntity() : State{
+fun StateDTO.toEntity() : State {
     val state = State()
     state.id = id
     state.name = name

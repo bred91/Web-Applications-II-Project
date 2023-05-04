@@ -1,8 +1,9 @@
-package it.polito.server.tickets
+package it.polito.server.tickets.messages
 
 
 import it.polito.server.base.EntityBase
 import it.polito.server.employees.Employee
+import it.polito.server.tickets.attachments.Attachment
 import jakarta.persistence.*
 import java.util.*
 
