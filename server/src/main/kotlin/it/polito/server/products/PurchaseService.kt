@@ -23,7 +23,7 @@ class PurchaseService(private val purchaseRepository: IPurchaseRepository,
     override fun createPurchase(email:String, productId: String, purchase: PurchaseDTO) {
         val profile = profileService.getProfileByEmail(email)
         val product = productService.getProduct(productId)
-        var purchase = purchase.toEntity()
+        var purchase = purchase.toEntity(profile?.toEntity())
         purchase.customer=profile?.toEntity()
         purchase.product=product?.toEntity()
         purchase.purchaseDate= Date()

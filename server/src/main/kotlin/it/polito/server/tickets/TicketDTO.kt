@@ -3,6 +3,10 @@ package it.polito.server.tickets
 import it.polito.server.employees.EmployeeDTO
 import it.polito.server.employees.toDTO
 import it.polito.server.employees.toEntity
+import it.polito.server.products.Product
+import it.polito.server.products.PurchaseDTO
+import it.polito.server.products.toDTO
+import it.polito.server.products.toEntity
 import it.polito.server.profiles.ProfileDTO
 import it.polito.server.profiles.toDTO
 import it.polito.server.profiles.toEntity
@@ -10,7 +14,7 @@ import java.util.*
 
 data class TicketDTO (
     val id: Long? = null,
-
+    val purchase: PurchaseDTO? = null,
     val creationDate: Date? = null,
     val lastModification: Date? = null,
 
@@ -18,6 +22,7 @@ data class TicketDTO (
     val customer: ProfileDTO? = null,
     val actualExpert: EmployeeDTO? = null,
 
+    val priorityLevel: PriorityDTO? = null,
     val chat: List<MessageDTO>? = null,
     //var history: List<HistoryDTO>? = null
     var history : MutableList<HistoryDTO>? = mutableListOf()
@@ -27,11 +32,13 @@ data class TicketDTO (
 fun TicketDTO.toEntity(): Ticket {
     val ticket = Ticket()
     ticket.id = id
+    ticket.purchase = purchase?.toEntity(customer?.toEntity() )
     ticket.creationDate = creationDate
     ticket.lastModification = lastModification
     ticket.state = state?.toEntity()
     ticket.customer = customer?.toEntity()
     ticket.actualExpert = actualExpert?.toEntity()
+    ticket.priority = priorityLevel?.toEntity()
     ticket.chat = chat?.map { it.toEntity()}
     ticket.history = history?.map{it.toEntity(ticket)}?.toMutableList()
     return ticket
@@ -40,11 +47,13 @@ fun TicketDTO.toEntity(): Ticket {
 fun Ticket.toDTO(): TicketDTO {
     return TicketDTO(
         id,
+        purchase?.toDTO(),
         creationDate,
         lastModification,
         state?.toDTO(),
         customer?.toDTO(),
         actualExpert?.toDTO(),
+        priority?.toDTO(),
         chat?.map{it.toDTO()},
         history?.map { it.toDTO() }?.toMutableList()
     )

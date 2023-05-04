@@ -1,5 +1,7 @@
 package it.polito.server.products
 
+import it.polito.server.profiles.Profile
+
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import java.util.*
@@ -15,7 +17,7 @@ data class PurchaseDTO(
 
     //@field:NotNull(message="Not a valid product")
     //var product: Product?,
-    var productId: String?,
+    var product: ProductDTO?,
     @field:NotNull(message="Not a valid purchase date")
     var purchaseDate: Date?,
     @field:NotBlank(message="Not a valid warrantyCode")
@@ -28,12 +30,13 @@ data class PurchaseDTO(
 )
 
 fun Purchase.toDTO() : PurchaseDTO{
-    return PurchaseDTO(id, customer?.email, product?.id, purchaseDate, warrantyCode, expiringDate)
+    return PurchaseDTO(id, customer?.email, product?.toDTO(), purchaseDate, warrantyCode, expiringDate)
 }
-fun PurchaseDTO.toEntity() : Purchase{
+fun PurchaseDTO.toEntity(customer: Profile?) : Purchase{
     val purchase = Purchase()
     purchase.purchaseDate=purchaseDate
-    //purchase.customer=customer
+    purchase.customer=customer
+    purchase.product = product?.toEntity()
     purchase.expiringDate=expiringDate
     purchase.warrantyCode=warrantyCode
     purchase.id=id

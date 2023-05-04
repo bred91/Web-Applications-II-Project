@@ -1,6 +1,7 @@
 package it.polito.server.employees
 
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 
 data class EmployeeDTO(
@@ -14,7 +15,7 @@ data class EmployeeDTO(
     @field:NotBlank(message="Not a valid email")
     @field:Size(max = 255, message = "Email too long")
     val email: String,
-
+    //@field:NotNull(message = "Not a valid role")
     val role: RoleDTO?
 ){
     constructor(name: String, surname: String, email: String, role: RoleDTO?)

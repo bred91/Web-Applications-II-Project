@@ -20,8 +20,8 @@ class Ticket : EntityBase<Long>() {
     @Temporal(TemporalType.TIMESTAMP)
     var lastModification: Date? = null
 
-    /*@ManyToOne*/
-    var priority: String? = null
+    @ManyToOne
+    var priority: Priority? = null
 
     @ManyToOne
     var purchase: Purchase? = null

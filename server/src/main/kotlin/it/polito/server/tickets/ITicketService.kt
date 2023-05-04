@@ -3,7 +3,7 @@ package it.polito.server.tickets
 interface ITicketService {
         fun getTickets(): List<TicketDTO>
         fun getTicketById(id: Long): TicketDTO?
-        fun createTicket(customerEmail: String) : TicketDTO?
+        fun createTicket(customerEmail: String, purchaseId: Long) : TicketDTO?
 
         fun startProgress(idTicket: Long, idEmployee:Long, priorityLevel: String ): TicketDTO?
 
