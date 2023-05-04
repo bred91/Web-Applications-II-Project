@@ -2,7 +2,7 @@ package it.polito.server.tickets
 
 data class StateDTO(
 
-    val id: Long?,
+    val id: Long,
     val name: String
 )
 

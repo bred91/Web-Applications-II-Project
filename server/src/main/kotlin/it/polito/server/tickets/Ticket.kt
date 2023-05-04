@@ -2,6 +2,7 @@ package it.polito.server.tickets
 
 import it.polito.server.base.EntityBase
 import it.polito.server.employees.Employee
+import it.polito.server.products.Purchase
 import it.polito.server.profiles.Profile
 import jakarta.persistence.*
 import java.util.*
@@ -18,6 +19,12 @@ class Ticket : EntityBase<Long>() {
     var creationDate: Date? = null
     @Temporal(TemporalType.TIMESTAMP)
     var lastModification: Date? = null
+
+    /*@ManyToOne*/
+    var priority: String? = null
+
+    @ManyToOne
+    var purchase: Purchase? = null
 
     @ManyToOne
     var state: State? = null

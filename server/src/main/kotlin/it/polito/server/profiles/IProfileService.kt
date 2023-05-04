@@ -1,13 +1,12 @@
 package it.polito.server.profiles
 
 import it.polito.server.products.PurchaseDTO
-import org.springframework.web.bind.annotation.PathVariable
 
 interface IProfileService {
 
     fun getProfiles():List<ProfileDTO>
     
-    fun getProfile(email:String):ProfileDTO?
+    fun getProfileByEmail(email:String):ProfileDTO?
 
     fun createProfile(profile:ProfileDTO)
 

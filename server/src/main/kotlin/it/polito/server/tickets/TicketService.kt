@@ -1,18 +1,16 @@
 package it.polito.server.tickets
 
+import it.polito.server.Exception.NotFoundException
 import it.polito.server.employees.IEmployeeRepository
 import it.polito.server.employees.toDTO
+import it.polito.server.profiles.ProfileService
 import it.polito.server.tickets.enums.StateEnum
 import it.polito.server.tickets.enums.toLong
-import it.polito.server.tickets.exception.NullTicketIdException
 import it.polito.server.tickets.exception.TicketNotFoundException
-import it.polito.server.Exception.NotFoundException
-import it.polito.server.profiles.ProfileService
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.sql.Timestamp
-import java.util.Date
+import java.util.*
 
 @Service
 class TicketService (private val ticketRepository: ITicketRepository,
@@ -33,34 +31,42 @@ class TicketService (private val ticketRepository: ITicketRepository,
 
 
     /**
-     * From the client we expect a new Ticket with the state field set to NULL
+     * Method to create a new ticket
      */
     // todo: @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @Transactional
     override fun createTicket(customerEmail: String) : TicketDTO? {
-        val customer = profileService.getProfile(customerEmail)
+
+        val customer = profileService.getProfileByEmail(customerEmail)
         val currentTimeMillis = Date()
-        val newStateDTO = stateService.getState(StateEnum.OPEN.toLong())
+        val newStateDTO = stateService.getStateById(StateEnum.OPEN.toLong())
         val historyDTO = HistoryDTO(null, newStateDTO, null, currentTimeMillis, null)
-        var ticket = TicketDTO(null, currentTimeMillis, currentTimeMillis, newStateDTO, customer, null, null, null)
-        var ticket_entity = ticket.toEntity()
-        //ticket_entity = ticket_entity.addHistory(historyDTO.toEntity(ticket_entity))
-        return ticketRepository.save(ticket_entity.addHistory(historyDTO.toEntity(ticket_entity))).toDTO()
+        val ticket = TicketDTO(null, currentTimeMillis, currentTimeMillis, newStateDTO, customer, null, null, null)
+        val ticketEntity = ticket.toEntity()
+
+        return ticketRepository.save(ticketEntity.addHistory(historyDTO.toEntity(ticketEntity))).toDTO()
     }
 
-
-
+    /**
+     * Method to start processing a ticket
+     * @param idEmployee id of the employee that starts processing the ticket
+     * @param priorityLevel priority level of the ticket
+     */
+    // TODO va aggiunto il purchase
+    // todo: @PreAuthorize("hasRole('ROLE_MANAGER')")
     @Transactional
-    override fun startProgress(id_ticket: Long, id_employee:Long ): TicketDTO? {
-        val ticket = ticketRepository.findByIdOrNull(id_ticket) ?: throw TicketNotFoundException("Ticket with id $id_ticket not found!")
-        val employee = employeeRepository.findByIdOrNull(id_employee) ?: throw NotFoundException("Employee with id $id_employee doesn't exist!")
+    override fun startProgress(idTicket: Long, idEmployee:Long, priorityLevel: String ): TicketDTO? {
+
+        val ticket = ticketRepository.findByIdOrNull(idTicket) ?: throw TicketNotFoundException("Ticket with id $idTicket not found!")
+        val employee = employeeRepository.findByIdOrNull(idEmployee) ?: throw NotFoundException("Employee with id $idEmployee doesn't exist!")
         val oldStateDTO = ticket.state
         if(oldStateDTO?.id == StateEnum.OPEN.toLong() || oldStateDTO?.id == StateEnum.REOPENED.toLong()) {
-            val newStateDTO = stateService.getState(StateEnum.IN_PROGRESS.toLong())
+            val newStateDTO = stateService.getStateById(StateEnum.IN_PROGRESS.toLong())
             val currentTimeMillis = Date()
             val historyDTO = HistoryDTO(null, newStateDTO, ticket.id, currentTimeMillis, employee.toDTO())
             ticket.actualExpert = employee
             ticket.state = newStateDTO?.toEntity()
+            ticket.priority = priorityLevel         // TODO: create a priority Entity
             ticket.lastModification=currentTimeMillis
             ticket.addHistory(historyDTO.toEntity(ticket))
             return ticketRepository.save(ticket).toDTO()
@@ -68,14 +74,17 @@ class TicketService (private val ticketRepository: ITicketRepository,
         else throw IllegalStateException("Invalid ticket state")
     }
 
-
-
-
+    /**
+     * Method to stop processing a ticket -> return to OPEN state
+     */
+    // todo: @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @Transactional
     override fun stopProgress(id:Long):TicketDTO? {
+
         val ticket = ticketRepository.findByIdOrNull(id) ?: throw TicketNotFoundException("Ticket with id $id not found!")
-        val oldStateDTO = stateService.getState(StateEnum.IN_PROGRESS.toLong())
+        val oldStateDTO = stateService.getStateById(StateEnum.IN_PROGRESS.toLong())
         if(ticket.state?.id == oldStateDTO?.id) {
-            val newStateDTO = stateService.getState(StateEnum.OPEN.toLong())
+            val newStateDTO = stateService.getStateById(StateEnum.OPEN.toLong())
             val currentTimeMillis = Date()
             val historyDTO = HistoryDTO(null, newStateDTO, ticket.id, currentTimeMillis, null)
 
@@ -88,12 +97,16 @@ class TicketService (private val ticketRepository: ITicketRepository,
         else throw IllegalStateException("Invalid ticket state")
     }
 
-
+    /**
+     * Method to reopen a ticket
+     */
+    // todo: @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    @Transactional
     override fun reopenIssue(id: Long): TicketDTO? {
         val ticket = ticketRepository.findByIdOrNull(id) ?: throw TicketNotFoundException("Ticket with id $id not found!")
         val oldStateDTO = ticket.state
         if(oldStateDTO?.id == StateEnum.CLOSED.toLong() || oldStateDTO?.id == StateEnum.RESOLVED.toLong()) {
-            val newStateDTO = stateService.getState(StateEnum.REOPENED.toLong())
+            val newStateDTO = stateService.getStateById(StateEnum.REOPENED.toLong())
             val currentTimeMillis = Date()
             val historyDTO = HistoryDTO(null, newStateDTO, ticket.id, currentTimeMillis, ticket.actualExpert?.toDTO())
             ticket.state = newStateDTO?.toEntity()
@@ -104,12 +117,17 @@ class TicketService (private val ticketRepository: ITicketRepository,
         else throw IllegalStateException("Invalid ticket state")
     }
 
-
+    /**
+     * Method to resolve a ticket
+     */
+    // todo: @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    // todo: @PreAuthorize("hasRole('ROLE_EXPERT')")
+    @Transactional
     override fun resolveIssue(id: Long): TicketDTO? {
         val ticket = ticketRepository.findByIdOrNull(id) ?: throw TicketNotFoundException("Ticket with id $id not found!")
         val oldStateDTO = ticket.state
-        if(oldStateDTO?.id != StateEnum.CLOSED.toLong() || oldStateDTO?.id != StateEnum.RESOLVED.toLong()) {
-            val newStateDTO = stateService.getState(StateEnum.RESOLVED.toLong())
+        if(oldStateDTO?.id != StateEnum.CLOSED.toLong() && oldStateDTO?.id != StateEnum.RESOLVED.toLong()) {
+            val newStateDTO = stateService.getStateById(StateEnum.RESOLVED.toLong())
             val currentTimeMillis = Date()
             val historyDTO = HistoryDTO(null, newStateDTO, ticket.id, currentTimeMillis, ticket.actualExpert?.toDTO())
             ticket.state = newStateDTO?.toEntity()
@@ -120,12 +138,16 @@ class TicketService (private val ticketRepository: ITicketRepository,
         else throw IllegalStateException("Invalid ticket state")
     }
 
-
+    /**
+     * Method to close a ticket
+     */
+    // todo: @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    @Transactional
     override fun closeIssue(id: Long): TicketDTO? {
         val ticket = ticketRepository.findByIdOrNull(id) ?: throw TicketNotFoundException("Ticket with id $id not found!")
         val oldStateDTO = ticket.state
         if(oldStateDTO?.id != StateEnum.CLOSED.toLong()) {
-            val newStateDTO = stateService.getState(StateEnum.CLOSED.toLong())
+            val newStateDTO = stateService.getStateById(StateEnum.CLOSED.toLong())
             val currentTimeMillis = Date()
             val historyDTO = HistoryDTO(null, newStateDTO, ticket.id, currentTimeMillis, ticket.actualExpert?.toDTO())
             ticket.state = newStateDTO?.toEntity()
@@ -135,6 +157,4 @@ class TicketService (private val ticketRepository: ITicketRepository,
         }
         else throw IllegalStateException("Invalid ticket state")
     }
-
-
 }
