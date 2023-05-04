@@ -5,4 +5,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ITicketRepository : JpaRepository<Ticket, Long> {
+    fun findByActualExpertId(actualExpertId: Long):List<Ticket>
 }
