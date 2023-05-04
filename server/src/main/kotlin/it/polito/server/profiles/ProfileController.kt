@@ -1,5 +1,6 @@
 package it.polito.server.profiles
 import it.polito.server.products.PurchaseDTO
+import it.polito.server.tickets.TicketDTO
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -59,6 +60,11 @@ class ProfileController(private val profileService: IProfileService, private val
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteAddress(@PathVariable email: String, @PathVariable addressId: Long) {
         profileService.deleteAddress(email, addressId)
+    }
+
+    @GetMapping("/API/profiles/{email}/tickets")
+    fun getMyTickets(@PathVariable email: String): List<TicketDTO>{
+        return profileService.getTickets(email)
     }
 
 

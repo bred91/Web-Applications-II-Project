@@ -1,6 +1,7 @@
 package it.polito.server.profiles
 
 import it.polito.server.products.PurchaseDTO
+import it.polito.server.tickets.TicketDTO
 
 interface IProfileService {
 
@@ -21,5 +22,7 @@ interface IProfileService {
     fun deleteAddress(email:String, addressId:Long)
 
     fun getPurchases(email: String): List<PurchaseDTO>
+
+    fun getTickets(email: String) : List<TicketDTO>
 
 }
