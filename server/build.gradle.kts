@@ -8,6 +8,7 @@ plugins {
 	kotlin("plugin.jpa") version "1.7.22"
 	id("org.jetbrains.kotlin.plugin.noarg") version "1.8.20"
 	id("org.jetbrains.kotlin.plugin.allopen") version "1.8.20"
+	id("com.google.cloud.tools.jib") version "3.3.1"
 }
 
 group = "it.polito"
@@ -51,4 +52,15 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+jib{
+	to{
+		image= "wa2-g15"
+		tags= setOf("latest")
+	}
+	container{
+		creationTime
+		ports = listOf("8080")
+	}
 }
