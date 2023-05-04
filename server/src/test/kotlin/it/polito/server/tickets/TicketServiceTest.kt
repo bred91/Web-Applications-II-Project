@@ -114,7 +114,10 @@ class TicketServiceTest {
             HttpEntity(
                 StartProgressRequestDTO(
                     employee_id = 1,
-                    priority_level = "HIGH"
+                    priorityLevel = PriorityDTO(
+                        id = 1,
+                        name = "LOW"
+                    )
                 )
             ),
             TicketDTO::class.java

@@ -18,6 +18,7 @@ class ProductExceptionHandlerController {
 
 class ProductNotFoundException(message:String): NotFoundException(message)
 class ProductDuplicateException(message: String): DuplicateException(message)
+class PurchaseNotAssociatedException(message: String): Exception(message)
 
 /*
 @RestControllerAdvice
