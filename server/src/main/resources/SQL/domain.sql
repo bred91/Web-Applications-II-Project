@@ -12,6 +12,12 @@ VALUES
     (2, 'EXPERT'),
     (3, 'MANAGER');
 
+INSERT INTO priority (id, name)
+VALUES
+    (1, 'LOW'),
+    (2, 'MEDIUM'),
+    (3, 'HIGH');
+
 INSERT INTO employee (id, email, name, surname, role_id)
 VALUES
     (1, 'abc@gmail.com', 'John', 'Smith', 1),
