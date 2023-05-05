@@ -74,6 +74,8 @@ class TicketServiceTest {
     lateinit var employeeRepository: IEmployeeRepository
 
 
+
+
     /**
      * Test the API for "create issue
      */
@@ -693,6 +695,50 @@ class TicketServiceTest {
         Assertions.assertEquals("Invalid Request: The ticket is in state OPEN", responseReopenIssue.body?.detail)
 
     }
+
+    /**
+     * Test for the API for getting the ticket
+     */
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    @Test
+    fun `get ticket by id`() {
+
+        `create issue`()
+
+        // test the API for "create issue"
+        val responseGetTicket = restTemplate.getForEntity("/API/tickets/1",
+            TicketDTO::class.java, 1)
+        Assertions.assertEquals(HttpStatus.OK, responseGetTicket.statusCode)
+        Assertions.assertEquals("OPEN", responseGetTicket.body?.state?.name)
+        Assertions.assertEquals("baba@gmail.com", responseGetTicket.body?.customer?.email)
+
+    }
+
+    /**
+     * Test for the API for getting the ticket
+     */
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    @Test
+    fun `get ticket by id not found`() {
+
+        `create issue`()
+
+        // test the API for "create issue"
+        val responseGetTicket = restTemplate.getForEntity("/API/tickets/100",
+            ProblemDetail::class.java, 100)
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, responseGetTicket.statusCode)
+        Assertions.assertEquals("Ticket with id 100 not found", responseGetTicket.body?.detail)
+
+    }
+
+
+
+
+
+
+
+
+
 
 
 

@@ -21,6 +21,8 @@ class ProductNotFoundException(message:String): NotFoundException(message)
 class ProductDuplicateException(message: String): DuplicateException(message)
 class PurchaseNotAssociatedException(message: String): Exception(message)
 
+class PurchaseNotFoundException(message: String) : NotFoundException(message)
+
 /*
 @RestControllerAdvice
 class ProductProblemDetailsHandler:ResponseEntityExceptionHandler() {

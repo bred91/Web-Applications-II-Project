@@ -1,6 +1,7 @@
 package it.polito.server.products
 
 import it.polito.server.Exception.NotFoundException
+import it.polito.server.products.exception.PurchaseNotFoundException
 import it.polito.server.profiles.ProfileService
 import it.polito.server.profiles.toEntity
 import org.springframework.data.repository.findByIdOrNull
@@ -17,7 +18,7 @@ class PurchaseService(private val purchaseRepository: IPurchaseRepository,
 
     override fun getPurchaseById(id: Long): PurchaseDTO? {
         return purchaseRepository.findByIdOrNull(id)?.toDTO()
-            ?: throw NotFoundException("Purchase with id $id does not exist")
+            ?: throw PurchaseNotFoundException("Purchase with id $id does not exist")
     }
 
     override fun createPurchase(email:String, productId: String, purchase: PurchaseDTO) {
@@ -33,7 +34,13 @@ class PurchaseService(private val purchaseRepository: IPurchaseRepository,
 
 
     override fun updatePurchase(id: Long, purchase: PurchaseDTO): PurchaseDTO? {
-        TODO("Not yet implemented")
+        val purchaseEntity = purchaseRepository.findByIdOrNull(id)
+            ?: throw PurchaseNotFoundException("Purchase with id $id does not exist")
+        purchaseEntity.purchaseDate = purchase.purchaseDate
+        purchaseEntity.expiringDate=purchase.expiringDate
+        purchaseEntity.warrantyCode=purchase.warrantyCode
+        purchaseEntity.product = purchase.product?.toEntity()
+        return purchaseRepository.save(purchaseEntity).toDTO()
     }
 
 

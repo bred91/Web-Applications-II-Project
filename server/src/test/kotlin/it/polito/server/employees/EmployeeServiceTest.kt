@@ -1,9 +1,12 @@
-package it.polito.server.profiles
+package it.polito.server.employees
 
 import it.polito.server.products.IProductRepository
 import it.polito.server.products.IPurchaseRepository
+import it.polito.server.profiles.IProfileRepository
+import it.polito.server.profiles.ProfileDTO
 import it.polito.server.tickets.ITicketRepository
 import it.polito.server.tickets.TicketService
+import it.polito.server.tickets.priorities.Priority
 import it.polito.server.tickets.states.IStateRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -27,7 +30,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 @Testcontainers
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
-class ProfileServiceTest {
+class EmployeeServiceTest {
     companion object {
         @Container
         val postgres = PostgreSQLContainer("postgres:latest")
@@ -57,116 +60,109 @@ class ProfileServiceTest {
     lateinit var productRepository: IProductRepository
     @Autowired
     lateinit var purchaseRepository: IPurchaseRepository
+    @Autowired
+    lateinit var roleRepository: IRoleRepository
 
     /**
-     * Test the API for "create profile"
+     * Test the API for "create employee"
      */
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
-    fun `create profile`(){
+    fun `create employee`(){
 
-        val responseCreateProfile = restTemplate.postForEntity("/API/profiles/",
-            ProfileDTO(
+        roleRepository.save(Role().apply{ id = 1; name="EXPERT" })
+
+
+        val responseCreateEmployee = restTemplate.postForEntity("/API/employees/",
+            EmployeeDTO(
                 email = "baba@gmail.com",
-                username = "asd",
                 name = "John",
-                surname = "Smith"), ProfileDTO::class.java);
-        Assertions.assertEquals(HttpStatus.CREATED, responseCreateProfile.statusCode)
-
-    }
-
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    @Test
-    fun `create a duplicate profile`(){
-
-
-        `create profile`()
-        val responseCreateProfile = restTemplate.postForEntity("/API/profiles/",
-            ProfileDTO(
-                email = "baba@gmail.com",
-                username = "asd",
-                name = "John",
-                surname = "Smith"), ProblemDetail::class.java);
-        Assertions.assertEquals(HttpStatus.CONFLICT, responseCreateProfile.statusCode)
+                surname = "Smith",
+                role=RoleDTO(id = 1, name = "EXPERT")
+            ), EmployeeDTO::class.java);
+        Assertions.assertEquals(HttpStatus.CREATED, responseCreateEmployee.statusCode)
 
     }
 
     /**
-     * Test the API for "get profile"
+     * Test the API for "get employee"
      */
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
-    fun `get profile by email`(){
+    fun `get employee`(){
 
-        `create profile`()
-        val responseGetProfile = restTemplate.getForEntity("/API/profiles/baba@gmail.com",
-            ProfileDTO::class.java);
-        Assertions.assertEquals(HttpStatus.OK, responseGetProfile.statusCode)
-        Assertions.assertEquals("baba@gmail.com", responseGetProfile.body?.email)
-        Assertions.assertEquals("asd", responseGetProfile.body?.username)
-        Assertions.assertEquals("John", responseGetProfile.body?.name)
-        Assertions.assertEquals("Smith", responseGetProfile.body?.surname)
+        `create employee`()
+        val responseGetEmployee = restTemplate.getForEntity("/API/employees/1",
+            EmployeeDTO::class.java);
+        Assertions.assertEquals(HttpStatus.OK, responseGetEmployee.statusCode)
+        Assertions.assertEquals("baba@gmail.com", responseGetEmployee.body?.email)
+        Assertions.assertEquals("John", responseGetEmployee.body?.name)
+        Assertions.assertEquals("Smith", responseGetEmployee.body?.surname)
+        Assertions.assertEquals("EXPERT", responseGetEmployee.body?.role?.name)
 
 
     }
 
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
-    fun `get profile by email non existing`(){
+    fun `get a non existing employee`(){
 
-        val responseGetProfile = restTemplate.getForEntity("/API/profiles/baba@gmail.com",
+        `create employee`()
+        val responseGetEmployee = restTemplate.getForEntity("/API/employees/100",
             ProblemDetail::class.java);
-        Assertions.assertEquals(HttpStatus.NOT_FOUND, responseGetProfile.statusCode)
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, responseGetEmployee.statusCode)
 
     }
 
+
     /**
-     * Test the API for "update profile"
+     * Test the API for "update employee"
      */
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
-    fun `update profile`(){
+    fun `update employee`(){
 
-        `create profile`()
-        val responseUpdateProfile = restTemplate.exchange("/API/profiles/baba@gmail.com",
+        `create employee`()
+        val responseUpdateEmployee = restTemplate.exchange("/API/employees/1",
             HttpMethod.PUT,
             HttpEntity(
-                ProfileDTO(
-                    email = "baba@gmail.com",
-                    username = "john",
+                EmployeeDTO(
+                    email = "john@gmail.com",
                     name = "John",
-                    surname = "Smith")),
-                ProfileDTO::class.java
-            )
-        Assertions.assertEquals(HttpStatus.OK, responseUpdateProfile.statusCode)
-        Assertions.assertEquals("baba@gmail.com", responseUpdateProfile.body?.email)
-        Assertions.assertEquals("john", responseUpdateProfile.body?.username)
-        Assertions.assertEquals("John", responseUpdateProfile.body?.name)
-        Assertions.assertEquals("Smith", responseUpdateProfile.body?.surname)
+                    surname = "Smith",
+                    role=RoleDTO(id = 1, name = "EXPERT")
+                )),
+            EmployeeDTO::class.java
+        )
+        Assertions.assertEquals(HttpStatus.OK, responseUpdateEmployee.statusCode)
+        Assertions.assertEquals("john@gmail.com", responseUpdateEmployee.body?.email)
+        Assertions.assertEquals("John", responseUpdateEmployee.body?.name)
+        Assertions.assertEquals("Smith", responseUpdateEmployee.body?.surname)
+        Assertions.assertEquals("EXPERT", responseUpdateEmployee.body?.role?.name)
 
 
     }
 
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
-    fun `update a non existing profile`(){
-        val responseUpdateProfile = restTemplate.exchange("/API/profiles/amanda@gmail.com",
+    fun `update a non existing employee`(){
+
+        `create employee`()
+        val responseUpdateEmployee = restTemplate.exchange("/API/employees/100",
             HttpMethod.PUT,
             HttpEntity(
-                ProfileDTO(
-                    email = "amanda@gmail.com",
-                    username = "john",
+                EmployeeDTO(
+                    email = "john@gmail.com",
                     name = "John",
-                    surname = "Smith")),
+                    surname = "Smith",
+                    role=RoleDTO(id = 1, name = "EXPERT")
+                )),
             ProblemDetail::class.java
         )
-        Assertions.assertEquals(HttpStatus.NOT_FOUND, responseUpdateProfile.statusCode)
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, responseUpdateEmployee.statusCode)
 
 
     }
-
-
-
 
 
 

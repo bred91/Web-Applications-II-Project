@@ -28,8 +28,6 @@ class ProfileService(private val profileRepository: IProfileRepository,
     override fun getProfileByEmail(email: String): ProfileDTO? {
         return  profileRepository.findByIdOrNull(email)?.toDTO()
             ?: throw ProfileNotFoundException("Profile with email $email not found")
-        //profile.addresses = getAddresses(email)
-        //return profile
     }
 
     @Transactional
