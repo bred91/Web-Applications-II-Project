@@ -1,0 +1,3 @@
+docker load -i <path-to-tar>
+
+docker run -p8080:8080 wa2-g15
