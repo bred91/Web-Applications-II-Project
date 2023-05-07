@@ -9,6 +9,7 @@ plugins {
 	id("org.jetbrains.kotlin.plugin.noarg") version "1.8.20"
 	id("org.jetbrains.kotlin.plugin.allopen") version "1.8.20"
 	id("com.google.cloud.tools.jib") version "3.3.1"
+	id("io.freefair.lombok") version "8.0.1"
 }
 
 group = "it.polito"
@@ -25,6 +26,7 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
