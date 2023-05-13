@@ -17,6 +17,7 @@ import it.polito.server.tickets.priorities.IPriorityRepository
 import it.polito.server.tickets.states.StateService
 import it.polito.server.tickets.states.toEntity
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
@@ -37,6 +38,7 @@ class TicketService (private val ticketRepository: ITicketRepository,
     }
 
 
+    @PreAuthorize("hasRole('ROLE_Manager')")
     override fun getTickets(): List<TicketDTO> {
         return ticketRepository.findAll().map { it.toDTO() }
     }

@@ -33,21 +33,10 @@ class JwtAuthConverter(private val properties: JwtAuthConverterProperties) :
         return jwt.getClaim(claimName)
     }
 
-    /*@Bean
-    fun jwtAuthenticationConverter (): JwtAuthenticationConverter {
-    val converter = JwtAuthenticationConverter()
-    converter.setJwtGrantedAuthoritiesConverter{
-        jwt: Jwt -> jwt
-            .getClaim<String>("roles")
-            .split(",")
-            .map{GrantedAuthority{it}}
-    }
-    return converter
-    }*/
-
     @Suppress("UNCHECKED_CAST")
     private fun extractResourceRoles(jwt: Jwt): Collection<GrantedAuthority> {
-        val resourceAccess : Map<String, Any>? = jwt.getClaim<Map<String, Any>>("resource_access")
+        val resourceAccess: Map<String, Any>? = jwt.getClaim<Map<String, Any>>("resource_access")
+
 
         if (resourceAccess == null)
             return emptySet<GrantedAuthority>()
@@ -65,6 +54,6 @@ class JwtAuthConverter(private val properties: JwtAuthConverterProperties) :
                     )
                 }
                 .collect(Collectors.toSet())
+            }
         }
     }
-}
