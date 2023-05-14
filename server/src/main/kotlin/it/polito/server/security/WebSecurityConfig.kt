@@ -29,7 +29,7 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 class WebSecurityConfig @Autowired constructor(private val jwtAuthConverter: JwtAuthConverter){
     //private val jwtAuthConverter: JwtAuthConverter? = null
 
-    @Bean
+    /*@Bean
     fun clientRepository():ClientRegistrationRepository  {
 
         val keycloak = keycloakClientRegistration()
@@ -48,7 +48,7 @@ class WebSecurityConfig @Autowired constructor(private val jwtAuthConverter: Jwt
             .userInfoUri("http://144.24.191.138:8081/realms/SpringBootKeycloak/protocol/openid-connect/userinfo")
             .tokenUri("http://144.24.191.138:8081/realms/SpringBootKeycloak/protocol/openid-connect/token")
             .build()
-    }
+    }*/
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
@@ -57,14 +57,15 @@ class WebSecurityConfig @Autowired constructor(private val jwtAuthConverter: Jwt
             .requestMatchers(HttpMethod.GET, "/manager").hasRole(MANAGER)
             .requestMatchers(HttpMethod.GET, "/expert").hasAnyRole(MANAGER, EXPERT)
             .requestMatchers(HttpMethod.GET, "/customer").hasAnyRole(CLIENT)
-            .anyRequest().permitAll().and().oauth2Login()
+            .anyRequest().permitAll()
+            //.and().oauth2Login()
 
 
         http.oauth2ResourceServer()
             .jwt()
             .jwtAuthenticationConverter(jwtAuthConverter)
 
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        //http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         http.csrf().disable()
         return http.build()
 
