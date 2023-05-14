@@ -28,6 +28,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+	implementation("org.keycloak:keycloak-spring-boot-starter:11.0.3")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
 	testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
