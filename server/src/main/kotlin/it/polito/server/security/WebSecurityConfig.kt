@@ -27,28 +27,9 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 class WebSecurityConfig @Autowired constructor(private val jwtAuthConverter: JwtAuthConverter){
-    //private val jwtAuthConverter: JwtAuthConverter? = null
-
-    /*@Bean
-    fun clientRepository():ClientRegistrationRepository  {
-
-        val keycloak = keycloakClientRegistration()
-        return InMemoryClientRegistrationRepository(keycloak);
-    }
+//private val jwtAuthConverter: JwtAuthConverter? = null
 
 
-    @Bean
-    fun keycloakClientRegistration():ClientRegistration {
-        return ClientRegistration.withRegistrationId("SpringBootKeycloak")
-            .clientId("springboot-keycloak-client")
-            .clientSecret("--generated--")
-            .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-            .issuerUri("http://144.24.191.138:8081/realms/SpringBootKeycloak")
-            .authorizationUri("http://144.24.191.138:8081/realms/SpringBootKeycloak/protocol/openid-connect/auth")
-            .userInfoUri("http://144.24.191.138:8081/realms/SpringBootKeycloak/protocol/openid-connect/userinfo")
-            .tokenUri("http://144.24.191.138:8081/realms/SpringBootKeycloak/protocol/openid-connect/token")
-            .build()
-    }*/
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {

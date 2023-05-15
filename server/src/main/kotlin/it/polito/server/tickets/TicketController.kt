@@ -19,10 +19,16 @@ class TicketController(private val ticketService: ITicketService) {
         return ticketService.getTicketById(id)
     }
 
-    @PostMapping("/API/tickets/createIssue")
+    /*@PostMapping("/API/tickets/createIssue")
     @ResponseStatus(HttpStatus.CREATED)
     fun createIssue(@Valid @RequestBody customer: ProfileDTO, @RequestParam purchaseId: Long ) : TicketDTO? {
         return ticketService.createTicket(customer.email, purchaseId)
+    }*/
+
+    @PostMapping("/API/tickets/createIssue")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun createIssue(@RequestParam purchaseId: Long ) : TicketDTO? {
+        return ticketService.createTicket(purchaseId)
     }
 
 

@@ -15,45 +15,14 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
 import java.security.Principal
 
-data class LoginRequest(val username: String, val password: String)
-data class TokenResponse(
-    val access_token: String,
-    val expires_in: Long,
-    val refresh_expires_in: Long,
-    val refresh_token: String,
-    val token_type: String,
-    val not_before_policy: Long,
-    val session_state: String,
-    val scope: String
-)
+
 
 @RestController
-class TestController {
-
-        /*@PostMapping("/login")
-        fun login(@RequestBody loginRequest: LoginRequest) {
-           val  kcProvider = KeycloakAuthenticationProvider()
-
-        }*/
+class SecurityController(private val securityService: ISecurityService) {
 
         @PostMapping("/login")
         fun login(@RequestBody loginRequest: LoginRequest) : ResponseEntity<Any> {
-            val url = "http://144.24.191.138:8081/realms/SpringBootKeycloak/protocol/openid-connect/token"
-            val restTemplate = RestTemplate()
-            val headers = HttpHeaders()
-
-            headers.contentType = MediaType.APPLICATION_FORM_URLENCODED
-            val body =
-                "grant_type=password&client_id=springboot-keycloak-client&username=${loginRequest.username}&password=${loginRequest.password}"
-
-            val entity = HttpEntity(body, headers)
-
-            return try {
-                val response = restTemplate.exchange(url, HttpMethod.POST, entity, TokenResponse::class.java)
-                ResponseEntity.ok(response.body)
-            } catch (ex: Exception) {
-                ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials")
-            }
+            return securityService.login(loginRequest)
         }
 
         @GetMapping("/manager")
@@ -78,5 +47,13 @@ class TestController {
             val userName = token.tokenAttributes["name"] as String?
             val userEmail = token.tokenAttributes["email"] as String?
             return ResponseEntity.ok("Hello Customer \nUser Name : $userName\nUser Email : $userEmail")
+        }
+
+        @GetMapping("/test")
+        fun getTest(principal: Principal) : ResponseEntity<String> {
+            val token = principal as JwtAuthenticationToken
+            val userEmail = token.tokenAttributes["email"] as String?
+            return ResponseEntity.ok("EMAIL = $userEmail")
+
         }
     }

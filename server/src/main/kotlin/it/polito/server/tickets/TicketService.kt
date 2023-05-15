@@ -17,9 +17,13 @@ import it.polito.server.tickets.priorities.IPriorityRepository
 import it.polito.server.tickets.states.StateService
 import it.polito.server.tickets.states.toEntity
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.access.AuthorizationServiceException
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.security.Principal
 import java.util.*
 
 @Service
@@ -31,6 +35,7 @@ class TicketService (private val ticketRepository: ITicketRepository,
                      private val stateService: StateService
 ) : ITicketService {
 
+    @PreAuthorize("hasRole('ROLE_Manager')")
     override fun getTicketById(id: Long): TicketDTO? {
         val t = ticketRepository.findByIdOrNull(id)
             ?: throw TicketNotFoundException("Ticket with id $id not found")
@@ -49,14 +54,36 @@ class TicketService (private val ticketRepository: ITicketRepository,
      * @param customerEmail email of the customer that creates the ticket
      * @param purchaseId id of the purchase associated to the ticket
      */
-    // todo: @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    /*@PreAuthorize("hasRole('ROLE_Client')")
     @Transactional
-    override fun createTicket(customerEmail: String, purchaseId: Long) : TicketDTO? {
+    override fun createTicket(purchaseId: Long) : TicketDTO? {
 
-        val customer = profileService.getProfileByEmail(customerEmail)
+        val userEmail = SecurityContextHolder.getContext().authentication.name
+
+        val customer = profileService.getProfileByEmail(userEmail)
         val purchase = purchaseService.getPurchaseById(purchaseId)
-        if(purchase?.customerEmail != customerEmail){
+        if(purchase?.customerEmail != userEmail){
             throw PurchaseNotAssociatedException("The purchase $purchaseId does not belong to $customerEmail")
+        }
+        val currentTimeMillis = Date()
+        val newStateDTO = stateService.getStateById(StateEnum.OPEN.toLong())
+        val historyDTO = HistoryDTO(null, newStateDTO, null, currentTimeMillis, null)
+        val ticket = TicketDTO(null, purchase, currentTimeMillis, currentTimeMillis, newStateDTO, customer, null, null, null)
+        val ticketEntity = ticket.toEntity()
+
+        return ticketRepository.save(ticketEntity.addHistory(historyDTO.toEntity(ticketEntity))).toDTO()
+    }*/
+
+    @PreAuthorize("hasRole('ROLE_Client')")
+    @Transactional
+    override fun createTicket(purchaseId: Long) : TicketDTO? {
+
+        val userEmail = SecurityContextHolder.getContext().authentication.name
+
+        val customer = profileService.getProfileByEmail(userEmail)
+        val purchase = purchaseService.getPurchaseById(purchaseId)
+        if(purchase?.customerEmail != userEmail){
+            throw PurchaseNotAssociatedException("The purchase $purchaseId does not belong to $userEmail")
         }
         val currentTimeMillis = Date()
         val newStateDTO = stateService.getStateById(StateEnum.OPEN.toLong())
@@ -72,7 +99,7 @@ class TicketService (private val ticketRepository: ITicketRepository,
      * @param idEmployee id of the employee that starts processing the ticket
      * @param priorityLevel priority level of the ticket
      */
-    // todo: @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_Manager')")
     @Transactional
     override fun startProgress(idTicket: Long, idEmployee:Long, priorityLevel: Long ): TicketDTO? {
 
@@ -97,11 +124,18 @@ class TicketService (private val ticketRepository: ITicketRepository,
     /**
      * Method to stop processing a ticket -> return to OPEN state
      */
-    // todo: @PreAuthorize("hasRole('ROLE_MANAGER')")
+
+    @PreAuthorize("hasAnyRole('ROLE_Manager', 'ROLE_Expert')")
     @Transactional
     override fun stopProgress(id:Long):TicketDTO? {
 
         val ticket = ticketRepository.findByIdOrNull(id) ?: throw TicketNotFoundException("Ticket with id $id not found!")
+
+        val auth = SecurityContextHolder.getContext().authentication
+        if (auth != null && auth.authorities.any { it.authority.equals("ROLE_Expert")} && ticket.actualExpert?.email != auth.name) {
+                throw AuthorizationServiceException("The expert logged in is not the expert assigned to ticket")
+        }
+
         val oldStateDTO = stateService.getStateById(StateEnum.IN_PROGRESS.toLong())
         if(ticket.state?.id == oldStateDTO?.id) {
             val newStateDTO = stateService.getStateById(StateEnum.OPEN.toLong())
@@ -120,10 +154,14 @@ class TicketService (private val ticketRepository: ITicketRepository,
     /**
      * Method to reopen a ticket
      */
-    // todo: @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    @PreAuthorize("hasRole('ROLE_Client')")
     @Transactional
     override fun reopenIssue(id: Long): TicketDTO? {
         val ticket = ticketRepository.findByIdOrNull(id) ?: throw TicketNotFoundException("Ticket with id $id not found!")
+        val userEmail = SecurityContextHolder.getContext().authentication.name
+        if(ticket.customer?.email != userEmail){
+            throw AuthorizationServiceException("The customer logged in is not the customer who has opened the ticket")
+        }
         val oldStateDTO = ticket.state
         if(oldStateDTO?.id == StateEnum.CLOSED.toLong() || oldStateDTO?.id == StateEnum.RESOLVED.toLong()) {
             val newStateDTO = stateService.getStateById(StateEnum.REOPENED.toLong())
@@ -140,11 +178,23 @@ class TicketService (private val ticketRepository: ITicketRepository,
     /**
      * Method to resolve a ticket
      */
-    // todo: @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    // todo: @PreAuthorize("hasRole('ROLE_EXPERT')")
+
+    @PreAuthorize("hasAnyRole('ROLE_Expert', 'ROLE_Client')")
     @Transactional
     override fun resolveIssue(id: Long): TicketDTO? {
         val ticket = ticketRepository.findByIdOrNull(id) ?: throw TicketNotFoundException("Ticket with id $id not found!")
+        val auth = SecurityContextHolder.getContext().authentication
+        val role = auth.authorities.find { it.authority.equals("ROLE_Expert") || it.authority.equals("ROLE_Client")}
+        if (role?.authority=="ROLE_Expert") {
+            if(ticket.actualExpert?.email != auth.name){
+                throw AuthorizationServiceException("The expert logged in is not the expert assigned to ticket")
+            }
+        }else{
+            if(auth.name!=ticket.customer?.email){
+                throw AuthorizationServiceException("The customer logged in is not the customer who has opened the ticket")
+            }
+        }
+
         val oldStateDTO = ticket.state
         if(oldStateDTO?.id != StateEnum.CLOSED.toLong() && oldStateDTO?.id != StateEnum.RESOLVED.toLong()) {
             val newStateDTO = stateService.getStateById(StateEnum.RESOLVED.toLong())
@@ -161,10 +211,21 @@ class TicketService (private val ticketRepository: ITicketRepository,
     /**
      * Method to close a ticket
      */
-    // todo: @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    @PreAuthorize("hasAnyRole('ROLE_Manager', 'ROLE_Expert', 'ROLE_Client')")
     @Transactional
     override fun closeIssue(id: Long): TicketDTO? {
         val ticket = ticketRepository.findByIdOrNull(id) ?: throw TicketNotFoundException("Ticket with id $id not found!")
+        val auth = SecurityContextHolder.getContext().authentication
+        val role = auth.authorities.find { it.authority.equals("ROLE_Expert") ||it.authority.equals("ROLE_Client")}
+        if (role?.authority=="ROLE_Expert") {
+            if(ticket.actualExpert?.email != auth.name){
+                throw AuthorizationServiceException("The expert logged in is not the expert assigned to ticket")
+            }
+        }else{
+            if(auth.name!=ticket.customer?.email){
+                throw AuthorizationServiceException("The customer logged in is not the customer who has opened the ticket")
+            }
+        }
         val oldStateDTO = ticket.state
         if(oldStateDTO?.id != StateEnum.CLOSED.toLong()) {
             val newStateDTO = stateService.getStateById(StateEnum.CLOSED.toLong())
