@@ -11,13 +11,13 @@ import it.polito.server.tickets.enums.toLong
 import it.polito.server.tickets.exception.PriorityNotFoundException
 import it.polito.server.tickets.exception.StateNotValidException
 import it.polito.server.tickets.exception.TicketNotFoundException
+import it.polito.server.tickets.exception.AuthorizationServiceException
 import it.polito.server.tickets.history.HistoryDTO
 import it.polito.server.tickets.history.toEntity
 import it.polito.server.tickets.priorities.IPriorityRepository
 import it.polito.server.tickets.states.StateService
 import it.polito.server.tickets.states.toEntity
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.security.access.AuthorizationServiceException
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken

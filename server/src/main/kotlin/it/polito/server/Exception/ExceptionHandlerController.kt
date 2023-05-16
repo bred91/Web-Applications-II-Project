@@ -26,6 +26,8 @@ open class Exception(message: String) : RuntimeException(message)
 
 open class IllegalStateException(message: String) : RuntimeException(message)
 
+open class AuthorizationServiceException(message: String) : RuntimeException(message)
+
 @RestControllerAdvice
 class ProblemDetailsHandler: ResponseEntityExceptionHandler() {
 
@@ -44,5 +46,9 @@ class ProblemDetailsHandler: ResponseEntityExceptionHandler() {
     @ExceptionHandler(IllegalStateException::class)
     fun handleIllegalStateException(e: IllegalStateException) = ProblemDetail
         .forStatusAndDetail(HttpStatus.CONFLICT, e.message!!)
+
+    @ExceptionHandler(AuthorizationServiceException::class)
+    fun handleAuthorizationServiceException(e: AuthorizationServiceException) = ProblemDetail
+        .forStatusAndDetail(HttpStatus.FORBIDDEN, e.message!!)
 
 }
