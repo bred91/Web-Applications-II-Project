@@ -1,0 +1,50 @@
+version: '3.1'
+
+services:
+
+  auth:
+    image: quay.io/keycloak/keycloak:21.1.1
+    restart: always
+    ports:
+      - 8081:8080
+      - 8443:8443
+    environment:
+      KEYCLOAK_ADMIN: keycloak_g15
+      KEYCLOAK_ADMIN_PASSWORD: webapp_g15
+      KC_HTTPS_CERTIFICATE_FILE: /opt/keycloak/conf/server.crt.pem
+      KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/keycloak/conf/server.key.pem
+    volumes:
+      - $PWD/server.crt.pem:/opt/keycloak/conf/server.crt.pem
+      - $PWD/server.key.pem:/opt/keycloak/conf/server.key.pem
+      - $PWD/keycloak-data:/opt/keycloak/data/h2
+    command:
+      - start-dev
+
+
+docker compose di keycloak
+
+https://144.24.191.138:8443  —> admin console
+
+http://144.24.191.138:8081  —> request address
+
+
+
+
+CUSTOMER
+username: amanda@gmail.com
+password: amanda
+
+username: customer1@mail.com
+password: customer
+
+EXPERT
+username: expert@mail.com
+password: expert
+
+MANAGER
+username: simlanegrona@gmail.com
+password: simran
+
+ADMIN
+username: admin@gmail.com
+password: admin
