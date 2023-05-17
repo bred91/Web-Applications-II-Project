@@ -42,7 +42,7 @@ username: expert@mail.com
 password: expert
 
 MANAGER
-username: simlanegrona@gmail.com
+username: simmanager@gmail.com
 password: simran
 
 ADMIN
