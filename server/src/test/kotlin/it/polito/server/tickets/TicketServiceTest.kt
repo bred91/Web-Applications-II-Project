@@ -9,7 +9,7 @@ import it.polito.server.products.Purchase
 import it.polito.server.profiles.IProfileRepository
 import it.polito.server.profiles.Profile
 import it.polito.server.profiles.ProfileDTO
-import it.polito.server.profiles.exception.ProfileNotFoundException
+import it.polito.server.security.TokenResponse
 import it.polito.server.tickets.priorities.IPriorityRepository
 import it.polito.server.tickets.priorities.Priority
 import it.polito.server.tickets.priorities.PriorityDTO
@@ -23,13 +23,11 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpMethod
-import org.springframework.http.HttpStatus
-import org.springframework.http.ProblemDetail
+import org.springframework.http.*
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
+import org.springframework.web.client.RestTemplate
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
@@ -50,6 +48,11 @@ class TicketServiceTest {
             registry.add("spring.datasource.password", postgres::getPassword)
             registry.add("spring.jpa.hibernate.ddl-auto") {"create-drop"}
         }
+
+        private val customer = Pair("amanda@gmail.com", "amanda")
+        private val employee = Pair("expert@mail.com","expert")
+        private val admin = Pair("admin@gmail.com", "admin")
+        private val manager = Pair("simmanager@gmail.com", "simran")
     }
 
     @LocalServerPort
@@ -73,7 +76,32 @@ class TicketServiceTest {
     @Autowired
     lateinit var employeeRepository: IEmployeeRepository
 
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    @Test
+    fun `create issue22`() {
 
+        dataInsert()
+
+        val token = loginFun(customer)
+
+        Assertions.assertNotNull(token)
+
+        // test the API for "create issue"
+        val responseCreateIssue = restTemplate.exchange(
+            "/API/tickets/createIssue?purchaseId=1",
+            HttpMethod.POST,
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            TicketDTO::class.java)
+        Assertions.assertEquals(HttpStatus.CREATED, responseCreateIssue.statusCode)
+        Assertions.assertEquals("OPEN", responseCreateIssue.body?.state?.name)
+    }
 
 
     /**
@@ -737,8 +765,33 @@ class TicketServiceTest {
 
 
 
+    /**
+     * Test for the API for login through keycloak
+     * This function is very similar to the one into the Security Package,
+     * but with a different return type that makes it easier to test
+     */
+    fun loginFun(user: Pair<String,String>): String? {
 
+        // test the API for "login"
+        val url = "http://144.24.191.138:8081/realms/SpringBootKeycloak/protocol/openid-connect/token"
+        val restTemplate = RestTemplate()
+        val headers = org.springframework.http.HttpHeaders()
 
+        headers.contentType = MediaType.APPLICATION_FORM_URLENCODED
+        val body =
+            "grant_type=password&client_id=springboot-keycloak-client&username=${user.first}&password=${user.second}"
+
+        val entity = HttpEntity(body, headers)
+
+        return try {
+            val response = restTemplate.exchange(url, HttpMethod.POST, entity, TokenResponse::class.java)
+            response.body?.access_token
+            //ResponseEntity.ok(response.body?.access_token)
+        } catch (ex: Exception) {
+            //ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials")
+            null
+        }
+    }
 
 
 
@@ -759,12 +812,7 @@ class TicketServiceTest {
 
         insertEmployee()
 
-        profileRepository.save(Profile().apply {
-            email = "baba@gmail.com";
-            name = "John";
-            phoneNumber = "123456789";
-            surname = "Smith";
-            username = "johnsmith";})
+        insertCustomer()
 
         productRepository.save(Product().apply{
             id = 1.toString();
@@ -774,7 +822,7 @@ class TicketServiceTest {
 
         purchaseRepository.save(Purchase().apply{
             id = 1;
-            customer= profileRepository.findByIdOrNull("baba@gmail.com")!!;
+            customer= profileRepository.findByIdOrNull("amanda@gmail.com")!!;
             product = productRepository.findByIdOrNull("1")!!;
             purchaseDate = Date();
             warrantyCode = "123456789";
@@ -785,10 +833,19 @@ class TicketServiceTest {
         employeeRepository.save(
             Employee().apply {
                 id=1;
-                name="bob";
-                surname="Wilson";
-                email="bob@gmail.com"
+                name="Expert";
+                surname="Very";
+                email="expert@mail.com"
             }
         )
+    }
+
+    fun insertCustomer(){
+        profileRepository.save(Profile().apply {
+            email = "amanda@gmail.com";
+            name = "Amanda";
+            phoneNumber = "123456789";
+            surname = "Smith";
+            username = "johnsmith";})
     }
 }
