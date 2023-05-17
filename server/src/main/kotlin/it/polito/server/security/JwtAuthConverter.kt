@@ -37,7 +37,6 @@ class JwtAuthConverter(private val properties: JwtAuthConverterProperties) :
     private fun extractResourceRoles(jwt: Jwt): Collection<GrantedAuthority> {
         val resourceAccess: Map<String, Any>? = jwt.getClaim<Map<String, Any>>("resource_access")
 
-
         if (resourceAccess == null)
             return emptySet<GrantedAuthority>()
         else if (resourceAccess[properties.resourceId] == null)

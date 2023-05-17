@@ -6,6 +6,7 @@ import org.springframework.web.client.RestTemplate
 
 @Service
 class SecurityService : ISecurityService {
+
     override fun login(loginRequest: LoginRequest): ResponseEntity<Any> {
         val url = "http://144.24.191.138:8081/realms/SpringBootKeycloak/protocol/openid-connect/token"
         val restTemplate = RestTemplate()

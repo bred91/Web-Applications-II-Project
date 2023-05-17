@@ -1,18 +1,11 @@
 package it.polito.server.security
 
-import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider
-import org.springframework.context.annotation.Role
 import org.springframework.http.*
-import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.client.RestTemplate
 import java.security.Principal
 
 
