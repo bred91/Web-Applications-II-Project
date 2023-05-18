@@ -13,7 +13,7 @@ The database and the keycloak container are available online on a running server
 - keycloak ->     http://144.24.191.138:8081 <br>
 
 To run the server container please do the following: <br>
-cd <this-folder> <br>
+cd "this-folder" <br>
 docker load -i wa2-g15.tar <br>
 docker-compose up <br>
 
