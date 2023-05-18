@@ -1,33 +1,51 @@
 package it.polito.server.security
 
-import org.springframework.http.ResponseEntity
+import org.springframework.http.*
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import java.security.Principal
 
 
+
 @RestController
-@RequestMapping("/test")
-class TestController {
-    @get:GetMapping("/anonymous")
-    val anonymous: ResponseEntity<String>
-        get() = ResponseEntity.ok("Hello Anonymous")
+class SecurityController(private val securityService: ISecurityService) {
 
-    @GetMapping("/admin")
-    fun getAdmin(principal: Principal): ResponseEntity<String> {
-        val token = principal as JwtAuthenticationToken
-        val userName = token.tokenAttributes["name"] as String?
-        val userEmail = token.tokenAttributes["email"] as String?
-        return ResponseEntity.ok("Hello Admin \nUser Name : $userName\nUser Email : $userEmail")
-    }
+        @PostMapping("/login")
+        fun login(@RequestBody loginRequest: LoginRequest) : ResponseEntity<Any> {
+            return securityService.login(loginRequest)
+        }
 
-    @GetMapping("/expert")
-    fun getUser(principal: Principal): ResponseEntity<String> {
-        val token = principal as JwtAuthenticationToken
-        val userName = token.tokenAttributes["name"] as String?
-        val userEmail = token.tokenAttributes["email"] as String?
-        return ResponseEntity.ok("Hello Expert \nUser Name : $userName\nUser Email : $userEmail")
+        @GetMapping("/manager")
+        fun getManager(principal: Principal): ResponseEntity<String> {
+            val token = principal as JwtAuthenticationToken
+            val userName = token.tokenAttributes["name"] as String?
+            val userEmail = token.tokenAttributes["email"] as String?
+            return ResponseEntity.ok("Hello Manager \nUser Name : $userName\nUser Email : $userEmail")
+        }
+
+        @GetMapping("/expert")
+        fun getExpert(principal: Principal): ResponseEntity<String> {
+            val token = principal as JwtAuthenticationToken
+            val userName = token.tokenAttributes["name"] as String?
+            val userEmail = token.tokenAttributes["email"] as String?
+            return ResponseEntity.ok("Hello Expert \nUser Name : $userName\nUser Email : $userEmail")
+        }
+
+        @GetMapping("/customer")
+        fun getUser(principal: Principal): ResponseEntity<String> {
+            val token = principal as JwtAuthenticationToken
+            val userName = token.tokenAttributes["name"] as String?
+            val userEmail = token.tokenAttributes["email"] as String?
+            return ResponseEntity.ok("Hello Customer \nUser Name : $userName\nUser Email : $userEmail")
+        }
+
+        @GetMapping("/test")
+        fun getTest(principal: Principal) : ResponseEntity<String> {
+            val token = principal as JwtAuthenticationToken
+            val userEmail = token.tokenAttributes["email"] as String?
+            return ResponseEntity.ok("EMAIL = $userEmail")
+        }
     }
-}

@@ -10,12 +10,12 @@ class StateService(private val stateRepository: IStateRepository) : IStateServic
         return stateRepository.findAll().map { it.toDTO() }
     }
 
-    // todo: @PreAuthorize("hasRole('ROLE_ADMIN')")
+
     override fun createState(state: StateDTO) {
         stateRepository.save(state.toEntity())
     }
 
-    // todo: @PreAuthorize("hasRole('ROLE_ADMIN')")
+
     override fun updateState(id: Long, state: StateDTO): StateDTO? {
         val oldState = stateRepository.findById(id).orElseThrow {throw StateNotFoundException("State id $id doesn't exist")}
         oldState.name = state.name
@@ -27,7 +27,7 @@ class StateService(private val stateRepository: IStateRepository) : IStateServic
             ?: throw StateNotFoundException("State with id $id not found")
     }
 
-    // todo: @PreAuthorize("hasRole('ROLE_ADMIN')")
+
     override fun deleteState(id: Long) {
         stateRepository.findById(id).orElseThrow {throw StateNotFoundException("State id $id doesn't exist")}
         stateRepository.deleteById(id)

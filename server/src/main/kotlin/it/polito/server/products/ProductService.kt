@@ -22,7 +22,7 @@ class ProductService(
             ?: throw ProductNotFoundException("Product with ean $ean not found")
     }
 
-    // todo: @PreAuthorize("hasRole('ROLE_ADMIN')")
+
     @Transactional
     override fun createProduct(product: ProductDTO) {
         if(productRepository.existsById(product.ean)){
@@ -31,7 +31,7 @@ class ProductService(
         productRepository.save(product.toEntity())
     }
 
-    // todo: @PreAuthorize("hasRole('ROLE_ADMIN')")
+
     @Transactional
     override fun updateProduct(ean: String, product: ProductDTO): ProductDTO? {
         return when (productRepository.findByIdOrNull(ean)?.toDTO()) {
