@@ -19,7 +19,7 @@ class SecurityController(private val securityService: ISecurityService) {
         }
 
         @GetMapping("/manager")
-        fun getAdmin(principal: Principal): ResponseEntity<String> {
+        fun getManager(principal: Principal): ResponseEntity<String> {
             val token = principal as JwtAuthenticationToken
             val userName = token.tokenAttributes["name"] as String?
             val userEmail = token.tokenAttributes["email"] as String?
@@ -47,6 +47,5 @@ class SecurityController(private val securityService: ISecurityService) {
             val token = principal as JwtAuthenticationToken
             val userEmail = token.tokenAttributes["email"] as String?
             return ResponseEntity.ok("EMAIL = $userEmail")
-
         }
     }

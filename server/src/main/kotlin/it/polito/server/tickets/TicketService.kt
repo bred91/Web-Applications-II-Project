@@ -33,7 +33,7 @@ class TicketService (private val ticketRepository: ITicketRepository,
                      private val stateService: StateService
 ) : ITicketService {
 
-    @PreAuthorize("hasRole('ROLE_Manager') or hasRole('ROLE_Admin')")
+    @PreAuthorize("hasRole('ROLE_Manager')")
     override fun getTicketById(id: Long): TicketDTO? {
         val t = ticketRepository.findByIdOrNull(id)
             ?: throw TicketNotFoundException("Ticket with id $id not found")
@@ -41,7 +41,7 @@ class TicketService (private val ticketRepository: ITicketRepository,
     }
 
 
-    @PreAuthorize("hasRole('ROLE_Manager') or hasRole('ROLE_Admin')")
+    @PreAuthorize("hasRole('ROLE_Manager')")
     override fun getTickets(): List<TicketDTO> {
         return ticketRepository.findAll().map { it.toDTO() }
     }
@@ -72,7 +72,7 @@ class TicketService (private val ticketRepository: ITicketRepository,
         return ticketRepository.save(ticketEntity.addHistory(historyDTO.toEntity(ticketEntity))).toDTO()
     }*/
 
-    @PreAuthorize("hasRole('ROLE_Client') or hasRole('ROLE_Admin')")
+    @PreAuthorize("hasRole('ROLE_Client')")
     @Transactional
     override fun createTicket(purchaseId: Long) : TicketDTO? {
 
@@ -97,7 +97,7 @@ class TicketService (private val ticketRepository: ITicketRepository,
      * @param idEmployee id of the employee that starts processing the ticket
      * @param priorityLevel priority level of the ticket
      */
-    @PreAuthorize("hasRole('ROLE_Manager') or hasRole('ROLE_Admin')")
+    @PreAuthorize("hasRole('ROLE_Manager')")
     @Transactional
     override fun startProgress(idTicket: Long, idEmployee:Long, priorityLevel: Long ): TicketDTO? {
 
@@ -123,7 +123,7 @@ class TicketService (private val ticketRepository: ITicketRepository,
      * Method to stop processing a ticket -> return to OPEN state
      */
 
-    @PreAuthorize("hasAnyRole('ROLE_Manager', 'ROLE_Expert', 'ROLE_Admin')")
+    @PreAuthorize("hasAnyRole('ROLE_Manager', 'ROLE_Expert')")
     @Transactional
     override fun stopProgress(id:Long):TicketDTO? {
 
@@ -152,7 +152,7 @@ class TicketService (private val ticketRepository: ITicketRepository,
     /**
      * Method to reopen a ticket
      */
-    @PreAuthorize("hasRole('ROLE_Client') or hasRole('ROLE_Admin')")
+    @PreAuthorize("hasRole('ROLE_Client')")
     @Transactional
     override fun reopenIssue(id: Long): TicketDTO? {
         val ticket = ticketRepository.findByIdOrNull(id) ?: throw TicketNotFoundException("Ticket with id $id not found!")
@@ -177,7 +177,7 @@ class TicketService (private val ticketRepository: ITicketRepository,
      * Method to resolve a ticket
      */
 
-    @PreAuthorize("hasAnyRole('ROLE_Expert', 'ROLE_Client', 'ROLE_Admin')")
+    @PreAuthorize("hasAnyRole('ROLE_Expert', 'ROLE_Client')")
     @Transactional
     override fun resolveIssue(id: Long): TicketDTO? {
         val ticket = ticketRepository.findByIdOrNull(id) ?: throw TicketNotFoundException("Ticket with id $id not found!")
@@ -209,7 +209,7 @@ class TicketService (private val ticketRepository: ITicketRepository,
     /**
      * Method to close a ticket
      */
-    @PreAuthorize("hasAnyRole('ROLE_Manager', 'ROLE_Expert', 'ROLE_Client', 'ROLE_Admin')")
+    @PreAuthorize("hasAnyRole('ROLE_Manager', 'ROLE_Expert', 'ROLE_Client')")
     @Transactional
     override fun closeIssue(id: Long): TicketDTO? {
         val ticket = ticketRepository.findByIdOrNull(id) ?: throw TicketNotFoundException("Ticket with id $id not found!")

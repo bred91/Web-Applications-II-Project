@@ -84,13 +84,13 @@ class LoginTest {
         Assertions.assertNotNull(token)
     }
 
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    /*@DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     fun `Admin login test`() {
         val token = loginFun(admin)
 
         Assertions.assertNotNull(token)
-    }
+    }*/
 
     fun loginFun(user: Pair<String,String>): String? {
 

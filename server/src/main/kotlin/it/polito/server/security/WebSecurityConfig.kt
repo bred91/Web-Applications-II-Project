@@ -24,9 +24,9 @@ class WebSecurityConfig @Autowired constructor(private val jwtAuthConverter: Jwt
         http.authorizeHttpRequests()
             .requestMatchers(HttpMethod.POST, "/login").permitAll()
             .requestMatchers(HttpMethod.GET, "/").permitAll()
-            .requestMatchers(HttpMethod.GET, "/manager").hasAnyRole(ADMIN, MANAGER)
-            .requestMatchers(HttpMethod.GET, "/expert").hasAnyRole(ADMIN, MANAGER, EXPERT)
-            .requestMatchers(HttpMethod.GET, "/customer").hasAnyRole(ADMIN, CLIENT)
+            .requestMatchers(HttpMethod.GET, "/manager").hasAnyRole(MANAGER)
+            .requestMatchers(HttpMethod.GET, "/expert").hasAnyRole(MANAGER, EXPERT)
+            .requestMatchers(HttpMethod.GET, "/customer").hasAnyRole(CLIENT)
             .anyRequest().permitAll()
             //.and().oauth2Login()
 
@@ -42,7 +42,7 @@ class WebSecurityConfig @Autowired constructor(private val jwtAuthConverter: Jwt
     }
 
     companion object {
-        const val ADMIN = "Admin"
+        //const val ADMIN = "Admin"
         const val MANAGER = "Manager"
         const val EXPERT = "Expert"
         const val CLIENT = "Client"
