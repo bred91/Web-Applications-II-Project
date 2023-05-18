@@ -92,6 +92,11 @@ class LoginTest {
         Assertions.assertNotNull(token)
     }*/
 
+    /**
+     * Test for the API for login through keycloak
+     * This function is very similar to the one into the Security Package,
+     * but with a different return type that makes it easier to test
+     */
     fun loginFun(user: Pair<String,String>): String? {
 
         // test the API for "login"
