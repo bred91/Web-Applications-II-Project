@@ -8,7 +8,6 @@ import it.polito.server.products.Product
 import it.polito.server.products.Purchase
 import it.polito.server.profiles.IProfileRepository
 import it.polito.server.profiles.Profile
-import it.polito.server.profiles.ProfileDTO
 import it.polito.server.security.TokenResponse
 import it.polito.server.tickets.priorities.IPriorityRepository
 import it.polito.server.tickets.priorities.Priority
@@ -50,8 +49,9 @@ class TicketServiceTest {
         }
 
         private val customer = Pair("amanda@gmail.com", "amanda")
-        private val employee = Pair("expert@mail.com","expert")
-        private val admin = Pair("admin@gmail.com", "admin")
+        private val customer2 = Pair("customer1@mail.com", "customer")
+        private val expert = Pair("expert@mail.com","expert")
+        //private val admin = Pair("admin@gmail.com", "admin")
         private val manager = Pair("simmanager@gmail.com", "simran")
     }
 
@@ -60,13 +60,9 @@ class TicketServiceTest {
     @Autowired
     lateinit var restTemplate: TestRestTemplate
     @Autowired
-    lateinit var ticketRepository: ITicketRepository
-    @Autowired
     lateinit var stateRepository: IStateRepository
     @Autowired
     lateinit var profileRepository: IProfileRepository
-    @Autowired
-    lateinit var ticketService: TicketService
     @Autowired
     lateinit var productRepository: IProductRepository
     @Autowired
@@ -76,14 +72,18 @@ class TicketServiceTest {
     @Autowired
     lateinit var employeeRepository: IEmployeeRepository
 
+
+    /**
+     * Test the API for "create issue
+     */
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
-    fun `create issue22`() {
+    fun `create issue`() {
 
         dataInsert()
 
+        // login
         val token = loginFun(customer)
-
         Assertions.assertNotNull(token)
 
         // test the API for "create issue"
@@ -103,44 +103,31 @@ class TicketServiceTest {
         Assertions.assertEquals("OPEN", responseCreateIssue.body?.state?.name)
     }
 
-
-    /**
-     * Test the API for "create issue
-     */
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    @Test
-    fun `create issue`() {
-
-        dataInsert()
-
-        // test the API for "create issue"
-        val responseCreateIssue = restTemplate.postForEntity("/API/tickets/createIssue?purchaseId=1",
-            ProfileDTO(
-                email = "baba@gmail.com",
-                username = "asd",
-                name = "John",
-                surname = "Smith"), TicketDTO::class.java, 1)
-        Assertions.assertEquals(HttpStatus.CREATED, responseCreateIssue.statusCode)
-        Assertions.assertEquals("OPEN", responseCreateIssue.body?.state?.name)
-
-    }
-
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     fun `create issue with invalid customer`() {
 
         dataInsert()
 
-        // test the API for "create issue"
-        val responseCreateIssue = restTemplate.postForEntity("/API/tickets/createIssue?purchaseId=1",
-            ProfileDTO(
-                email = "amanda@gmail.com",
-                username = "amanda",
-                name = "Amanda",
-                surname = "Rossi"), ProblemDetail::class.java, 1)
-        Assertions.assertEquals(HttpStatus.NOT_FOUND, responseCreateIssue.statusCode)
-        Assertions.assertEquals("Profile with email amanda@gmail.com not found", responseCreateIssue.body?.detail)
+        // login
+        val token = loginFun(customer2)
+        Assertions.assertNotNull(token)
 
+        // test the API for "create issue"
+        val responseCreateIssue = restTemplate.exchange(
+            "/API/tickets/createIssue?purchaseId=1",
+            HttpMethod.POST,
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            ProblemDetail::class.java)
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, responseCreateIssue.statusCode)
+        Assertions.assertEquals("Profile with email customer1@mail.com not found", responseCreateIssue.body?.detail)
     }
 
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
@@ -149,16 +136,25 @@ class TicketServiceTest {
 
         dataInsert()
 
+        // login
+        val token = loginFun(customer)
+        Assertions.assertNotNull(token)
+
         // test the API for "create issue"
-        val responseCreateIssue = restTemplate.postForEntity("/API/tickets/createIssue?purchaseId=100",
-            ProfileDTO(
-                email = "baba@gmail.com",
-                username = "asd",
-                name = "John",
-                surname = "Smith"), ProblemDetail::class.java, 100)
+        val responseCreateIssue = restTemplate.exchange(
+            "/API/tickets/createIssue?purchaseId=100",
+            HttpMethod.POST,
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            ProblemDetail::class.java)
         Assertions.assertEquals(HttpStatus.NOT_FOUND, responseCreateIssue.statusCode)
         Assertions.assertEquals("Purchase with id 100 does not exist", responseCreateIssue.body?.detail)
-
     }
 
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
@@ -166,22 +162,33 @@ class TicketServiceTest {
     fun `create issue with purchase not belonging to customer`() {
 
         dataInsert()
+
         profileRepository.save(Profile().apply {
-            email = "test@gmail.com";
+            email = "customer1@mail.com";
             name = "John";
             phoneNumber = "123456789";
             surname = "Smith";
             username = "johns_mith";})
 
+        // login
+        val token = loginFun(customer2)
+        Assertions.assertNotNull(token)
+
         // test the API for "create issue"
-        val responseCreateIssue = restTemplate.postForEntity("/API/tickets/createIssue?purchaseId=1",
-            ProfileDTO(
-                email = "test@gmail.com",
-                username = "johns_mith",
-                name = "John",
-                surname = "Smith"), ProblemDetail::class.java, 1)
+        val responseCreateIssue = restTemplate.exchange(
+            "/API/tickets/createIssue?purchaseId=1",
+            HttpMethod.POST,
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            ProblemDetail::class.java)
         Assertions.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseCreateIssue.statusCode)
-        Assertions.assertEquals("The purchase 1 does not belong to test@gmail.com", responseCreateIssue.body?.detail)
+        Assertions.assertEquals("The purchase 1 does not belong to customer1@mail.com", responseCreateIssue.body?.detail)
 
     }
 
@@ -196,14 +203,11 @@ class TicketServiceTest {
 
         dataInsert()
 
-        // create the ticket
-        val responseCreateIssue = restTemplate.postForEntity("/API/tickets/createIssue?purchaseId=1",
-            ProfileDTO(
-                email = "baba@gmail.com",
-                username = "asd",
-                name = "asd",
-                surname = "johnsmith"), TicketDTO::class.java, 1)
-        Assertions.assertEquals(HttpStatus.CREATED, responseCreateIssue.statusCode)
+        `create issue`() // create the ticket
+
+        // login
+        val token = loginFun(manager)
+        Assertions.assertNotNull(token)
 
         // test the API for "start progress"
         val responseStartProgress = restTemplate.exchange(
@@ -216,15 +220,20 @@ class TicketServiceTest {
                         id = 1,
                         name = "LOW"
                     )
-                )
+                ),
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
             ),
             TicketDTO::class.java
         )
         Assertions.assertEquals(HttpStatus.OK, responseStartProgress.statusCode)
         Assertions.assertEquals("IN PROGRESS", responseStartProgress.body?.state?.name)
         Assertions.assertEquals(1, responseStartProgress.body?.actualExpert?.id)
-
     }
+
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     fun `start progress from a reopened state`(){
@@ -242,6 +251,10 @@ class TicketServiceTest {
 
         `reopen issue from closed state`() //it brings the ticket in state REOPENED
 
+        // login
+        val token = loginFun(manager)
+        Assertions.assertNotNull(token)
+
         // test the API for "start progress"
         val responseStartProgress = restTemplate.exchange(
             "/API/tickets/startProgress/1",
@@ -253,14 +266,18 @@ class TicketServiceTest {
                         id = 1,
                         name = "LOW"
                     )
-                )
+                ),
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
             ),
             TicketDTO::class.java
         )
         Assertions.assertEquals(HttpStatus.OK, responseStartProgress.statusCode)
         Assertions.assertEquals("IN PROGRESS", responseStartProgress.body?.state?.name)
         Assertions.assertEquals(2, responseStartProgress.body?.actualExpert?.id)
-
     }
 
 
@@ -271,13 +288,11 @@ class TicketServiceTest {
         dataInsert()
 
         // create the ticket
-        val responseCreateIssue = restTemplate.postForEntity("/API/tickets/createIssue?purchaseId=1",
-            ProfileDTO(
-                email = "baba@gmail.com",
-                username = "asd",
-                name = "asd",
-                surname = "johnsmith"), TicketDTO::class.java, 1)
-        Assertions.assertEquals(HttpStatus.CREATED, responseCreateIssue.statusCode)
+        `create issue`()
+
+        // login
+        val token = loginFun(manager)
+        Assertions.assertNotNull(token)
 
         // test the API for "start progress"
         val responseStartProgress = restTemplate.exchange(
@@ -290,14 +305,20 @@ class TicketServiceTest {
                         id = 1,
                         name = "LOW"
                     )
-                )
+                ),
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
             ),
             ProblemDetail::class.java
         )
         Assertions.assertEquals(HttpStatus.NOT_FOUND, responseStartProgress.statusCode)
         Assertions.assertEquals("Employee with id 100 doesn't exist!", responseStartProgress.body?.detail)
-
     }
+
+
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     fun `start progress with invalid ticket id`(){
@@ -305,13 +326,11 @@ class TicketServiceTest {
         dataInsert()
 
         // create the ticket
-        val responseCreateIssue = restTemplate.postForEntity("/API/tickets/createIssue?purchaseId=1",
-            ProfileDTO(
-                email = "baba@gmail.com",
-                username = "asd",
-                name = "asd",
-                surname = "johnsmith"), TicketDTO::class.java, 1)
-        Assertions.assertEquals(HttpStatus.CREATED, responseCreateIssue.statusCode)
+        `create issue`()
+
+        // login
+        val token = loginFun(manager)
+        Assertions.assertNotNull(token)
 
         // test the API for "start progress"
         val responseStartProgress = restTemplate.exchange(
@@ -324,14 +343,19 @@ class TicketServiceTest {
                         id = 1,
                         name = "LOW"
                     )
-                )
+                ),
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
             ),
             ProblemDetail::class.java
         )
         Assertions.assertEquals(HttpStatus.NOT_FOUND, responseStartProgress.statusCode)
         Assertions.assertEquals("Ticket with id 100 not found!", responseStartProgress.body?.detail)
-
     }
+
 
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
@@ -340,13 +364,11 @@ class TicketServiceTest {
         dataInsert()
 
         // create the ticket
-        val responseCreateIssue = restTemplate.postForEntity("/API/tickets/createIssue?purchaseId=1",
-            ProfileDTO(
-                email = "baba@gmail.com",
-                username = "asd",
-                name = "asd",
-                surname = "johnsmith"), TicketDTO::class.java, 1)
-        Assertions.assertEquals(HttpStatus.CREATED, responseCreateIssue.statusCode)
+        `create issue`()
+
+        // login
+        val token = loginFun(manager)
+        Assertions.assertNotNull(token)
 
         // test the API for "start progress"
         val responseStartProgress = restTemplate.exchange(
@@ -359,13 +381,17 @@ class TicketServiceTest {
                         id = 58,
                         name = "VERY_LOW"
                     )
-                )
+                ),
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
             ),
             ProblemDetail::class.java
         )
         Assertions.assertEquals(HttpStatus.NOT_FOUND, responseStartProgress.statusCode)
         Assertions.assertEquals("Priority Level with id 58 doesn't exist!", responseStartProgress.body?.detail)
-
     }
 
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
@@ -373,6 +399,10 @@ class TicketServiceTest {
     fun `start progress from an invalid state of ticket`(){
 
         `close issue`() //it brings the ticket in state CLOSED
+
+        // login
+        val token = loginFun(manager)
+        Assertions.assertNotNull(token)
 
         // test the API for "start progress"
         val responseStartProgress = restTemplate.exchange(
@@ -385,13 +415,17 @@ class TicketServiceTest {
                         id = 1,
                         name = "LOW"
                     )
-                )
+                ),
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
             ),
             ProblemDetail::class.java
         )
         Assertions.assertEquals(HttpStatus.CONFLICT, responseStartProgress.statusCode)
         Assertions.assertEquals("Invalid Request: The ticket is in state CLOSED", responseStartProgress.body?.detail)
-
     }
 
 
@@ -401,32 +435,87 @@ class TicketServiceTest {
      */
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
-    fun `stop progress`(){
+    fun `stop progress by Expert`(){
 
         `start progress`() // create the ticket and start the progress
+
+        // login
+        val token = loginFun(expert)
+        Assertions.assertNotNull(token)
 
         // test the API for "stop progress"
         val responseStopProgress = restTemplate.exchange(
             "/API/tickets/stopProgress/1",
             HttpMethod.PUT,
-            null,
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
             TicketDTO::class.java
         )
         Assertions.assertEquals(HttpStatus.OK, responseStopProgress.statusCode)
         Assertions.assertEquals("OPEN", responseStopProgress.body?.state?.name)
 
     }
+
+    /**
+     * Test the API for "stop progress"
+     */
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    @Test
+    fun `stop progress by Manager`(){
+
+        `start progress`() // create the ticket and start the progress
+
+        // login
+        val token = loginFun(manager)
+        Assertions.assertNotNull(token)
+
+        // test the API for "stop progress"
+        val responseStopProgress = restTemplate.exchange(
+            "/API/tickets/stopProgress/1",
+            HttpMethod.PUT,
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            TicketDTO::class.java
+        )
+        Assertions.assertEquals(HttpStatus.OK, responseStopProgress.statusCode)
+        Assertions.assertEquals("OPEN", responseStopProgress.body?.state?.name)
+
+    }
+
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     fun `stop progress with invalid ticket id`(){
 
         `start progress`() // create the ticket and start the progress
 
+        // login
+        val token = loginFun(expert)
+        Assertions.assertNotNull(token)
+
         // test the API for "stop progress"
         val responseStopProgress = restTemplate.exchange(
             "/API/tickets/stopProgress/100",
             HttpMethod.PUT,
-            null,
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
             ProblemDetail::class.java
         )
         Assertions.assertEquals(HttpStatus.NOT_FOUND, responseStopProgress.statusCode)
@@ -441,16 +530,26 @@ class TicketServiceTest {
 
         `close issue`() //it brings the ticket in state CLOSED
 
+        // login
+        val token = loginFun(expert)
+        Assertions.assertNotNull(token)
+
         // test the API for "stop progress"
         val responseStopProgress = restTemplate.exchange(
             "/API/tickets/stopProgress/1",
             HttpMethod.PUT,
-            null,
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
             ProblemDetail::class.java
         )
         Assertions.assertEquals(HttpStatus.CONFLICT, responseStopProgress.statusCode)
         Assertions.assertEquals("Invalid Request: The ticket is in state CLOSED", responseStopProgress.body?.detail)
-
     }
 
     /**
@@ -458,21 +557,61 @@ class TicketServiceTest {
      */
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
-    fun `resolve issue`(){
+    fun `resolve issue by Client`(){
 
         `start progress`() // create the ticket and start the progress
+
+        val token = loginFun(customer)
+
+        Assertions.assertNotNull(token)
 
         // test the API for "resolve Issue"
         val responseResolveIssue = restTemplate.exchange(
             "/API/tickets/resolveIssue/1",
             HttpMethod.PUT,
-            null,
-            TicketDTO::class.java
-        )
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            TicketDTO::class.java)
+
         Assertions.assertEquals(HttpStatus.OK, responseResolveIssue.statusCode)
         Assertions.assertEquals("RESOLVED", responseResolveIssue.body?.state?.name)
+    }
 
+    /**
+     * Test the API for "resolve issue"
+     */
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    @Test
+    fun `resolve issue by Expert`(){
 
+        `start progress`() // create the ticket and start the progress
+
+        val token = loginFun(expert)
+
+        Assertions.assertNotNull(token)
+
+        // test the API for "resolve Issue"
+        val responseResolveIssue = restTemplate.exchange(
+            "/API/tickets/resolveIssue/1",
+            HttpMethod.PUT,
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            TicketDTO::class.java)
+
+        Assertions.assertEquals(HttpStatus.OK, responseResolveIssue.statusCode)
+        Assertions.assertEquals("RESOLVED", responseResolveIssue.body?.state?.name)
     }
 
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
@@ -481,35 +620,54 @@ class TicketServiceTest {
 
         `reopen issue from closed state`() //it brings the ticket in state REOPENED
 
+        val token = loginFun(customer)
+
+        Assertions.assertNotNull(token)
+
         // test the API for "resolve Issue"
         val responseResolveIssue = restTemplate.exchange(
             "/API/tickets/resolveIssue/1",
             HttpMethod.PUT,
-            null,
-            TicketDTO::class.java
-        )
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            TicketDTO::class.java)
+
         Assertions.assertEquals(HttpStatus.OK, responseResolveIssue.statusCode)
         Assertions.assertEquals("RESOLVED", responseResolveIssue.body?.state?.name)
-
-
     }
+
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     fun `resolve issue from an invalid ticket state`(){
 
         `close issue`() // it brings the state in CLOSED state
 
+        val token = loginFun(customer)
+
+        Assertions.assertNotNull(token)
+
         // test the API for "resolve Issue"
         val responseResolveIssue = restTemplate.exchange(
             "/API/tickets/resolveIssue/1",
             HttpMethod.PUT,
-            null,
-            ProblemDetail::class.java
-        )
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            ProblemDetail::class.java)
+
         Assertions.assertEquals(HttpStatus.CONFLICT, responseResolveIssue.statusCode)
         Assertions.assertEquals("Invalid Request: The ticket is in state CLOSED", responseResolveIssue.body?.detail)
-
-
     }
 
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
@@ -518,16 +676,26 @@ class TicketServiceTest {
 
         `start progress`() // create the ticket and start the progress
 
+        val token = loginFun(customer)
+
+        Assertions.assertNotNull(token)
+
         // test the API for "resolve Issue"
         val responseResolveIssue = restTemplate.exchange(
             "/API/tickets/resolveIssue/100",
             HttpMethod.PUT,
-            null,
-            ProblemDetail::class.java
-        )
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            ProblemDetail::class.java)
+
         Assertions.assertEquals(HttpStatus.NOT_FOUND, responseResolveIssue.statusCode)
         Assertions.assertEquals("Ticket with id 100 not found!", responseResolveIssue.body?.detail)
-
     }
 
     /**
@@ -537,19 +705,90 @@ class TicketServiceTest {
     @Test
     fun `close issue`(){
 
-        `resolve issue`() // create the ticket, start the progress and resolve the issue
+        `resolve issue by Client`() // create the ticket, start the progress and resolve the issue
 
+        val token = loginFun(customer)
+
+        Assertions.assertNotNull(token)
 
         // test the API for "close issue"
         val responseCloseIssue = restTemplate.exchange(
             "/API/tickets/closeIssue/1",
             HttpMethod.PUT,
-            null,
-            TicketDTO::class.java
-        )
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            TicketDTO::class.java)
+
         Assertions.assertEquals(HttpStatus.OK, responseCloseIssue.statusCode)
         Assertions.assertEquals("CLOSED", responseCloseIssue.body?.state?.name)
+    }
 
+    /**
+     * Test the API for "close issue"
+     */
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    @Test
+    fun `close issue by Manager`(){
+
+        `resolve issue by Client`() // create the ticket, start the progress and resolve the issue
+
+        val token = loginFun(manager)
+
+        Assertions.assertNotNull(token)
+
+        // test the API for "close issue"
+        val responseCloseIssue = restTemplate.exchange(
+            "/API/tickets/closeIssue/1",
+            HttpMethod.PUT,
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            TicketDTO::class.java)
+
+        Assertions.assertEquals(HttpStatus.OK, responseCloseIssue.statusCode)
+        Assertions.assertEquals("CLOSED", responseCloseIssue.body?.state?.name)
+    }
+
+    /**
+     * Test the API for "close issue"
+     */
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    @Test
+    fun `close issue by Expert`(){
+
+        `resolve issue by Client`() // create the ticket, start the progress and resolve the issue
+
+        val token = loginFun(expert)
+
+        Assertions.assertNotNull(token)
+
+        // test the API for "close issue"
+        val responseCloseIssue = restTemplate.exchange(
+            "/API/tickets/closeIssue/1",
+            HttpMethod.PUT,
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            TicketDTO::class.java)
+
+        Assertions.assertEquals(HttpStatus.OK, responseCloseIssue.statusCode)
+        Assertions.assertEquals("CLOSED", responseCloseIssue.body?.state?.name)
     }
 
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
@@ -558,14 +797,24 @@ class TicketServiceTest {
 
         `create issue`()
 
+        val token = loginFun(customer)
+
+        Assertions.assertNotNull(token)
 
         // test the API for "close issue"
         val responseCloseIssue = restTemplate.exchange(
             "/API/tickets/closeIssue/1",
             HttpMethod.PUT,
-            null,
-            TicketDTO::class.java
-        )
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            TicketDTO::class.java)
+
         Assertions.assertEquals(HttpStatus.OK, responseCloseIssue.statusCode)
         Assertions.assertEquals("CLOSED", responseCloseIssue.body?.state?.name)
 
@@ -577,14 +826,24 @@ class TicketServiceTest {
 
         `start progress`()
 
+        val token = loginFun(customer)
+
+        Assertions.assertNotNull(token)
 
         // test the API for "close issue"
         val responseCloseIssue = restTemplate.exchange(
             "/API/tickets/closeIssue/1",
             HttpMethod.PUT,
-            null,
-            TicketDTO::class.java
-        )
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            TicketDTO::class.java)
+
         Assertions.assertEquals(HttpStatus.OK, responseCloseIssue.statusCode)
         Assertions.assertEquals("CLOSED", responseCloseIssue.body?.state?.name)
 
@@ -596,14 +855,24 @@ class TicketServiceTest {
 
         `reopen issue from resolved state`()
 
+        val token = loginFun(customer)
+
+        Assertions.assertNotNull(token)
 
         // test the API for "close issue"
         val responseCloseIssue = restTemplate.exchange(
             "/API/tickets/closeIssue/1",
             HttpMethod.PUT,
-            null,
-            TicketDTO::class.java
-        )
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            TicketDTO::class.java)
+
         Assertions.assertEquals(HttpStatus.OK, responseCloseIssue.statusCode)
         Assertions.assertEquals("CLOSED", responseCloseIssue.body?.state?.name)
 
@@ -615,14 +884,24 @@ class TicketServiceTest {
 
         `reopen issue from resolved state`()
 
+        val token = loginFun(customer)
+
+        Assertions.assertNotNull(token)
 
         // test the API for "close issue"
         val responseCloseIssue = restTemplate.exchange(
             "/API/tickets/closeIssue/100",
             HttpMethod.PUT,
-            null,
-            ProblemDetail::class.java
-        )
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            ProblemDetail::class.java)
+
         Assertions.assertEquals(HttpStatus.NOT_FOUND, responseCloseIssue.statusCode)
         Assertions.assertEquals("Ticket with id 100 not found!", responseCloseIssue.body?.detail)
 
@@ -634,14 +913,24 @@ class TicketServiceTest {
 
         `close issue`()
 
+        val token = loginFun(customer)
+
+        Assertions.assertNotNull(token)
 
         // test the API for "close issue"
         val responseCloseIssue = restTemplate.exchange(
             "/API/tickets/closeIssue/1",
             HttpMethod.PUT,
-            null,
-            ProblemDetail::class.java
-        )
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            ProblemDetail::class.java)
+
         Assertions.assertEquals(HttpStatus.CONFLICT, responseCloseIssue.statusCode)
         Assertions.assertEquals("Invalid Request: The ticket is in state CLOSED", responseCloseIssue.body?.detail)
 
@@ -659,13 +948,23 @@ class TicketServiceTest {
 
         `close issue`() // create the ticket, start the progress, resolve the issue and close the issue
 
+        val token = loginFun(customer)
+
+        Assertions.assertNotNull(token)
+
         // test the API for "reopen issue"
         val responseReopenIssue = restTemplate.exchange(
             "/API/tickets/reopenIssue/1",
             HttpMethod.PUT,
-            null,
-            TicketDTO::class.java
-        )
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            TicketDTO::class.java)
         Assertions.assertEquals(HttpStatus.OK, responseReopenIssue.statusCode)
         Assertions.assertEquals("REOPENED", responseReopenIssue.body?.state?.name)
 
@@ -675,15 +974,26 @@ class TicketServiceTest {
     fun `reopen issue from resolved state`(){
 
 
-        `resolve issue`() // create the ticket, start the progress, resolve the issue and close the issue
+        `resolve issue by Client`() // create the ticket, start the progress, resolve the issue and close the issue
+
+        val token = loginFun(customer)
+
+        Assertions.assertNotNull(token)
 
         // test the API for "reopen issue"
         val responseReopenIssue = restTemplate.exchange(
             "/API/tickets/reopenIssue/1",
             HttpMethod.PUT,
-            null,
-            TicketDTO::class.java
-        )
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            TicketDTO::class.java)
+
         Assertions.assertEquals(HttpStatus.OK, responseReopenIssue.statusCode)
         Assertions.assertEquals("REOPENED", responseReopenIssue.body?.state?.name)
 
@@ -694,13 +1004,24 @@ class TicketServiceTest {
 
         `close issue`() // create the ticket, start the progress, resolve the issue and close the issue
 
+        val token = loginFun(customer)
+
+        Assertions.assertNotNull(token)
+
         // test the API for "reopen issue"
         val responseReopenIssue = restTemplate.exchange(
             "/API/tickets/reopenIssue/100",
             HttpMethod.PUT,
-            null,
-            ProblemDetail::class.java
-        )
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            ProblemDetail::class.java)
+
         Assertions.assertEquals(HttpStatus.NOT_FOUND, responseReopenIssue.statusCode)
         Assertions.assertEquals("Ticket with id 100 not found!", responseReopenIssue.body?.detail)
 
@@ -712,13 +1033,24 @@ class TicketServiceTest {
 
         `create issue`() // it creates a ticket
 
+        val token = loginFun(customer)
+
+        Assertions.assertNotNull(token)
+
         // test the API for "reopen issue"
         val responseReopenIssue = restTemplate.exchange(
             "/API/tickets/reopenIssue/1",
             HttpMethod.PUT,
-            null,
-            ProblemDetail::class.java
-        )
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            ProblemDetail::class.java)
+
         Assertions.assertEquals(HttpStatus.CONFLICT, responseReopenIssue.statusCode)
         Assertions.assertEquals("Invalid Request: The ticket is in state OPEN", responseReopenIssue.body?.detail)
 
@@ -733,12 +1065,27 @@ class TicketServiceTest {
 
         `create issue`()
 
-        // test the API for "create issue"
-        val responseGetTicket = restTemplate.getForEntity("/API/tickets/1",
-            TicketDTO::class.java, 1)
+        val token = loginFun(manager)
+
+        Assertions.assertNotNull(token)
+
+        // test the API for getting the ticket
+        val responseGetTicket = restTemplate.exchange(
+            "/API/tickets/1",
+            HttpMethod.GET,
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            TicketDTO::class.java)
+
         Assertions.assertEquals(HttpStatus.OK, responseGetTicket.statusCode)
         Assertions.assertEquals("OPEN", responseGetTicket.body?.state?.name)
-        Assertions.assertEquals("baba@gmail.com", responseGetTicket.body?.customer?.email)
+        Assertions.assertEquals(customer.first, responseGetTicket.body?.customer?.email)
 
     }
 
@@ -751,9 +1098,24 @@ class TicketServiceTest {
 
         `create issue`()
 
-        // test the API for "create issue"
-        val responseGetTicket = restTemplate.getForEntity("/API/tickets/100",
-            ProblemDetail::class.java, 100)
+        val token = loginFun(manager)
+
+        Assertions.assertNotNull(token)
+
+        // test the API for getting the ticket
+        val responseGetTicket = restTemplate.exchange(
+            "/API/tickets/100",
+            HttpMethod.GET,
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            ProblemDetail::class.java)
+
         Assertions.assertEquals(HttpStatus.NOT_FOUND, responseGetTicket.statusCode)
         Assertions.assertEquals("Ticket with id 100 not found", responseGetTicket.body?.detail)
 

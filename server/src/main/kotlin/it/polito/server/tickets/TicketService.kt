@@ -214,12 +214,12 @@ class TicketService (private val ticketRepository: ITicketRepository,
     override fun closeIssue(id: Long): TicketDTO? {
         val ticket = ticketRepository.findByIdOrNull(id) ?: throw TicketNotFoundException("Ticket with id $id not found!")
         val auth = SecurityContextHolder.getContext().authentication
-        val role = auth.authorities.find { it.authority.equals("ROLE_Expert") ||it.authority.equals("ROLE_Client")}
+        val role = auth.authorities.find { it.authority.equals("ROLE_Expert") || it.authority.equals("ROLE_Client")}
         if (role?.authority=="ROLE_Expert") {
             if(ticket.actualExpert?.email != auth.name){
                 throw AuthorizationServiceException("The expert logged in is not the expert assigned to ticket")
             }
-        }else{
+        }else if (role?.authority=="ROLE_Client"){
             if(auth.name!=ticket.customer?.email){
                 throw AuthorizationServiceException("The customer logged in is not the customer who has opened the ticket")
             }

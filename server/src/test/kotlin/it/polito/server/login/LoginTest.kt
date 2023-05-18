@@ -36,7 +36,7 @@ class LoginTest {
 
         private val customer = Pair("amanda@gmail.com", "amanda")
         private val expert = Pair("expert@mail.com","expert")
-        private val admin = Pair("admin@gmail.com", "admin")
+        //private val admin = Pair("admin@gmail.com", "admin")
         private val manager = Pair("simmanager@gmail.com", "simran")
     }
 
