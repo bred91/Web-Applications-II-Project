@@ -23,6 +23,7 @@ class WebSecurityConfig @Autowired constructor(private val jwtAuthConverter: Jwt
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.authorizeHttpRequests()
             .requestMatchers(HttpMethod.POST, "/login").permitAll()
+            .requestMatchers(HttpMethod.POST, "/signup").permitAll()
             .requestMatchers(HttpMethod.GET, "/").permitAll()
             .requestMatchers(HttpMethod.GET, "/manager").hasAnyRole(MANAGER)
             .requestMatchers(HttpMethod.GET, "/expert").hasAnyRole(MANAGER, EXPERT)
