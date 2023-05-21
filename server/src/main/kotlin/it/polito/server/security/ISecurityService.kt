@@ -3,5 +3,9 @@ package it.polito.server.security
 import org.springframework.http.ResponseEntity
 
 interface ISecurityService {
-    fun login(loginRequest: LoginRequest) : ResponseEntity<Any>
+    fun login(loginRequestDTO: LoginRequestDTO) : ResponseEntity<Any>
+
+    fun signUp(signUpRequestDTO: SignUpRequestDTO) : ResponseEntity<Any>
+
+    fun createExpert(signUpRequestDTO: SignUpRequestDTO) : ResponseEntity<Any>
 }
