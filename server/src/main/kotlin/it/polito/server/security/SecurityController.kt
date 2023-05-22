@@ -1,6 +1,7 @@
 package it.polito.server.security
 
 
+import io.micrometer.observation.annotation.Observed
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.representations.idm.CredentialRepresentation
 import org.keycloak.representations.idm.UserRepresentation
@@ -17,6 +18,7 @@ data class UserDetailsDTO(val username:String, val password:String)
 
 
 @RestController
+@Observed
 class SecurityController(private val securityService: ISecurityService, private val keycloak: Keycloak) {
 
 

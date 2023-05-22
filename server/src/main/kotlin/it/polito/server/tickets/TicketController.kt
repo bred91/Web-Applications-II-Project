@@ -16,7 +16,8 @@ class TicketController(private val ticketService: ITicketService) {
 
     @GetMapping("/API/tickets")
     fun getTickets():List<TicketDTO> {
-        log.info("get tickets")
+        // We left this log just to test the custom log message functionality
+        log.info("Get tickets")
         return ticketService.getTickets()
     }
 
