@@ -31,6 +31,19 @@ dependencies {
 	implementation("org.keycloak:keycloak-spring-boot-starter:11.0.3")
 	implementation("org.keycloak:keycloak-admin-client:11.0.3")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	// using new @Observed on class and enaabled @ObservedAspect
+	implementation ("org.springframework.boot:spring-boot-starter-aop")
+	// enabled endpoint and expose metrics
+	implementation ("org.springframework.boot:spring-boot-starter-actuator")
+	implementation ("io.micrometer:micrometer-registry-prometheus")
+	// handleing lifecycle of a span
+	implementation ("io.micrometer:micrometer-tracing-bridge-brave")
+	// send span and trace data
+	// endpoint is default to "http://locahost:9411/api/v2/spans" by actuator
+	// we could setting by management.zipkin.tracing.endpoint
+	implementation ("io.zipkin.reporter2:zipkin-reporter-brave")
+	// send logs by log Appender through URL
+	implementation ("com.github.loki4j:loki-logback-appender:1.4.0-rc2")
 	testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
 	testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")

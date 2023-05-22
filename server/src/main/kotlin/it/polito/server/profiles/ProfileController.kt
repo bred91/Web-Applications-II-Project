@@ -1,4 +1,5 @@
 package it.polito.server.profiles
+import io.micrometer.observation.annotation.Observed
 import it.polito.server.products.PurchaseDTO
 import it.polito.server.tickets.TicketDTO
 import jakarta.validation.Valid
@@ -6,6 +7,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 @RestController
+@Observed
 class ProfileController(private val profileService: IProfileService, private val addressRepository: IAddressRepository) {
 
 

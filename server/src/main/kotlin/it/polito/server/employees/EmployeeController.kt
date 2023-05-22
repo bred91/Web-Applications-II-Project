@@ -1,5 +1,6 @@
 package it.polito.server.employees
 
+import io.micrometer.observation.annotation.Observed
 import it.polito.server.tickets.TicketDTO
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
+@Observed
 class EmployeeController(private val employeeService: EmployeeService) {
 
     @PostMapping("/API/employees/")

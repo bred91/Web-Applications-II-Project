@@ -1,16 +1,23 @@
 package it.polito.server.tickets
 
 
+import io.micrometer.observation.annotation.Observed
 import it.polito.server.profiles.ProfileDTO
 import jakarta.validation.Valid
+import lombok.extern.slf4j.Slf4j
+import org.hibernate.query.sqm.tree.SqmNode.log
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 @RestController
+@Slf4j
+@Observed
 class TicketController(private val ticketService: ITicketService) {
 
     @GetMapping("/API/tickets")
     fun getTickets():List<TicketDTO> {
+        // We left this log just to test the custom log message functionality
+        log.info("Get tickets")
         return ticketService.getTickets()
     }
 

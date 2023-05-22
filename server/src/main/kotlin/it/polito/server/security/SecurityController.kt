@@ -1,6 +1,7 @@
 package it.polito.server.security
 
 
+import io.micrometer.observation.annotation.Observed
 import it.polito.server.profiles.ProfileDTO
 import jakarta.validation.Valid
 import org.keycloak.admin.client.Keycloak
@@ -18,6 +19,7 @@ import java.util.*
 
 
 @RestController
+@Observed
 class SecurityController(private val securityService: ISecurityService, private val keycloak: Keycloak) {
 
 
