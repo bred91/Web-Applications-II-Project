@@ -2,20 +2,15 @@ package it.polito.server.security
 
 
 import io.micrometer.observation.annotation.Observed
-import it.polito.server.profiles.ProfileDTO
 import jakarta.validation.Valid
 import org.keycloak.admin.client.Keycloak
-import org.keycloak.representations.idm.CredentialRepresentation
-import org.keycloak.representations.idm.UserRepresentation
 import org.springframework.http.*
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import java.security.Principal
-import java.util.*
 
 
 @RestController
@@ -32,9 +27,6 @@ class SecurityController(private val securityService: ISecurityService, private 
     fun signUp(@RequestBody @Valid signUpRequestDTO: SignUpRequestDTO): ResponseEntity<Any> {
         return securityService.signUp(signUpRequestDTO)
     }
-
-
-
 
     @PostMapping("/login")
     fun login(@RequestBody loginRequestDTO: LoginRequestDTO) : ResponseEntity<Any> {
