@@ -20,8 +20,12 @@ import it.polito.server.tickets.states.toEntity
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.security.Principal
 import java.util.*
 
 @Service
@@ -76,7 +80,8 @@ class TicketService (private val ticketRepository: ITicketRepository,
     @Transactional
     override fun createTicket(purchaseId: Long) : TicketDTO? {
 
-        val userEmail = SecurityContextHolder.getContext().authentication.name
+        val jwt = SecurityContextHolder.getContext().authentication.principal as Jwt
+        val userEmail = jwt.getClaim("email") as String
 
         val customer = profileService.getProfileByEmail(userEmail)
         val purchase = purchaseService.getPurchaseById(purchaseId)
@@ -128,9 +133,10 @@ class TicketService (private val ticketRepository: ITicketRepository,
     override fun stopProgress(id:Long):TicketDTO? {
 
         val ticket = ticketRepository.findByIdOrNull(id) ?: throw TicketNotFoundException("Ticket with id $id not found!")
-
+        val jwt = SecurityContextHolder.getContext().authentication.principal as Jwt
+        val userEmail = jwt.getClaim("email") as String
         val auth = SecurityContextHolder.getContext().authentication
-        if (auth != null && auth.authorities.any { it.authority.equals("ROLE_Expert")} && ticket.actualExpert?.email != auth.name) {
+        if (auth != null && auth.authorities.any { it.authority.equals("ROLE_Expert")} && ticket.actualExpert?.email != userEmail) {
                 throw AuthorizationServiceException("The expert logged in is not the expert assigned to ticket")
         }
 
@@ -156,7 +162,8 @@ class TicketService (private val ticketRepository: ITicketRepository,
     @Transactional
     override fun reopenIssue(id: Long): TicketDTO? {
         val ticket = ticketRepository.findByIdOrNull(id) ?: throw TicketNotFoundException("Ticket with id $id not found!")
-        val userEmail = SecurityContextHolder.getContext().authentication.name
+        val jwt = SecurityContextHolder.getContext().authentication.principal as Jwt
+        val userEmail = jwt.getClaim("email") as String
         if(ticket.customer?.email != userEmail){
             throw AuthorizationServiceException("The customer logged in is not the customer who has opened the ticket")
         }
@@ -182,13 +189,15 @@ class TicketService (private val ticketRepository: ITicketRepository,
     override fun resolveIssue(id: Long): TicketDTO? {
         val ticket = ticketRepository.findByIdOrNull(id) ?: throw TicketNotFoundException("Ticket with id $id not found!")
         val auth = SecurityContextHolder.getContext().authentication
+        val jwt = SecurityContextHolder.getContext().authentication.principal as Jwt
+        val userEmail = jwt.getClaim("email") as String
         val role = auth.authorities.find { it.authority.equals("ROLE_Expert") || it.authority.equals("ROLE_Client")}
         if (role?.authority=="ROLE_Expert") {
-            if(ticket.actualExpert?.email != auth.name){
+            if(ticket.actualExpert?.email != userEmail){
                 throw AuthorizationServiceException("The expert logged in is not the expert assigned to ticket")
             }
         }else{
-            if(auth.name!=ticket.customer?.email){
+            if(userEmail!=ticket.customer?.email){
                 throw AuthorizationServiceException("The customer logged in is not the customer who has opened the ticket")
             }
         }
@@ -213,14 +222,16 @@ class TicketService (private val ticketRepository: ITicketRepository,
     @Transactional
     override fun closeIssue(id: Long): TicketDTO? {
         val ticket = ticketRepository.findByIdOrNull(id) ?: throw TicketNotFoundException("Ticket with id $id not found!")
+        val jwt = SecurityContextHolder.getContext().authentication.principal as Jwt
+        val userEmail = jwt.getClaim("email") as String
         val auth = SecurityContextHolder.getContext().authentication
         val role = auth.authorities.find { it.authority.equals("ROLE_Expert") || it.authority.equals("ROLE_Client")}
         if (role?.authority=="ROLE_Expert") {
-            if(ticket.actualExpert?.email != auth.name){
+            if(ticket.actualExpert?.email != userEmail){
                 throw AuthorizationServiceException("The expert logged in is not the expert assigned to ticket")
             }
         }else if (role?.authority=="ROLE_Client"){
-            if(auth.name!=ticket.customer?.email){
+            if(userEmail!=ticket.customer?.email){
                 throw AuthorizationServiceException("The customer logged in is not the customer who has opened the ticket")
             }
         }
