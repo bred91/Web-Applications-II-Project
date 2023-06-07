@@ -33,6 +33,11 @@ class SecurityController(private val securityService: ISecurityService, private 
         return securityService.login(loginRequestDTO)
     }
 
+    @PostMapping("/logout")
+    fun logout(@RequestBody accessToken: String) : ResponseEntity<Any> {
+        return securityService.logout(accessToken)
+    }
+
     @GetMapping("/manager")
     fun getManager(principal: Principal): ResponseEntity<String> {
         val token = principal as JwtAuthenticationToken

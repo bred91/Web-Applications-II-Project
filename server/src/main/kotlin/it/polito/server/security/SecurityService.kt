@@ -71,6 +71,25 @@ class SecurityService(private val keycloak: Keycloak) : ISecurityService {
         }
     }
 
+    override fun logout(accessToken: String): ResponseEntity<Any> {
+        val url = "http://144.24.191.138:8081/realms/SpringBootKeycloak/protocol/openid-connect/revoke"
+        val restTemplate = RestTemplate()
+        val headers = HttpHeaders()
+
+        headers.contentType = MediaType.APPLICATION_FORM_URLENCODED
+        val body =
+            "token=${accessToken}&token_type_hint=access_token"
+
+        val entity = HttpEntity(body, headers)
+
+        return try {
+            restTemplate.postForEntity(url, entity, Object::class.java)
+            ResponseEntity.ok(Unit)
+        } catch (ex: Exception) {
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials")
+        }
+    }
+
 
     @PreAuthorize("hasRole('ROLE_Manager')")
     override fun createExpert(signUpRequestDTO: SignUpRequestDTO): ResponseEntity<Any> {
