@@ -44,6 +44,24 @@ const createProfile = async(email, username, name, surname) => {
 
 }
 
+const login = async(email, password) => {
+    const res = await fetch( "/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+    });
+
+    if(!res.ok){
+        const errorMessage = await res.json();
+        console.log(errorMessage);
+        throw errorMessage.detail;
+    }
+    else return null;
+
+}
+
 const getProfileByEmail = async(email) => {
     const res = await fetch('/API/profiles/'+email);
     const profile = await res.json();
