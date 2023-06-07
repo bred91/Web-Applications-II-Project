@@ -38,8 +38,6 @@ class WebSecurityConfig @Autowired constructor(private val jwtAuthConverter: Jwt
 
         //http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         http.csrf().disable()
-
-        //http.formLogin().permitAll()
         return http.build()
     }
 

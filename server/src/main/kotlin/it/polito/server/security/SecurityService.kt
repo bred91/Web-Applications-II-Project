@@ -1,14 +1,13 @@
 package it.polito.server.security
 
+
+import org.keycloak.admin.client.Keycloak
 import org.keycloak.representations.idm.CredentialRepresentation
 import org.keycloak.representations.idm.UserRepresentation
 import org.springframework.http.*
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
-import org.keycloak.admin.client.Keycloak
-import org.springframework.web.ErrorResponse
-import org.springframework.web.ErrorResponseException
 
 
 @Service
@@ -27,7 +26,9 @@ class SecurityService(private val keycloak: Keycloak) : ISecurityService {
 
         return try {
             val response = restTemplate.exchange(url, HttpMethod.POST, entity, TokenResponse::class.java)
-            ResponseEntity.ok(response.body?.access_token)
+            /*val json = Json
+            buildJsonObject { put("token", json.encodeToString(response.body?.access_token)) }*/
+            ResponseEntity.ok(response.body)
         } catch (ex: Exception) {
             ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials")
         }

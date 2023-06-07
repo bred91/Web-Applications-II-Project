@@ -1,12 +1,12 @@
 const updateProfile = async(email, username, name, surname) => {
     const res = await fetch( "/API/profiles/"+email, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, username, name, surname }),
-        });
-    
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, username, name, surname }),
+    });
+
     if(!res.ok){
         const errorMessage = await res.json();
         console.log(errorMessage);
@@ -18,39 +18,21 @@ const updateProfile = async(email, username, name, surname) => {
 
 const getProfiles = async() => {
     const res = await fetch('/API/profiles');
-     const allProfiles = await res.json();
-     if(res.ok){
+    const allProfiles = await res.json();
+    if(res.ok){
         return allProfiles;
-     }else{
+    }else{
         throw allProfiles;
-     }
+    }
 }
 
 const createProfile = async(email, username, name, surname) => {
     const res = await fetch( "/API/profiles/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, username, name, surname }),
-        });
-    
-    if(!res.ok){
-        const errorMessage = await res.json();
-        console.log(errorMessage);
-        throw errorMessage.detail;
-    }
-    else return null;
-
-}
-
-const login = async(email, password) => {
-    const res = await fetch( "/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, username, name, surname }),
     });
 
     if(!res.ok){
@@ -60,6 +42,40 @@ const login = async(email, password) => {
     }
     else return null;
 
+}
+
+const login = async(username, password) => {
+    const res = await fetch( "/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+    });
+
+    if(!res.ok){
+        const errorMessage = await res.json();
+        console.log(errorMessage);
+        throw errorMessage.detail;
+    }
+    else return res.json();
+}
+
+const logout = async(username) => {
+    const res = await fetch( "/logout", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username }),
+    });
+
+    if(!res.ok){
+        const errorMessage = await res.json();
+        console.log(errorMessage);
+        throw errorMessage.detail;
+    }
+    else return true;
 }
 
 const getProfileByEmail = async(email) => {
@@ -130,4 +146,8 @@ const updateProduct = async(ean, name, brand) => {
 
 }
 
-export{updateProfile, getProfiles, createProfile, getProfileByEmail, getProduct, getProductByEan, createProduct, updateProduct}
+export{
+    updateProfile, getProfiles, createProfile, getProfileByEmail,
+    getProduct, getProductByEan, createProduct, updateProduct,
+    login, logout
+}
