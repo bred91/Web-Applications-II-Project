@@ -40,6 +40,11 @@ function TSNavbar(props) {
                 Create Product
               </Nav.Link>
             </Nav.Item>
+            <Nav.Item>
+              <Nav.Link as={Link} to="/tickets">
+                Tickets
+              </Nav.Link>
+            </Nav.Item>
           </Nav>
           <Navbar.Collapse className="justify-content-end">
             {props.isLoggedIn ?

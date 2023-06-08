@@ -12,6 +12,7 @@ import { useState } from 'react';
 import CreateProduct from "./components/CreateProduct";
 import UpdateProductForm from "./components/UpdateProductForm";
 import LoginForm from "./components/LoginForm";
+import Tickets from "./components/Tickets";
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -38,6 +39,7 @@ function App() {
                     <Route path="/searchProduct" element={<SearchProduct setProduct={setProduct} />} />
                     <Route path="/createProduct" element={<CreateProduct />} />
                     <Route path="/updateProduct" element={<UpdateProductForm product={product} setProduct={setProduct}/>} />
+                    <Route path="/tickets" element={<Tickets token={token}/>} />
                 </Routes>
             </BrowserRouter>
         </div>

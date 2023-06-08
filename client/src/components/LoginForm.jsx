@@ -16,10 +16,10 @@ function LoginForm(props) {
         event.preventDefault();
         try{
             const json = await login(email, password);
-            console.log(json);
+            //console.log(json);
             props.setToken(json.access_token);
             const decodedToken = jwt_decode(json.access_token);
-            console.log(decodedToken);
+            //console.log(decodedToken);
             props.setUser(decodedToken.name);
             props.setIsLoggedIn(true);
             toast.success('Login successfully', {position: "top-center"});
