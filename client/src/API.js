@@ -75,7 +75,7 @@ const logout = async(accessToken, refreshToken) => {
         console.log(errorMessage);
         throw errorMessage.detail;
     }
-    else return true;
+    else return res;
 }
 
 const getProfileByEmail = async(email) => {
@@ -145,6 +145,24 @@ const updateProduct = async(ean, name, brand) => {
     else return null;
 }
 
+const createExpert = async(email, username, firstName, lastName, password, token) => {
+const res = await fetch( "/createExpert", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ username, email, lastName, firstName, password }),
+    });
+
+    if(!res.ok){
+        const errorMessage = await res.json();
+        console.log(errorMessage);
+        throw errorMessage.detail;
+    }
+    else return null;
+}
+
 const getTickets = async(token) => {
     const res = await fetch('/API/tickets', {
         method: "GET",
@@ -164,5 +182,5 @@ const getTickets = async(token) => {
 export{
     updateProfile, getProfiles, createProfile, getProfileByEmail,
     getProduct, getProductByEan, createProduct, updateProduct,
-    login, logout, getTickets
+    login, logout, getTickets, createExpert
 }

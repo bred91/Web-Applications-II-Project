@@ -7,11 +7,16 @@ import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 
 function TSNavbar(props) {
+
   const navigate = useNavigate();
+
   const handleLogout = async () => {
     try {
       await logout(props.accessToken, props.refreshToken);
+      //console.log('Logged out successfully')
       props.setIsLoggedIn(false);
+      props.setAccessToken(null);
+      props.setRefreshToken(null);
       navigate('/');
       toast.success('Logged out successfully', {position: "top-center"});
     } catch (err) {
@@ -24,28 +29,34 @@ function TSNavbar(props) {
       <Navbar bg="light">
         <Container>
           <Navbar.Brand href="/">Ticketing Platform</Navbar.Brand>
-          <Nav className="mx-auto">
-            <Nav.Item>
-              <Nav.Link as={Link} to="/searchProfile">
-                Search Profile
-              </Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Nav.Link as={Link} to="/searchProduct">
-                Search Product
-              </Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Nav.Link as={Link} to="/createProduct">
-                Create Product
-              </Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Nav.Link as={Link} to="/tickets">
-                Tickets
-              </Nav.Link>
-            </Nav.Item>
-          </Nav>
+          {props.role === 'Manager'?
+              <Nav className="mx-auto">
+                <Nav.Item>
+                  <Nav.Link as={Link} to="/tickets">
+                    Tickets
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link as={Link} to="/searchProfile">
+                    Search Profile
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link as={Link} to="/searchProduct">
+                    Search Product
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link as={Link} to="/createProduct">
+                    Create Product
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link as={Link} to="/createExpert">
+                    Create Expert
+                  </Nav.Link>
+                </Nav.Item>
+              </Nav> : null }
           <Navbar.Collapse className="justify-content-end">
             {props.isLoggedIn ?
                 <>
@@ -54,7 +65,6 @@ function TSNavbar(props) {
                     Logout
                   </Button>
                 </>
-
                 :
                 <>
                   <Link to="/signup">

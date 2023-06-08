@@ -13,13 +13,14 @@ import CreateProduct from "./components/CreateProduct";
 import UpdateProductForm from "./components/UpdateProductForm";
 import LoginForm from "./components/LoginForm";
 import Tickets from "./components/Tickets";
+import CreateExpert from "./components/CreateExpert";
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
     const [accessToken, setAccessToken] = useState(null);
     const [refreshToken, setRefreshToken] = useState(null);
-
+    const [role, setRole] = useState(null);
 
     const [profile, setProfile] = useState(null);
     const [product, setProduct] = useState(null);
@@ -28,18 +29,19 @@ function App() {
     return (
         <div className="App">
             <BrowserRouter>
-                <TSNavbar isLoggedIn={isLoggedIn} user={user} accessToken={accessToken} refreshToken={refreshToken}/>
+                <TSNavbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} user={user} accessToken={accessToken} refreshToken={refreshToken} role={role} setAccessToken={setAccessToken} setRefreshToken={setRefreshToken}/>
                 <ToastContainer />
                 <Routes>
                     <Route path="/" element={<Search />} />
                     <Route path="/signup" element={<SignupForm />} />
-                    <Route path="/login" element={<LoginForm setIsLoggedIn={setIsLoggedIn} setUser={setUser} setAccessToken={setAccessToken} setRefreshToken={setRefreshToken}/>} />
-                    <Route path="/updateProfile" element={<UpdateProfileForm profile={profile} setProfile={setProfile}/>} />
-                    <Route path="/searchProfile" element={<SearchProfile setProfile={setProfile} />} />
-                    <Route path="/searchProduct" element={<SearchProduct setProduct={setProduct} />} />
-                    <Route path="/createProduct" element={<CreateProduct />} />
-                    <Route path="/updateProduct" element={<UpdateProductForm product={product} setProduct={setProduct}/>} />
-                    <Route path="/tickets" element={<Tickets accessToken={accessToken}/>} />
+                    <Route path="/login" element={<LoginForm setIsLoggedIn={setIsLoggedIn} setUser={setUser} setAccessToken={setAccessToken} setRefreshToken={setRefreshToken} setRole={setRole}/>} />
+                    {isLoggedIn && role==='Client' ? <Route path="/updateProfile" element={<UpdateProfileForm profile={profile} setProfile={setProfile}/>} /> : null}
+                    {isLoggedIn && role==='Manager' ? <Route path="/searchProfile" element={<SearchProfile setProfile={setProfile} />} /> : null}
+                    {isLoggedIn && role==='Manager' ? <Route path="/searchProduct" element={<SearchProduct setProduct={setProduct} />} /> : null}
+                    {isLoggedIn && role==='Manager' ? <Route path="/createExpert" element={<CreateExpert token={accessToken} />} /> : null}
+                    {isLoggedIn && role==='Manager' ? <Route path="/createProduct" element={<CreateProduct />} /> : null}
+                    {isLoggedIn && role==='Manager' ? <Route path="/updateProduct" element={<UpdateProductForm product={product} setProduct={setProduct}/>} /> : null}
+                    {isLoggedIn ? <Route path="/tickets" element={<Tickets accessToken={accessToken}/>}/> : null}
                 </Routes>
             </BrowserRouter>
         </div>

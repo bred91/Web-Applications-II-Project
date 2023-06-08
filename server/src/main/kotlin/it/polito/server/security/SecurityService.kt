@@ -1,6 +1,9 @@
 package it.polito.server.security
 
 
+import it.polito.server.employees.EmployeeDTO
+import it.polito.server.employees.EmployeeService
+import it.polito.server.employees.RoleService
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.representations.idm.CredentialRepresentation
 import org.keycloak.representations.idm.UserRepresentation
@@ -14,7 +17,11 @@ import org.springframework.web.client.RestTemplate
 
 
 @Service
-class SecurityService(private val keycloak: Keycloak) : ISecurityService {
+class SecurityService(
+    private val keycloak: Keycloak,
+    private val employeeService: EmployeeService,
+    private val roleService: RoleService
+) : ISecurityService {
 
     override fun login(loginRequestDTO: LoginRequestDTO): ResponseEntity<Any> {
         val url = "http://144.24.191.138:8081/realms/SpringBootKeycloak/protocol/openid-connect/token"
@@ -125,6 +132,16 @@ class SecurityService(private val keycloak: Keycloak) : ISecurityService {
             return ResponseEntity.status(statusCode).body(responseBody)
         }
 
+        employeeService.createEmployee(
+            EmployeeDTO(
+                id = null,
+                name = signUpRequestDTO.firstName,
+                surname = signUpRequestDTO.lastName,
+                email = signUpRequestDTO.email,
+                role = roleService.getRoleById(2)
+            )
+        )
+
         return try {
             val id = keycloak.realm("SpringBootKeycloak").users().search(signUpRequestDTO.username).first().id
             val userResource =  keycloak.realm("SpringBootKeycloak").users().get(id)
@@ -133,8 +150,5 @@ class SecurityService(private val keycloak: Keycloak) : ISecurityService {
         }catch (e: Exception){
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.message!!)
         }
-
-
     }
-
 }

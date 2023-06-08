@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface IRoleRepository: JpaRepository<Role, String>{
+interface IRoleRepository: JpaRepository<Role, Long>{
 }

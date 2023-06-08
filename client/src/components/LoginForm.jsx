@@ -17,12 +17,13 @@ function LoginForm(props) {
         try{
             const json = await login(email, password);
             //console.log(json);
-            props.setToken(json.access_token);
-            props.setRefToken(json.refresh_token);
+            props.setAccessToken(json.access_token);
+            props.setRefreshToken(json.refresh_token);
             const decodedToken = jwt_decode(json.access_token);
-            //console.log(decodedToken);
+            //console.log(decodedToken.resource_access["springboot-keycloak-client"].roles[0]);
             props.setUser(decodedToken.name);
             props.setIsLoggedIn(true);
+            props.setRole(decodedToken.resource_access["springboot-keycloak-client"].roles[0]);
             toast.success('Login successfully', {position: "top-center"});
             navigate('/');
         }catch(err){
