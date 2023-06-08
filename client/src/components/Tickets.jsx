@@ -7,7 +7,7 @@ function Tickets(props) {
     const [tickets, setTickets] = useState([]);
 
     useEffect(() => {
-        API.getTickets(props.token)
+        API.getTickets(props.accessToken)
             .then((tick) => setTickets(tick))
             .catch((err) => toast.error(err.message));
     }, [tickets]);

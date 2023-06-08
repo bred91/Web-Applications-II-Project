@@ -18,6 +18,7 @@ function LoginForm(props) {
             const json = await login(email, password);
             //console.log(json);
             props.setToken(json.access_token);
+            props.setRefToken(json.refresh_token);
             const decodedToken = jwt_decode(json.access_token);
             //console.log(decodedToken);
             props.setUser(decodedToken.name);

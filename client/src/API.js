@@ -61,13 +61,13 @@ const login = async(username, password) => {
     else return res.json();
 }
 
-const logout = async(username) => {
-    const res = await fetch( "/logout", {
+const logout = async(accessToken, refreshToken) => {
+    const res = await fetch( "/logout2", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username }),
+        body: JSON.stringify({ accessToken, refreshToken }),
     });
 
     if(!res.ok){

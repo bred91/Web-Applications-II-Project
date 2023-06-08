@@ -17,8 +17,8 @@ import Tickets from "./components/Tickets";
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
-    const [token, setToken] = useState(null);
-
+    const [accessToken, setAccessToken] = useState(null);
+    const [refreshToken, setRefreshToken] = useState(null);
 
 
     const [profile, setProfile] = useState(null);
@@ -28,18 +28,18 @@ function App() {
     return (
         <div className="App">
             <BrowserRouter>
-                <TSNavbar isLoggedIn={isLoggedIn} user={user} token={token}/>
+                <TSNavbar isLoggedIn={isLoggedIn} user={user} accessToken={accessToken} refreshToken={refreshToken}/>
                 <ToastContainer />
                 <Routes>
                     <Route path="/" element={<Search />} />
                     <Route path="/signup" element={<SignupForm />} />
-                    <Route path="/login" element={<LoginForm setIsLoggedIn={setIsLoggedIn} setUser={setUser} setToken={setToken}/>} />
+                    <Route path="/login" element={<LoginForm setIsLoggedIn={setIsLoggedIn} setUser={setUser} setAccessToken={setAccessToken} setRefreshToken={setRefreshToken}/>} />
                     <Route path="/updateProfile" element={<UpdateProfileForm profile={profile} setProfile={setProfile}/>} />
                     <Route path="/searchProfile" element={<SearchProfile setProfile={setProfile} />} />
                     <Route path="/searchProduct" element={<SearchProduct setProduct={setProduct} />} />
                     <Route path="/createProduct" element={<CreateProduct />} />
                     <Route path="/updateProduct" element={<UpdateProductForm product={product} setProduct={setProduct}/>} />
-                    <Route path="/tickets" element={<Tickets token={token}/>} />
+                    <Route path="/tickets" element={<Tickets accessToken={accessToken}/>} />
                 </Routes>
             </BrowserRouter>
         </div>

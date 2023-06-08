@@ -10,7 +10,7 @@ function TSNavbar(props) {
   const navigate = useNavigate();
   const handleLogout = async () => {
     try {
-      await logout(props.token);
+      await logout(props.accessToken, props.refreshToken);
       props.setIsLoggedIn(false);
       navigate('/');
       toast.success('Logged out successfully', {position: "top-center"});
