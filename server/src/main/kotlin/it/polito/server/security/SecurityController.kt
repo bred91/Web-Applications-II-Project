@@ -33,9 +33,9 @@ class SecurityController(private val securityService: ISecurityService, private 
         return securityService.login(loginRequestDTO)
     }
 
-    @PostMapping("/logout")
-    fun logout(@RequestBody accessToken: String) : ResponseEntity<Any> {
-        return securityService.logout(accessToken)
+    @PostMapping("/logout2")
+    fun logout(@RequestBody logoutRequestDTO: LogoutRequestDTO) : ResponseEntity<Any> {
+        return securityService.logout(logoutRequestDTO)
     }
 
     @GetMapping("/manager")

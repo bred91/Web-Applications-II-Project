@@ -7,6 +7,9 @@ import org.keycloak.representations.idm.UserRepresentation
 import org.springframework.http.*
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
+import org.springframework.util.LinkedMultiValueMap
+import org.springframework.util.MultiValueMap
+import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestTemplate
 
 
@@ -72,22 +75,23 @@ class SecurityService(private val keycloak: Keycloak) : ISecurityService {
         }
     }
 
-    override fun logout(accessToken: String): ResponseEntity<Any> {
-        val url = "http://144.24.191.138:8081/realms/SpringBootKeycloak/protocol/openid-connect/revoke"
+    override fun logout(logoutRequestDTO: LogoutRequestDTO): ResponseEntity<Any> {
+        val url = "http://144.24.191.138:8081/realms/SpringBootKeycloak/protocol/openid-connect/logout"
         val restTemplate = RestTemplate()
-        val headers = HttpHeaders()
 
+        val headerValues: MultiValueMap<String, String> = LinkedMultiValueMap<String, String>()
+        headerValues.add("Authorization", "Bearer ${logoutRequestDTO.accessToken}")
+        val headers = HttpHeaders(headerValues)
         headers.contentType = MediaType.APPLICATION_FORM_URLENCODED
-        val body =
-            "token=${accessToken}&token_type_hint=access_token"
 
+        val body = "grant_type=password&client_id=springboot-keycloak-client&refresh_token=${logoutRequestDTO.refreshToken}"
         val entity = HttpEntity(body, headers)
 
         return try {
             restTemplate.postForEntity(url, entity, Object::class.java)
             ResponseEntity.ok(Unit)
-        } catch (ex: Exception) {
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials")
+        } catch (e: RestClientException) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.message!!)
         }
     }
 

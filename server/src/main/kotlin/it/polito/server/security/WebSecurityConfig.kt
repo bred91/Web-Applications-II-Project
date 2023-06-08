@@ -24,6 +24,7 @@ class WebSecurityConfig @Autowired constructor(private val jwtAuthConverter: Jwt
         http.authorizeHttpRequests()
             .requestMatchers(HttpMethod.POST, "/login").permitAll()
             .requestMatchers(HttpMethod.POST, "/signup").permitAll()
+            .requestMatchers(HttpMethod.POST, "/logout2").permitAll()
             .requestMatchers(HttpMethod.GET, "/").permitAll()
             .requestMatchers(HttpMethod.POST, "/createExpert").hasRole(MANAGER)
             .requestMatchers(HttpMethod.GET, "/manager").hasAnyRole(MANAGER)
