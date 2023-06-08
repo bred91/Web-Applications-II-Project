@@ -143,11 +143,26 @@ const updateProduct = async(ean, name, brand) => {
         throw errorMessage.detail;
     }
     else return null;
+}
 
+const getTickets = async(token) => {
+    const res = await fetch('/API/tickets', {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    })
+
+    const ticketsResponse = await res.json();
+    if(res.ok){
+        return ticketsResponse;
+    }else{
+        throw ticketsResponse.detail;
+    }
 }
 
 export{
     updateProfile, getProfiles, createProfile, getProfileByEmail,
     getProduct, getProductByEan, createProduct, updateProduct,
-    login, logout
+    login, logout, getTickets
 }
