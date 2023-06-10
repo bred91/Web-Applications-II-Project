@@ -60,13 +60,22 @@ function TSNavbar(props) {
                 </Nav.Item>
               </Nav> :
               props.role === 'Client'?
-                  <Nav className="mx-auto">
-                    <Nav.Item>
-                      <Nav.Link as={Link} to="/tickets">
-                        Tickets
-                      </Nav.Link>
-                    </Nav.Item>
-                  </Nav>
+                  <>
+                    <Nav className="mx-auto">
+                      <Nav.Item>
+                        <Nav.Link as={Link} to="/tickets">
+                          Tickets
+                        </Nav.Link>
+                      </Nav.Item>
+                    </Nav>
+                    <Nav className="mx-auto">
+                      <Nav.Item>
+                        <Nav.Link as={Link} to="/updateProfile">
+                          Update Profile
+                        </Nav.Link>
+                      </Nav.Item>
+                    </Nav>
+                  </>
               :
               null }
           <Navbar.Collapse className="justify-content-end">
