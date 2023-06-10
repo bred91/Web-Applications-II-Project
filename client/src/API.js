@@ -90,8 +90,13 @@ const getProfileByEmail = async(email) => {
 }
 
 // Products API
-const getProduct = async() => {
-    const res = await fetch('/API/products');
+const getProduct = async(token) => {
+    const res = await fetch('/API/products', {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    });
     const allProducts = await res.json();
     if(res.ok){
         return allProducts;
@@ -100,8 +105,13 @@ const getProduct = async() => {
     }
 }
 
-const getProductByEan = async(ean) => {
-    const res = await fetch('/API/products/'+ ean);
+const getProductByEan = async(token, ean) => {
+    const res = await fetch('/API/products/'+ ean, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    });
     const product = await res.json();
     if(res.ok){
         return product;
@@ -111,11 +121,12 @@ const getProductByEan = async(ean) => {
     }
 }
 
-const createProduct = async(ean, name, brand) => {
+const createProduct = async(token, ean, name, brand) => {
     const res = await fetch( "/API/products", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({ ean, name, brand }),
     });
@@ -128,11 +139,12 @@ const createProduct = async(ean, name, brand) => {
     else return null;
 }
 
-const updateProduct = async(ean, name, brand) => {
+const updateProduct = async(token, ean, name, brand) => {
     const res = await fetch( "/API/products/"+ean, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({ ean, name, brand }),
     });

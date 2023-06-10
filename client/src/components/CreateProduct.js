@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.min.css';
 import {createProduct} from './../API';
 import { useNavigate } from "react-router-dom";
 
-function CreateProduct() {
+function CreateProduct(props) {
     const [ean, setEan] = useState("");
     const [name, setName] = useState("");
     const [brand, setBrand] = useState("");
@@ -15,7 +15,7 @@ function CreateProduct() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try{
-            await createProduct(ean, name, brand);
+            await createProduct(props.token, ean, name, brand);
             toast.success('Product created successfully', {position: "top-center"});
             navigate('/');
         }catch(err){

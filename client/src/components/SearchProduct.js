@@ -21,7 +21,7 @@ function SearchProduct(props) {
     useEffect(() => {
         const fetchProducts = async() => {
             try{
-                const products = await getProduct();
+                const products = await getProduct(props.token);
                 setAllProducts(products);
                 setMatchingProducts(products);
             }catch(err){
