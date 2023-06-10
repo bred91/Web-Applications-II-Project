@@ -30,7 +30,7 @@ function TSNavbar(props) {
   return (
       <Navbar bg="light">
         <Container>
-          <Navbar.Brand href="/">Ticketing Platform</Navbar.Brand>
+          <Navbar.Brand as={Link} to="/">Ticketing Platform</Navbar.Brand>
           {props.role === 'Manager'?
               <Nav className="mx-auto">
                 <Nav.Item>
