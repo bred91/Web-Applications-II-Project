@@ -17,10 +17,10 @@ function SignupForm() {
         event.preventDefault();
         try{
             await createProfile(email, username, name, surname);
-            toast.success('Profile created successfully', {position: "top-center"});
+            toast.success('Profile created successfully', {position: "bottom-center", autoClose: 2000});
             navigate('/');
         }catch(err){
-            toast.error(err, {position: "top-center"});
+            toast.error(err, {position: "bottom-center", autoClose: 2000});
         }
     };
 

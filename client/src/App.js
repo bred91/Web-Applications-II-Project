@@ -29,7 +29,7 @@ function App() {
     return (
         <div className="App">
             <BrowserRouter>
-                <TSNavbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} user={user} accessToken={accessToken} refreshToken={refreshToken} role={role} setAccessToken={setAccessToken} setRefreshToken={setRefreshToken}/>
+                <TSNavbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} user={user} setUser={setUser} setRole={setRole} accessToken={accessToken} refreshToken={refreshToken} role={role} setAccessToken={setAccessToken} setRefreshToken={setRefreshToken}/>
                 <ToastContainer />
                 <Routes>
                     <Route path="/" element={<Search />} />

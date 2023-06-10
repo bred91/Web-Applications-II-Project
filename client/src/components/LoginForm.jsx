@@ -24,10 +24,10 @@ function LoginForm(props) {
             props.setUser(decodedToken.name);
             props.setIsLoggedIn(true);
             props.setRole(decodedToken.resource_access["springboot-keycloak-client"].roles[0]);
-            toast.success('Login successfully', {position: "top-center"});
+            toast.success('Login successfully', {position: "bottom-center", autoClose: 2000});
             navigate('/');
         }catch(err){
-            toast.error('Wrong email and/or password', {position: "top-center"});
+            toast.error('Wrong email and/or password', {position: "bottom-center", autoClose: 2000});
         }
     };
 

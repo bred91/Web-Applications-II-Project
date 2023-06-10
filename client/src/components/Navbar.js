@@ -17,10 +17,12 @@ function TSNavbar(props) {
       props.setIsLoggedIn(false);
       props.setAccessToken(null);
       props.setRefreshToken(null);
+      props.setUser(null);
+      props.setRole(null);
       navigate('/');
-      toast.success('Logged out successfully', {position: "top-center"});
+      toast.success('Logged out successfully', {position: "bottom-center", autoClose: 2000});
     } catch (err) {
-      toast.error(err, {position: "top-center"});
+      toast.error(err, {position: "bottom-center", autoClose: 2000});
     }
   }
 
@@ -56,7 +58,17 @@ function TSNavbar(props) {
                     Create Expert
                   </Nav.Link>
                 </Nav.Item>
-              </Nav> : null }
+              </Nav> :
+              props.role === 'Client'?
+                  <Nav className="mx-auto">
+                    <Nav.Item>
+                      <Nav.Link as={Link} to="/tickets">
+                        Tickets
+                      </Nav.Link>
+                    </Nav.Item>
+                  </Nav>
+              :
+              null }
           <Navbar.Collapse className="justify-content-end">
             {props.isLoggedIn ?
                 <>
