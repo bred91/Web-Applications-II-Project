@@ -4,6 +4,8 @@ package it.polito.server.security
 import it.polito.server.employees.EmployeeDTO
 import it.polito.server.employees.EmployeeService
 import it.polito.server.employees.RoleService
+import it.polito.server.profiles.ProfileDTO
+import it.polito.server.profiles.ProfileService
 import org.keycloak.admin.client.Keycloak
 import org.keycloak.representations.idm.CredentialRepresentation
 import org.keycloak.representations.idm.UserRepresentation
@@ -20,6 +22,7 @@ import org.springframework.web.client.RestTemplate
 class SecurityService(
     private val keycloak: Keycloak,
     private val employeeService: EmployeeService,
+    private val profileService: ProfileService,
     private val roleService: RoleService
 ) : ISecurityService {
 
@@ -48,8 +51,8 @@ class SecurityService(
         val userRepresentation = UserRepresentation().apply {
             this.username = signUpRequestDTO.username
             this.email = signUpRequestDTO.email
-            this.firstName = signUpRequestDTO.firstName
-            this.lastName = signUpRequestDTO.lastName
+            this.firstName = signUpRequestDTO.name
+            this.lastName = signUpRequestDTO.surname
             isEnabled = true
             isEmailVerified = true
         }
@@ -71,6 +74,15 @@ class SecurityService(
             return ResponseEntity.status(statusCode).body(responseBody)
         }
 
+        profileService.createProfile(
+            ProfileDTO(
+                email = signUpRequestDTO.email,
+                username = signUpRequestDTO.username,
+                name = signUpRequestDTO.name,
+                surname = signUpRequestDTO.surname,
+                phoneNumber = signUpRequestDTO.phoneNumber
+            )
+        )
 
         return try {
             val id = keycloak.realm("SpringBootKeycloak").users().search(signUpRequestDTO.username).first().id
@@ -109,8 +121,8 @@ class SecurityService(
         val expertRepresentation = UserRepresentation().apply {
             this.username = signUpRequestDTO.username
             this.email = signUpRequestDTO.email
-            this.firstName = signUpRequestDTO.firstName
-            this.lastName = signUpRequestDTO.lastName
+            this.firstName = signUpRequestDTO.name
+            this.lastName = signUpRequestDTO.surname
             isEnabled = true
             isEmailVerified = true
         }
@@ -135,8 +147,8 @@ class SecurityService(
         employeeService.createEmployee(
             EmployeeDTO(
                 id = null,
-                name = signUpRequestDTO.firstName,
-                surname = signUpRequestDTO.lastName,
+                name = signUpRequestDTO.name,
+                surname = signUpRequestDTO.surname,
                 email = signUpRequestDTO.email,
                 role = roleService.getRoleById(2)
             )
