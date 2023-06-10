@@ -26,13 +26,13 @@ const getProfiles = async() => {
     }
 }
 
-const createProfile = async(email, username, name, surname) => {
-    const res = await fetch( "/API/profiles/", {
+const createProfile = async(email, password, username, name, surname, phoneNumber) => {
+    const res = await fetch( "/signup", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, username, name, surname }),
+        body: JSON.stringify({ email, password, username, name, surname, phoneNumber }),
     });
 
     if(!res.ok){
