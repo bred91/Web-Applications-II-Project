@@ -90,11 +90,11 @@ function SearchProduct(props) {
                             </datalist>
                         </Form.Group>
                         <Button variant="success" className="w-100" type="submit">Search</Button>
-                        <Button variant="warning" className="w-100" onClick={handleDownloadCSV}>Download all</Button>
+                        {props.role === 'Manager' ? <Button variant="warning" className="w-100" onClick={handleDownloadCSV}>Download all</Button> : null}
                     </Form>
                 </center>
-                <CsvDownloadButton id="csv" data={allProducts} delimiter={","}
-                                   filename={"AllProducts.csv"} style={{display:"none"}}/>
+                {props.role === 'Manager' ? <CsvDownloadButton id="csv" data={allProducts} delimiter={","}
+                                   filename={"AllProducts.csv"} style={{display:"none"}}/> : null}
                 { showProduct && <div>
                     <center><div className="col">
                         <button className="button rounded-corners disabled"><strong>EAN: </strong>{product.ean}</button>
@@ -103,9 +103,9 @@ function SearchProduct(props) {
                         <button className="button rounded-corners disabled"><strong>Name: </strong>{product.name}</button>
                     </div></center>
                     <center><div className="col">
-                        <button className="button rounded-corners disabled"><strong>Brand: </strong>{product.brand}</button>
+                        <button className="button rounded-corners disabled mb-3"><strong>Brand: </strong>{product.brand}</button>
                     </div></center>
-                    <Button variant="primary" className="editButton mb-3" onClick={handleUpdateClick} >Edit</Button>
+                    {props.role === 'Manager' ? <Button variant="primary" className="editButton mb-3" onClick={handleUpdateClick} >Edit</Button> : null}
                 </div>}
             </Container>
         </Container>

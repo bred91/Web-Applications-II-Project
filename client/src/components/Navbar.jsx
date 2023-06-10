@@ -5,6 +5,7 @@ import {logout} from "../API";
 import { useNavigate } from "react-router-dom";
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
+import { ManagerNavbar, ExpertNavbar, ClientNavbar } from "./NavbarComponents";
 
 function TSNavbar(props) {
 
@@ -31,52 +32,12 @@ function TSNavbar(props) {
       <Navbar bg="light">
         <Container>
           <Navbar.Brand as={Link} to="/">Ticketing Platform</Navbar.Brand>
-          {props.role === 'Manager'?
-              <Nav className="mx-auto">
-                <Nav.Item>
-                  <Nav.Link as={Link} to="/tickets">
-                    Tickets
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link as={Link} to="/searchProfile">
-                    Search Profile
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link as={Link} to="/searchProduct">
-                    Search Product
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link as={Link} to="/createProduct">
-                    Create Product
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link as={Link} to="/createExpert">
-                    Create Expert
-                  </Nav.Link>
-                </Nav.Item>
-              </Nav> :
-              props.role === 'Client'?
-                  <>
-                    <Nav className="mx-auto">
-                      <Nav.Item>
-                        <Nav.Link as={Link} to="/tickets">
-                          Tickets
-                        </Nav.Link>
-                      </Nav.Item>
-                    </Nav>
-                    <Nav className="mx-auto">
-                      <Nav.Item>
-                        <Nav.Link as={Link} to="/updateProfile">
-                          Update Profile
-                        </Nav.Link>
-                      </Nav.Item>
-                    </Nav>
-                  </>
-              :
+          {props.role === 'Manager' ?
+              <ManagerNavbar /> :
+              props.role === 'Client' ?
+                <ClientNavbar /> :
+                  props.role === 'Expert' ?
+                      <ExpertNavbar /> :
               null }
           <Navbar.Collapse className="justify-content-end">
             {props.isLoggedIn ?

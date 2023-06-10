@@ -36,7 +36,7 @@ function App() {
                     <Route path="/login" element={<LoginForm setIsLoggedIn={setIsLoggedIn} setUser={setUser} setAccessToken={setAccessToken} setRefreshToken={setRefreshToken} setRole={setRole} setProfile={setProfile}/>} />
                     {isLoggedIn && role==='Client' ? <Route path="/updateProfile" element={<UpdateProfileForm token={accessToken} profile={profile} setProfile={setProfile}/>} /> : null}
                     {isLoggedIn && role==='Manager' ? <Route path="/searchProfile" element={<SearchProfile token={accessToken} setProfile={setProfile} />} /> : null}
-                    {isLoggedIn && role==='Manager' ? <Route path="/searchProduct" element={<SearchProduct token={accessToken} setProduct={setProduct} />} /> : null}
+                    {isLoggedIn && role!=='Client' ? <Route path="/searchProduct" element={<SearchProduct token={accessToken} setProduct={setProduct} role={role}/>} /> : null}
                     {isLoggedIn && role==='Manager' ? <Route path="/createExpert" element={<CreateExpert token={accessToken} />} /> : null}
                     {isLoggedIn && role==='Manager' ? <Route path="/createProduct" element={<CreateProduct token={accessToken} />} /> : null}
                     {isLoggedIn && role==='Manager' ? <Route path="/updateProduct" element={<UpdateProductForm token={accessToken} product={product} setProduct={setProduct}/>} /> : null}

@@ -12,7 +12,7 @@ class ProductService(
     private val productRepository: IProductRepository
 ): IProductService {
 
-    @PreAuthorize("hasRole('ROLE_Manager')")
+    @PreAuthorize("hasAnyRole('ROLE_Manager', 'ROLE_Expert')")
     override fun getAll(): List<ProductDTO> {
         return productRepository.findAll()
             .map{it.toDTO()}
