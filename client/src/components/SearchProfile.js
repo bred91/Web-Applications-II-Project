@@ -21,7 +21,7 @@ function SearchProfile(props) {
     useEffect(() => {
         const fetchProfiles = async() => {
             try{
-                const profiles = await getProfiles();
+                const profiles = await getProfiles(props.token);
                 setAllProfiles(profiles);
                 setMatchingProfiles(profiles);
             }catch(err){
@@ -40,10 +40,10 @@ function SearchProfile(props) {
         }
 
         try{
-            const profile = await getProfileByEmail(email);
+            const profile = await getProfileByEmail(props.token, email);
             setProfile(profile);
             setShowProfile(true);
-            
+
         }catch(err){
             toast.error(err, {position: "top-center"});
         }
@@ -62,10 +62,10 @@ function SearchProfile(props) {
         }
     }
 
-    const handleUpdateClick = async() => {
+    /*const handleUpdateClick = async() => {
         props.setProfile(profile);
         navigate('/updateProfile');
-    }
+    }*/
 
     const handleDownloadCSV = async (event) => {
         event.preventDefault();
@@ -83,34 +83,37 @@ function SearchProfile(props) {
                         <Form.Group controlId="email">
                             <Form.Label>Email</Form.Label>
                             <Form.Control type="email" value={email} onChange={handleChange} list="matching-emails"/>
-                        <datalist id="matching-emails">
-                          {matchingProfiles.map((profile) => (<option key={profile.email} value={profile.email} />))}
-                        </datalist>
+                            <datalist id="matching-emails">
+                                {matchingProfiles.map((profile) => (<option key={profile.email} value={profile.email} />))}
+                            </datalist>
                         </Form.Group>
                         <Button variant="success" className="w-100" type="submit">Search</Button>
                         <Button variant="warning" className="w-100" onClick={handleDownloadCSV}>Download all</Button>
                     </Form>
                 </center>
                 <CsvDownloadButton id="csv" data={allProfiles} delimiter={","}
-                               filename={"AllProfiles.csv"} style={{display:"none"}}/>
-               { showProfile && <div>
-                <center><div className="col">
-                    <button className="button rounded-corners disabled"><strong>Email: </strong>{profile.email}</button>
-                </div></center>
-                <center><div className="col">
-                    <button className="button rounded-corners disabled"><strong>Username: </strong>{profile.username}</button>
-                </div></center>
-                <center><div className="col">
-                    <button className="button rounded-corners disabled"><strong>Name: </strong>{profile.name}</button>
-                </div></center>
-                <center><div className="col">
-                    <button className="button rounded-corners disabled"><strong>Surname: </strong>{profile.surname}</button>
-                </div></center>
-                <Button variant="primary" className="editButton mb-3" onClick={handleUpdateClick} >Edit</Button>
+                                   filename={"AllProfiles.csv"} style={{display:"none"}}/>
+                { showProfile && <div>
+                    <center><div className="col">
+                        <button className="button rounded-corners disabled"><strong>Email: </strong>{profile.email}</button>
+                    </div></center>
+                    <center><div className="col">
+                        <button className="button rounded-corners disabled"><strong>Username: </strong>{profile.username}</button>
+                    </div></center>
+                    <center><div className="col">
+                        <button className="button rounded-corners disabled"><strong>Name: </strong>{profile.name}</button>
+                    </div></center>
+                    <center><div className="col">
+                        <button className="button rounded-corners disabled"><strong>Surname: </strong>{profile.surname}</button>
+                    </div></center>
+                    <center><div className="col">
+                        <button className="button rounded-corners disabled mb-5"><strong>Phone Number: </strong>{profile.phoneNumber}</button>
+                    </div></center>
+                    {/*<Button variant="primary" className="editButton mb-3" onClick={handleUpdateClick} >Edit</Button>*/}
                 </div>}
             </Container>
         </Container>
-        
+
     );
 }
 

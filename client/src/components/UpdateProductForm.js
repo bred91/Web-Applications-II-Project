@@ -18,7 +18,7 @@ function UpdateProductForm(props) {
     useEffect(() => {
         const fetchProduct = async() => {
             try{
-                const product = await getProduct();
+                const product = await getProduct(props.token);
                 setAllProduct(product);
             }catch(err){
                 console.log(err);
@@ -31,12 +31,12 @@ function UpdateProductForm(props) {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try{
-            await updateProduct(ean, name, brand);
-            toast.success('Product updated successfully', {position: "top-center"});
+            await updateProduct(props.token, ean, name, brand);
+            toast.success('Product updated successfully', {position: "bottom-center", autoClose: 2000});
             props.setProduct(null);
             navigate('/');
         }catch(err){
-            toast.error(err, {position: "top-center"});
+            toast.error(err, {position: "bottom-center", autoClose: 2000});
         }
     };
 
@@ -63,7 +63,7 @@ function UpdateProductForm(props) {
                     <h3>Update Product</h3>
                     <Form.Group controlId="ean">
                         <Form.Label>Ean</Form.Label>
-                        <Form.Control type="text" value={ean} onChange={handleChange} list="matching-ean"
+                        <Form.Control type="text" disabled value={ean} onChange={handleChange} list="matching-ean"
                         />
                         <datalist id="matching-ean">
                             {matchingProduct.map((product) => (<option key={product.ean} value={product.ean} />))}

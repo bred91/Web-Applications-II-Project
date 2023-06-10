@@ -17,6 +17,12 @@ function SignupForm() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        if(email==="" || password==="" || username==="" || name==="" || surname==="" || phoneNumber===""){
+            toast.error('Please fill in all fields', {position: "bottom-center", autoClose: 2000});
+            return;
+        }
+
         try{
             await createProfile(email, password, username, name, surname, phoneNumber);
             toast.success('Profile created successfully', {position: "bottom-center", autoClose: 2000});

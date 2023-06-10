@@ -1,10 +1,11 @@
-const updateProfile = async(email, username, name, surname) => {
+const updateProfile = async(token, email, username, name, surname, phoneNumber) => {
     const res = await fetch( "/API/profiles/"+email, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify({ email, username, name, surname }),
+        body: JSON.stringify({ email, username, name, surname, phoneNumber }),
     });
 
     if(!res.ok){
@@ -16,8 +17,14 @@ const updateProfile = async(email, username, name, surname) => {
 
 }
 
-const getProfiles = async() => {
-    const res = await fetch('/API/profiles');
+const getProfiles = async(token) => {
+    const res = await fetch('/API/profiles',{
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        }
+    );
     const allProfiles = await res.json();
     if(res.ok){
         return allProfiles;
@@ -78,8 +85,14 @@ const logout = async(accessToken, refreshToken) => {
     else return res;
 }
 
-const getProfileByEmail = async(email) => {
-    const res = await fetch('/API/profiles/'+email);
+const getProfileByEmail = async(token, email) => {
+    const res = await fetch('/API/profiles/'+email,
+        {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
     const profile = await res.json();
     if(res.ok){
         return profile;
@@ -158,7 +171,7 @@ const updateProduct = async(token, ean, name, brand) => {
 }
 
 const createExpert = async(email, username, firstName, lastName, password, token) => {
-const res = await fetch( "/createExpert", {
+    const res = await fetch( "/createExpert", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

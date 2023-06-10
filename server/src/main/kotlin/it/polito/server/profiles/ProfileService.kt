@@ -9,6 +9,7 @@ import it.polito.server.tickets.ITicketRepository
 import it.polito.server.tickets.TicketDTO
 import it.polito.server.tickets.toDTO
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -20,15 +21,17 @@ class ProfileService(private val profileRepository: IProfileRepository,
                      private val ticketRepository: ITicketRepository)
     :IProfileService {
 
-
+    @PreAuthorize("hasRole('ROLE_Manager')")
     override fun getProfiles(): List<ProfileDTO> {
         return profileRepository.findAll().map { it.toDTO() }
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_Manager', 'ROLE_Client')")
     override fun getProfileByEmail(email: String): ProfileDTO? {
         return  profileRepository.findByIdOrNull(email)?.toDTO()
             ?: throw ProfileNotFoundException("Profile with email $email not found")
     }
+
 
     @Transactional
     override fun createProfile(profile: ProfileDTO) {
@@ -39,6 +42,7 @@ class ProfileService(private val profileRepository: IProfileRepository,
         profileRepository.save(profile.toEntity())
     }
 
+    @PreAuthorize("hasRole('ROLE_Client')")
     @Transactional
     override fun updateProfile(email:String, profile: ProfileDTO): ProfileDTO? {
         return when (profileRepository.findByIdOrNull(email)?.toDTO()) {
@@ -105,6 +109,4 @@ class ProfileService(private val profileRepository: IProfileRepository,
         return ticketRepository.findByCustomerEmail(email).map { it.toDTO() }
 
     }
-
-
 }

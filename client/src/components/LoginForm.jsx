@@ -3,7 +3,7 @@ import { Button, Container, Form } from "react-bootstrap";
 import './SignUpForm.css';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
-import { login } from '../API';
+import { login,getProfileByEmail } from '../API';
 import { useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 
@@ -25,6 +25,12 @@ function LoginForm(props) {
             props.setIsLoggedIn(true);
             props.setRole(decodedToken.resource_access["springboot-keycloak-client"].roles[0]);
             toast.success('Login successfully', {position: "bottom-center", autoClose: 2000});
+            if (decodedToken.resource_access["springboot-keycloak-client"].roles[0] === 'Client') {
+                const profile = await getProfileByEmail(json.access_token, email);
+                //console.log(profile)
+                props.setProfile(profile);
+            }
+
             navigate('/');
         }catch(err){
             toast.error('Wrong email and/or password', {position: "bottom-center", autoClose: 2000});

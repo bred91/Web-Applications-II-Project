@@ -14,12 +14,18 @@ function CreateProduct(props) {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        if(ean.length===0 || name.length===0 || brand.length===0){
+            toast.error('Please fill all the fields', {position: "bottom-center", autoClose: 2000});
+            return;
+        }
+
         try{
             await createProduct(props.token, ean, name, brand);
-            toast.success('Product created successfully', {position: "top-center"});
+            toast.success('Product created successfully', {position: "bottom-center", autoClose: 2000});
             navigate('/');
         }catch(err){
-            toast.error(err, {position: "top-center"});
+            toast.error(err, {position: "bottom-center", autoClose: 2000});
         }
     };
 
