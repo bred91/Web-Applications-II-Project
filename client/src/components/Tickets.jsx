@@ -10,7 +10,7 @@ function Tickets(props) {
         API.getTickets(props.accessToken)
             .then((tick) => setTickets(tick))
             .catch((err) => toast.error(err.message));
-    }, [tickets]);
+    }, []);
 
     return (
         <Container>
