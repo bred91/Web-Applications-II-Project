@@ -35,5 +35,10 @@ class PurchaseController(private val purchaseService:PurchaseService) {
         return purchaseService.updatePurchase(id, purchase)
     }
 
+    @PostMapping("/API/purchases/verify/product/{ean}/warrantyCode/{warrantyCode}")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun verifyPurchase(@PathVariable ean: String, @PathVariable warrantyCode: String): PurchaseDTO?{
+        return purchaseService.verifyPurchase(ean, warrantyCode)
+    }
 
 }

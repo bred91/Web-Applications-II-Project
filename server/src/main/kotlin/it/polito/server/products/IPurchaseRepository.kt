@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository
 public interface IPurchaseRepository: JpaRepository<Purchase, Long> {
 
     fun findPurchasesByCustomerEmail(email: String) : List<Purchase>
+
+    fun findPurchaseByWarrantyCodeAndProduct_Id(warrantyCode: String, productId: String) : Purchase?
 }
