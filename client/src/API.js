@@ -213,12 +213,13 @@ const createTicket = async(token, purchaseId) => {
         }
     });
 
-    if(!res.ok){
-        const errorMessage = await res.json();
-        console.log(errorMessage);
-        throw errorMessage.detail;
+    const ticketResponse = await res.json();
+    if(res.ok){
+        return ticketResponse;
+    }else{
+        console.log(ticketResponse);
+        throw ticketResponse.detail;
     }
-    else return null;
 }
 
 const verifyPurchase = async(token, ean, warrantyCode) => {

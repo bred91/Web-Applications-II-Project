@@ -111,7 +111,7 @@ function CreateTicketComponent(props){
         try{
             const res = await createTicket(props.token, props.purchase.id)
             toast.success('Ticket submitted successfully', {position: "bottom-center", autoClose: 2000});
-            props.navigate("/")
+            props.navigate(`/tickets/${res.id}`)
         }catch(err){
             toast.error(err, {position: "bottom-center", autoClose: 2000});
         }
@@ -133,7 +133,7 @@ function CreateTicketComponent(props){
                         </Form.Group>
                         <Form.Group controlId="note">
                             <Form.Label>Additional note</Form.Label>
-                            <Form.Control type="text-field" value={note} onChange={(event) => setNote(event.target.value)}/>
+                            <Form.Control type="text" value={note} onChange={(event) => setNote(event.target.value)}/>
                         </Form.Group>
                         <Button variant="success" className="w-100" type="submit">Submit ticket</Button>
                     </Form>
