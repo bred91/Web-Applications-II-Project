@@ -20,6 +20,8 @@ class ProductService(
 
     @PreAuthorize("hasAnyRole('ROLE_Manager', 'ROLE_Expert')")
     override fun getProduct(ean: String): ProductDTO? {
+        if(ean.isBlank() || ean == "undefined")
+            throw ProductNotFoundException("Product with ean $ean not found")
         return productRepository.findByIdOrNull(ean)
             ?.toDTO()
             ?: throw ProductNotFoundException("Product with ean $ean not found")

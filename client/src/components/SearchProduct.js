@@ -35,17 +35,17 @@ function SearchProduct(props) {
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (ean === "") {
-            toast("Please enter a EAN", {position: "top-center"})
+            toast("The EAN field can not be empty", {position: "top-center"})
             return;
         }
 
         try{
-            const product = await getProductByEan(ean);
+            const product = await getProductByEan(props.token,ean);
             setProduct(product);
             setShowProduct(true);
 
         }catch(err){
-            toast.error(err, {position: "top-center"});
+            toast.error(err, {position: "bottom-center"});
         }
     };
 

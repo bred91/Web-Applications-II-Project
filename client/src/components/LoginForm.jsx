@@ -25,13 +25,12 @@ function LoginForm(props) {
             props.setIsLoggedIn(true);
             props.setRole(decodedToken.resource_access["springboot-keycloak-client"].roles[0]);
             toast.success('Login successfully', {position: "bottom-center", autoClose: 2000});
+            navigate('/');
             if (decodedToken.resource_access["springboot-keycloak-client"].roles[0] === 'Client') {
                 const profile = await getProfileByEmail(json.access_token, email);
                 //console.log(profile)
                 props.setProfile(profile);
             }
-
-            navigate('/');
         }catch(err){
             toast.error('Wrong email and/or password', {position: "bottom-center", autoClose: 2000});
         }

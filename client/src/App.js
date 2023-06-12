@@ -31,16 +31,16 @@ function App() {
                 <TSNavbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} user={user} setUser={setUser} setRole={setRole} accessToken={accessToken} refreshToken={refreshToken} role={role} setAccessToken={setAccessToken} setRefreshToken={setRefreshToken}/>
                 <ToastContainer />
                 <Routes>
-                    <Route path="/" element={<Search />} />
+                    <Route path="/" element={<Search/>} />
                     <Route path="/signup" element={<SignupForm />} />
                     <Route path="/login" element={<LoginForm setIsLoggedIn={setIsLoggedIn} setUser={setUser} setAccessToken={setAccessToken} setRefreshToken={setRefreshToken} setRole={setRole} setProfile={setProfile}/>} />
-                    {isLoggedIn && role==='Client' ? <Route path="/updateProfile" element={<UpdateProfileForm token={accessToken} profile={profile} setProfile={setProfile}/>} /> : null}
-                    {isLoggedIn && role==='Manager' ? <Route path="/searchProfile" element={<SearchProfile token={accessToken} setProfile={setProfile} />} /> : null}
+                    {isLoggedIn && role==='Client' ? <Route path="/updateProfile" element={<UpdateProfileForm token={accessToken} profile={profile} setProfile={setProfile} user={user}/>} /> : null}
+                    {isLoggedIn && role==='Manager' ? <Route path="/searchProfile" element={<SearchProfile token={accessToken} setProfile={setProfile}/>} /> : null}
                     {isLoggedIn && role!=='Client' ? <Route path="/searchProduct" element={<SearchProduct token={accessToken} setProduct={setProduct} role={role}/>} /> : null}
                     {isLoggedIn && role==='Manager' ? <Route path="/createExpert" element={<CreateExpert token={accessToken} />} /> : null}
                     {isLoggedIn && role==='Manager' ? <Route path="/createProduct" element={<CreateProduct token={accessToken} />} /> : null}
                     {isLoggedIn && role==='Manager' ? <Route path="/updateProduct" element={<UpdateProductForm token={accessToken} product={product} setProduct={setProduct}/>} /> : null}
-                    {isLoggedIn ? <Route path="/tickets" element={<Tickets accessToken={accessToken}/>}/> : null}
+                    {isLoggedIn ? <Route path="/tickets" element={<Tickets accessToken={accessToken} role={role}/>}/> : null}
                 </Routes>
             </BrowserRouter>
         </div>
