@@ -133,7 +133,7 @@ function CreateTicketComponent(props){
                         </Form.Group>
                         <Form.Group controlId="note">
                             <Form.Label>Additional note</Form.Label>
-                            <Form.Control type="text" value={note} onChange={(event) => setNote(event.target.value)}/>
+                            <Form.Control as="textarea" value={note} onChange={(event) => setNote(event.target.value)}/>
                         </Form.Group>
                         <Button variant="success" className="w-100" type="submit">Submit ticket</Button>
                     </Form>
