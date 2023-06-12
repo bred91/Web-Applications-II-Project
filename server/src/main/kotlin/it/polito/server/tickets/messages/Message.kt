@@ -3,7 +3,6 @@ package it.polito.server.tickets.messages
 
 import it.polito.server.base.EntityBase
 import it.polito.server.employees.Employee
-import it.polito.server.tickets.attachments.Attachment
 import jakarta.persistence.*
 import org.springframework.data.mongodb.core.mapping.Document
 import java.util.*

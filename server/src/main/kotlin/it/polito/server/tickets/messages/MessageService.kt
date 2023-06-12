@@ -1,9 +1,16 @@
 package it.polito.server.tickets.messages
 
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.stereotype.Service
+import it.polito.server.tickets.messages.IMessageRepository
 
+@Service
 class MessageService(private val messageRepository: IMessageRepository) : IMessageService {
+
+
+
     override fun getAllMessages(ticketId:Long): List<MessageDTO> {
+        println("XXXXXXXXXXXXXXXXXXXXXXXXXXX")
         return messageRepository.getAllMessagesByTicketId(ticketId).map { it.toDTO() }
     }
 

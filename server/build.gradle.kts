@@ -31,6 +31,7 @@ dependencies {
 	implementation("org.keycloak:keycloak-spring-boot-starter:11.0.3")
 	implementation("org.keycloak:keycloak-admin-client:11.0.3")
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	// using new @Observed on class and enaabled @ObservedAspect

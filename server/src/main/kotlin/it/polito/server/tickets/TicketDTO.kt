@@ -34,7 +34,7 @@ data class TicketDTO (
     val actualExpert: EmployeeDTO? = null,
 
     val priorityLevel: PriorityDTO? = null,
-    val chat: List<MessageDTO>? = null,
+    //val chat: List<MessageDTO>? = null,
     //var history: List<HistoryDTO>? = null
     var history : MutableList<HistoryDTO>? = mutableListOf()
     //var historyIds : List<Long>? = emptyList()
@@ -50,7 +50,7 @@ fun TicketDTO.toEntity(): Ticket {
     ticket.customer = customer?.toEntity()
     ticket.actualExpert = actualExpert?.toEntity()
     ticket.priority = priorityLevel?.toEntity()
-    ticket.chat = chat?.map { it.toEntity()}
+    //ticket.chat = chat?.map { it.toEntity()}
     ticket.history = history?.map{it.toEntity(ticket)}?.toMutableList()
     return ticket
 }
@@ -65,7 +65,7 @@ fun Ticket.toDTO(): TicketDTO {
         customer?.toDTO(),
         actualExpert?.toDTO(),
         priority?.toDTO(),
-        chat?.map{it.toDTO()},
+        //chat?.map{it.toDTO()},
         history?.map { it.toDTO() }?.toMutableList()
     )
 }
