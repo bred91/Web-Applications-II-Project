@@ -60,12 +60,15 @@ function ClientNavbar(){
         <>
             <Nav className="mx-auto">
                 <Nav.Item>
+                    <Nav.Link as={Link} to="/createTicket">
+                        Create Ticket
+                    </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
                     <Nav.Link as={Link} to="/tickets">
                         Tickets
                     </Nav.Link>
                 </Nav.Item>
-            </Nav>
-            <Nav className="mx-auto">
                 <Nav.Item>
                     <Nav.Link as={Link} to="/updateProfile">
                         Update Profile

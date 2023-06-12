@@ -103,7 +103,7 @@ const getProfileByEmail = async(token, email) => {
 }
 
 // Products API
-const getProduct = async(token) => {
+const getProducts = async(token) => {
     const res = await fetch('/API/products', {
         method: "GET",
         headers: {
@@ -204,8 +204,45 @@ const getTickets = async(token) => {
     }
 }
 
+const createTicket = async(token, purchaseId) => {
+    const res = await fetch( `/API/tickets/createIssue?purchaseId=${purchaseId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    });
+
+    if(!res.ok){
+        const errorMessage = await res.json();
+        console.log(errorMessage);
+        throw errorMessage.detail;
+    }
+    else return null;
+}
+
+const verifyPurchase = async(token, ean, warrantyCode) => {
+    const res = await fetch( "/API/purchases/verify", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ean, warrantyCode} ),
+    });
+
+    const verifyResponse = await res.json();
+    if(res.ok){
+        return verifyResponse;
+    }else{
+        console.log(verifyResponse);
+        throw verifyResponse.detail;
+    }
+}
+
+
 export{
     updateProfile, getProfiles, createProfile, getProfileByEmail,
-    getProduct, getProductByEan, createProduct, updateProduct,
-    login, logout, getTickets, createExpert
+    getProducts, getProductByEan, createProduct, updateProduct,
+    login, logout, getTickets, createExpert, createTicket, verifyPurchase
 }

@@ -4,7 +4,7 @@ import { Button, Container, Form } from "react-bootstrap";
 import './SignUpForm.css';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
-import { getProduct,  getProductByEan } from '../API';
+import { getProducts,  getProductByEan } from '../API';
 import './ShowProfile.css'
 import CsvDownloadButton from 'react-json-to-csv'
 
@@ -21,7 +21,7 @@ function SearchProduct(props) {
     useEffect(() => {
         const fetchProducts = async() => {
             try{
-                const products = await getProduct(props.token);
+                const products = await getProducts(props.token);
                 setAllProducts(products);
                 setMatchingProducts(products);
             }catch(err){
@@ -40,7 +40,7 @@ function SearchProduct(props) {
         }
 
         try{
-            const product = await getProductByEan(ean);
+            const product = await getProductByEan(props.token, ean);
             setProduct(product);
             setShowProduct(true);
 

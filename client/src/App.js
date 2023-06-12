@@ -14,6 +14,7 @@ import UpdateProductForm from "./components/UpdateProductForm";
 import LoginForm from "./components/LoginForm";
 import Tickets from "./components/Tickets";
 import CreateExpert from "./components/CreateExpert";
+import CreateTicket from "./components/CreateTicket"
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -35,6 +36,7 @@ function App() {
                     <Route path="/signup" element={<SignupForm />} />
                     <Route path="/login" element={<LoginForm setIsLoggedIn={setIsLoggedIn} setUser={setUser} setAccessToken={setAccessToken} setRefreshToken={setRefreshToken} setRole={setRole} setProfile={setProfile}/>} />
                     {isLoggedIn && role==='Client' ? <Route path="/updateProfile" element={<UpdateProfileForm token={accessToken} profile={profile} setProfile={setProfile}/>} /> : null}
+                    {isLoggedIn && role==='Client' ? <Route path="/createTicket" element={<CreateTicket token={accessToken}/>} /> : null}
                     {isLoggedIn && role==='Manager' ? <Route path="/searchProfile" element={<SearchProfile token={accessToken} setProfile={setProfile} />} /> : null}
                     {isLoggedIn && role!=='Client' ? <Route path="/searchProduct" element={<SearchProduct token={accessToken} setProduct={setProduct} role={role}/>} /> : null}
                     {isLoggedIn && role==='Manager' ? <Route path="/createExpert" element={<CreateExpert token={accessToken} />} /> : null}

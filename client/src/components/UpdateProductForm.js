@@ -4,7 +4,7 @@ import { Button, Container, Form } from "react-bootstrap";
 import './SignUpForm.css';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
-import {getProduct, updateProduct} from '../API';
+import {getProducts, updateProduct} from '../API';
 
 
 function UpdateProductForm(props) {
@@ -18,7 +18,7 @@ function UpdateProductForm(props) {
     useEffect(() => {
         const fetchProduct = async() => {
             try{
-                const product = await getProduct(props.token);
+                const product = await getProducts(props.token);
                 setAllProduct(product);
             }catch(err){
                 console.log(err);
