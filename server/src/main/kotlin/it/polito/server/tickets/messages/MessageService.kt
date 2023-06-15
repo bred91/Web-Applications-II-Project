@@ -15,7 +15,8 @@ class MessageService(private val messageRepository: IMessageRepository) : IMessa
     }
 
     override fun getMessage(id: Long): MessageDTO? {
-        return messageRepository.findByIdOrNull(id)?.toDTO()
+        //return messageRepository.findByIdOrNull(id)?.toDTO()
+        TODO()
     }
 
     override fun createMessage(message: MessageDTO) {

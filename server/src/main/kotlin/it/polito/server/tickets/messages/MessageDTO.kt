@@ -3,11 +3,13 @@ package it.polito.server.tickets.messages
 import it.polito.server.employees.EmployeeDTO
 import it.polito.server.employees.toDTO
 import it.polito.server.employees.toEntity
+import org.bson.types.ObjectId
 import java.util.*
 
 
 data class MessageDTO (
-    val id: Long? = null,
+    //val id: Long? = null,
+    //val id: ObjectId? = null,
     val sentTS: Date?,
     val content: String,
     val senderId: String,
@@ -16,7 +18,7 @@ data class MessageDTO (
 
 fun MessageDTO.toEntity(): Message {
     val message = Message()
-    message.id = id
+    //message.id = id
     message.sentTS = sentTS
     message.content = content
     message.ticketId = ticketId
@@ -25,7 +27,7 @@ fun MessageDTO.toEntity(): Message {
 }
 
 fun Message.toDTO() : MessageDTO {
-    return MessageDTO(id, sentTS, content, senderId, ticketId )
+    return MessageDTO(sentTS, content, senderId, ticketId )
 }
 
 //data class MessageDTO (

@@ -4,18 +4,24 @@ package it.polito.server.tickets.messages
 import it.polito.server.base.EntityBase
 import it.polito.server.employees.Employee
 import jakarta.persistence.*
+import org.bson.types.ObjectId
 import org.springframework.data.mongodb.core.mapping.Document
 import java.util.*
 
-@Document("chat")
+@Document("messages")
 class Message {
 
+//    @Transient
+//    val SEQUENCE_NAME = "message_sequence"
+
     @Id
-    var id:Long? = null
+    var id:ObjectId? = null
+    //var id:Long? = null
     var sentTS: Date? = null
     var content:String = ""
     var senderId:String = ""
     var ticketId:Long? = null
+
 }
 
 
