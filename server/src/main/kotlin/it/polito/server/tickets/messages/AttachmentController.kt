@@ -15,22 +15,22 @@ import org.springframework.web.multipart.MultipartFile
 import java.util.Date
 
 
-@RestController
-class AttachmentController(private val attachmentService: AttachmentService) {
-    @GetMapping("/chat/{ticketId}/attachments")
-    fun getAllAttachments(@PathVariable ticketId:Long) : ResponseEntity<Any> {
-        val at = attachmentService.getAllAttachments(ticketId)
-        return ResponseEntity.ok()
-            .header("Content-Type", "application/pdf")
-            .body(at[0].content)
-    }
-
-
-    //@RequestMapping(path = ["/chat/{ticketId}/attachments"], method = , consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    @PostMapping("/chat/{ticketId}/attachments")
-    fun createAttachment(@PathVariable ticketId: Long, @RequestPart file: MultipartFile) {
-        val attachmentDTO = AttachmentDTO(Date(), file.bytes,"simran", 1, file.name, file.contentType!! )
-        return attachmentService.createAttachment(attachmentDTO)
-    }
-
-}
+//@RestController
+//class AttachmentController(private val attachmentService: AttachmentService) {
+////    @GetMapping("/chat/{ticketId}/attachments")
+////    fun getAllAttachments(@PathVariable ticketId:Long) : ResponseEntity<Any> {
+////        val at = attachmentService.getAllAttachments(ticketId)
+////        return ResponseEntity.ok()
+////            .header("Content-Type", "application/pdf")
+////            .body(at[0].content)
+////    }
+//
+//
+//    //@RequestMapping(path = ["/chat/{ticketId}/attachments"], method = , consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+////    @PostMapping("/chat/{ticketId}/attachments")
+////    fun createAttachment(@PathVariable ticketId: Long, @RequestPart file: MultipartFile) {
+////        val attachmentDTO = AttachmentDTO(Date(), file.bytes,"simran", 1, file.name, file.contentType!! )
+////        return attachmentService.createAttachment(attachmentDTO)
+////    }
+//
+//}

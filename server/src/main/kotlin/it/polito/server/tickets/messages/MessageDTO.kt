@@ -7,28 +7,69 @@ import org.bson.types.ObjectId
 import java.util.*
 
 
+//data class MessageDTO (
+//    //val id: Long? = null,
+//    //val id: ObjectId? = null,
+//    val sentTS: Date?,
+//    val content: String,
+//    val senderId: String,
+//    val ticketId: Long?
+//)
+
 data class MessageDTO (
-    //val id: Long? = null,
     //val id: ObjectId? = null,
     val sentTS: Date?,
-    val content: String,
+    val content: ContentDTO,
     val senderId: String,
     val ticketId: Long?
 )
 
+
+data class ContentDTO(
+    val text:String?,
+    val attachment:AttachmentDTO?
+)
+
 fun MessageDTO.toEntity(): Message {
     val message = Message()
-    //message.id = id
+    val contentEntity = Content()
+    //val attachmentEntity = content.attachment?.toEntity()
+    //attachmentEntity.content = content.attachment?.content
+    //attachmentEntity.contentType = content.attachment?.contentType
+    //attachmentEntity.filename = content.attachment?.filename
+    contentEntity.text = content?.text
+    contentEntity.attachment = content.attachment?.toEntity()
     message.sentTS = sentTS
-    message.content = content
+    message.content = contentEntity
     message.ticketId = ticketId
     message.senderId = senderId
     return message
 }
 
 fun Message.toDTO() : MessageDTO {
-    return MessageDTO(sentTS, content, senderId, ticketId )
+    if(content?.attachment?.content == null) {
+        content?.attachment = null
+    }
+    val contentDTO = ContentDTO(content?.text, content?.attachment?.toDTO())
+    return MessageDTO(sentTS, contentDTO, senderId, ticketId )
 }
+
+
+
+
+//fun MessageDTO.toEntity(): Message {
+//    val message = Message()
+//    //message.id = id
+//    message.sentTS = sentTS
+//    message.content = content
+//    message.ticketId = ticketId
+//    message.senderId = senderId
+//    return message
+//}
+//
+//fun Message.toDTO() : MessageDTO {
+//    return MessageDTO(sentTS, content, senderId, ticketId )
+//}
 
 //data class MessageDTO (
 //    val id: Long? = null,

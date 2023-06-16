@@ -20,6 +20,7 @@ class MessageService(private val messageRepository: IMessageRepository) : IMessa
     }
 
     override fun createMessage(message: MessageDTO) {
+        val entity = message.toEntity()
         messageRepository.save(message.toEntity())
     }
 
