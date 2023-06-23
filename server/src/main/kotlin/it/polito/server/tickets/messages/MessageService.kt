@@ -1,16 +1,26 @@
 package it.polito.server.tickets.messages
 
+import it.polito.server.profiles.ProfileService
+import it.polito.server.tickets.ITicketRepository
+import it.polito.server.tickets.TicketService
+import it.polito.server.tickets.exception.AuthorizationServiceException
+import it.polito.server.tickets.exception.TicketNotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import it.polito.server.tickets.messages.IMessageRepository
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.web.multipart.MultipartFile
+import java.util.*
 
 @Service
-class MessageService(private val messageRepository: IMessageRepository) : IMessageService {
+class MessageService(private val messageRepository: IMessageRepository,
+    private val ticketRepository: ITicketRepository) : IMessageService {
 
 
 
     override fun getAllMessages(ticketId:Long): List<MessageDTO> {
-        println("XXXXXXXXXXXXXXXXXXXXXXXXXXX")
         return messageRepository.getAllMessagesByTicketId(ticketId).map { it.toDTO() }
     }
 
@@ -19,9 +29,26 @@ class MessageService(private val messageRepository: IMessageRepository) : IMessa
         TODO()
     }
 
-    override fun createMessage(message: MessageDTO) {
-        val entity = message.toEntity()
-        messageRepository.save(message.toEntity())
+    @PreAuthorize("hasAnyRole('ROLE_Client', 'ROLE_Expert')")
+    override fun createMessage(file: MultipartFile?, text: String?, ticketId: Long) {
+
+        val ticket = ticketRepository.findByIdOrNull(ticketId) ?: throw TicketNotFoundException("Ticket with id $ticketId not found!")
+
+
+        val jwt = SecurityContextHolder.getContext().authentication.principal as Jwt
+        val auth = SecurityContextHolder.getContext().authentication
+        val userEmail = jwt.getClaim("email") as String
+        if (auth != null && auth.authorities.any { it.authority.equals("ROLE_Expert")} && ticket.actualExpert?.email != userEmail) {
+            throw AuthorizationServiceException("The expert logged in is not the expert assigned to ticket")
+        }else if(auth != null && auth.authorities.any { it.authority.equals("ROLE_Client")} && ticket.customer?.email != userEmail) {
+            throw AuthorizationServiceException("The customer logged in is not the customer who has opened the ticket")
+        }
+
+        val attachmentDTO = AttachmentDTO(file?.bytes, file?.name, file?.contentType)
+        val contentDTO = ContentDTO(text, attachmentDTO)
+
+        val messageDTO = MessageDTO(Date(), contentDTO,userEmail, ticketId )
+        messageRepository.save(messageDTO.toEntity())
     }
 
     override fun updateMessage(id: Long, message: MessageDTO): MessageDTO? {

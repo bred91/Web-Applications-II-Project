@@ -15,9 +15,9 @@ class MessageController(private val messageService: IMessageService) {
 
     @PostMapping("/chat/{ticketId}/messages")
     fun createAttachment(@PathVariable ticketId: Long, @RequestPart file: MultipartFile?, @RequestPart text:String?) {
-        val attachmentDTO = AttachmentDTO(file?.bytes, file?.name, file?.contentType)
-        val contentDTO = ContentDTO(text, attachmentDTO)
-        val messageDTO = MessageDTO(Date(), contentDTO,"simran", 1 )
-        return messageService.createMessage(messageDTO)
+//        val attachmentDTO = AttachmentDTO(file?.bytes, file?.name, file?.contentType)
+//        val contentDTO = ContentDTO(text, attachmentDTO)
+//        val messageDTO = MessageDTO(Date(), contentDTO,"simran", 1 )
+        return messageService.createMessage(file, text, ticketId)
     }
 }
