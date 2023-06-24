@@ -1,12 +1,13 @@
-const updateProfile = async(email, username, name, surname) => {
+const updateProfile = async(token, email, username, name, surname, phoneNumber) => {
     const res = await fetch( "/API/profiles/"+email, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, username, name, surname }),
-        });
-    
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ email, username, name, surname, phoneNumber }),
+    });
+
     if(!res.ok){
         const errorMessage = await res.json();
         console.log(errorMessage);
@@ -16,25 +17,31 @@ const updateProfile = async(email, username, name, surname) => {
 
 }
 
-const getProfiles = async() => {
-    const res = await fetch('/API/profiles');
-     const allProfiles = await res.json();
-     if(res.ok){
+const getProfiles = async(token) => {
+    const res = await fetch('/API/profiles',{
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        }
+    );
+    const allProfiles = await res.json();
+    if(res.ok){
         return allProfiles;
-     }else{
+    }else{
         throw allProfiles;
-     }
+    }
 }
 
-const createProfile = async(email, username, name, surname) => {
-    const res = await fetch( "/API/profiles/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, username, name, surname }),
-        });
-    
+const createProfile = async(email, password, username, name, surname, phoneNumber) => {
+    const res = await fetch( "/signup", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password, username, name, surname, phoneNumber }),
+    });
+
     if(!res.ok){
         const errorMessage = await res.json();
         console.log(errorMessage);
@@ -44,8 +51,48 @@ const createProfile = async(email, username, name, surname) => {
 
 }
 
-const getProfileByEmail = async(email) => {
-    const res = await fetch('/API/profiles/'+email);
+const login = async(username, password) => {
+    const res = await fetch( "/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+    });
+
+    if(!res.ok){
+        const errorMessage = await res.json();
+        console.log(errorMessage);
+        throw errorMessage.detail;
+    }
+    else return res.json();
+}
+
+const logout = async(accessToken, refreshToken) => {
+    const res = await fetch( "/logout2", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ accessToken, refreshToken }),
+    });
+
+    if(!res.ok){
+        const errorMessage = await res.json();
+        console.log(errorMessage);
+        throw errorMessage.detail;
+    }
+    else return res;
+}
+
+const getProfileByEmail = async(token, email) => {
+    const res = await fetch('/API/profiles/'+email,
+        {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
     const profile = await res.json();
     if(res.ok){
         return profile;
@@ -56,8 +103,13 @@ const getProfileByEmail = async(email) => {
 }
 
 // Products API
-const getProduct = async() => {
-    const res = await fetch('/API/products');
+const getProducts = async(token) => {
+    const res = await fetch('/API/products', {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    });
     const allProducts = await res.json();
     if(res.ok){
         return allProducts;
@@ -66,8 +118,13 @@ const getProduct = async() => {
     }
 }
 
-const getProductByEan = async(ean) => {
-    const res = await fetch('/API/products/'+ ean);
+const getProductByEan = async(token, ean) => {
+    const res = await fetch('/API/products/'+ ean, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    });
     const product = await res.json();
     if(res.ok){
         return product;
@@ -77,11 +134,12 @@ const getProductByEan = async(ean) => {
     }
 }
 
-const createProduct = async(ean, name, brand) => {
+const createProduct = async(token, ean, name, brand) => {
     const res = await fetch( "/API/products", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({ ean, name, brand }),
     });
@@ -94,11 +152,12 @@ const createProduct = async(ean, name, brand) => {
     else return null;
 }
 
-const updateProduct = async(ean, name, brand) => {
+const updateProduct = async(token, ean, name, brand) => {
     const res = await fetch( "/API/products/"+ean, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({ ean, name, brand }),
     });
@@ -109,7 +168,82 @@ const updateProduct = async(ean, name, brand) => {
         throw errorMessage.detail;
     }
     else return null;
-
 }
 
-export{updateProfile, getProfiles, createProfile, getProfileByEmail, getProduct, getProductByEan, createProduct, updateProduct}
+const createExpert = async(email, username, firstName, lastName, password, token) => {
+    const res = await fetch( "/createExpert", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ username, email, lastName, firstName, password }),
+    });
+
+    if(!res.ok){
+        const errorMessage = await res.json();
+        console.log(errorMessage);
+        throw errorMessage.detail;
+    }
+    else return null;
+}
+
+const getTickets = async(token) => {
+    const res = await fetch('/API/tickets', {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    })
+
+    const ticketsResponse = await res.json();
+    if(res.ok){
+        return ticketsResponse;
+    }else{
+        throw ticketsResponse.detail;
+    }
+}
+
+const createTicket = async(token, purchaseId) => {
+    const res = await fetch( `/API/tickets/createIssue?purchaseId=${purchaseId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    });
+
+    const ticketResponse = await res.json();
+    if(res.ok){
+        return ticketResponse;
+    }else{
+        console.log(ticketResponse);
+        throw ticketResponse.detail;
+    }
+}
+
+const verifyPurchase = async(token, ean, warrantyCode) => {
+    const res = await fetch( "/API/purchases/verify", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ean, warrantyCode} ),
+    });
+
+    const verifyResponse = await res.json();
+    if(res.ok){
+        return verifyResponse;
+    }else{
+        console.log(verifyResponse);
+        throw verifyResponse.detail;
+    }
+}
+
+
+export{
+    updateProfile, getProfiles, createProfile, getProfileByEmail,
+    getProducts, getProductByEan, createProduct, updateProduct,
+    login, logout, getTickets, createExpert, createTicket, verifyPurchase
+}

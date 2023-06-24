@@ -4,7 +4,7 @@ import { Button, Container, Form } from "react-bootstrap";
 import './SignUpForm.css';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
-import { getProduct,  getProductByEan } from '../API';
+import { getProducts,  getProductByEan } from '../API';
 import './ShowProfile.css'
 import CsvDownloadButton from 'react-json-to-csv'
 
@@ -21,7 +21,7 @@ function SearchProduct(props) {
     useEffect(() => {
         const fetchProducts = async() => {
             try{
-                const products = await getProduct();
+                const products = await getProducts(props.token);
                 setAllProducts(products);
                 setMatchingProducts(products);
             }catch(err){
@@ -35,17 +35,17 @@ function SearchProduct(props) {
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (ean === "") {
-            toast("Please enter a EAN", {position: "top-center"})
+            toast("The EAN field can not be empty", {position: "top-center"})
             return;
         }
 
         try{
-            const product = await getProductByEan(ean);
+            const product = await getProductByEan(props.token,ean);
             setProduct(product);
             setShowProduct(true);
 
         }catch(err){
-            toast.error(err, {position: "top-center"});
+            toast.error(err, {position: "bottom-center"});
         }
     };
 
@@ -90,11 +90,11 @@ function SearchProduct(props) {
                             </datalist>
                         </Form.Group>
                         <Button variant="success" className="w-100" type="submit">Search</Button>
-                        <Button variant="warning" className="w-100" onClick={handleDownloadCSV}>Download all</Button>
+                        {props.role === 'Manager' ? <Button variant="warning" className="w-100" onClick={handleDownloadCSV}>Download all</Button> : null}
                     </Form>
                 </center>
-                <CsvDownloadButton id="csv" data={allProducts} delimiter={","}
-                                   filename={"AllProducts.csv"} style={{display:"none"}}/>
+                {props.role === 'Manager' ? <CsvDownloadButton id="csv" data={allProducts} delimiter={","}
+                                   filename={"AllProducts.csv"} style={{display:"none"}}/> : null}
                 { showProduct && <div>
                     <center><div className="col">
                         <button className="button rounded-corners disabled"><strong>EAN: </strong>{product.ean}</button>
@@ -103,9 +103,9 @@ function SearchProduct(props) {
                         <button className="button rounded-corners disabled"><strong>Name: </strong>{product.name}</button>
                     </div></center>
                     <center><div className="col">
-                        <button className="button rounded-corners disabled"><strong>Brand: </strong>{product.brand}</button>
+                        <button className="button rounded-corners disabled mb-3"><strong>Brand: </strong>{product.brand}</button>
                     </div></center>
-                    <Button variant="primary" className="editButton mb-3" onClick={handleUpdateClick} >Edit</Button>
+                    {props.role === 'Manager' ? <Button variant="primary" className="editButton mb-3" onClick={handleUpdateClick} >Edit</Button> : null}
                 </div>}
             </Container>
         </Container>

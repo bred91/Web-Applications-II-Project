@@ -9,7 +9,7 @@ function Search() {
             <h1>Welcome to the Ticketing platform</h1>
         </>
     )
-    /*
+    /*I
     const [searchTerm, setSearchTerm] = useState("");
     const [allItems, setAllItems] = useState([]);
     const [matchedItems, setMatchedItems] = useState([]);

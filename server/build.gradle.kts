@@ -8,6 +8,7 @@ plugins {
 	kotlin("plugin.jpa") version "1.7.22"
 	id("org.jetbrains.kotlin.plugin.noarg") version "1.8.20"
 	id("org.jetbrains.kotlin.plugin.allopen") version "1.8.20"
+	id("org.jetbrains.kotlin.plugin.serialization") version "1.7.22"
 	id("com.google.cloud.tools.jib") version "3.3.1"
 	id("io.freefair.lombok") version "8.0.1"
 }
@@ -21,6 +22,7 @@ repositories {
 }
 
 dependencies {
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

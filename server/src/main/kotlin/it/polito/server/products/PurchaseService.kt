@@ -6,6 +6,7 @@ import it.polito.server.profiles.ProfileService
 import it.polito.server.profiles.toEntity
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.web.bind.annotation.PathVariable
 import java.util.*
 @Service
 class PurchaseService(private val purchaseRepository: IPurchaseRepository,
@@ -29,7 +30,6 @@ class PurchaseService(private val purchaseRepository: IPurchaseRepository,
         purchase.product=product?.toEntity()
         purchase.purchaseDate= Date()
         purchaseRepository.save(purchase)
-
     }
 
 
@@ -43,5 +43,7 @@ class PurchaseService(private val purchaseRepository: IPurchaseRepository,
         return purchaseRepository.save(purchaseEntity).toDTO()
     }
 
-
+    override fun verifyPurchase(ean: String, warrantyCode: String): PurchaseDTO?{
+        return purchaseRepository.findPurchaseByWarrantyCodeAndProduct_Id(warrantyCode, ean)?.toDTO()
+    }
 }

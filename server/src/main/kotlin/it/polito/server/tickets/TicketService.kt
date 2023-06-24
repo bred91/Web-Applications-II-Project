@@ -45,9 +45,26 @@ class TicketService (private val ticketRepository: ITicketRepository,
     }
 
 
-    @PreAuthorize("hasRole('ROLE_Manager')")
+    @PreAuthorize("hasAnyRole('ROLE_Manager', 'ROLE_Expert', 'ROLE_Client')")
     override fun getTickets(): List<TicketDTO> {
-        return ticketRepository.findAll().map { it.toDTO() }
+        val jwt = SecurityContextHolder.getContext().authentication.principal as Jwt
+        val userEmail = jwt.getClaim("email") as String
+        val auth = SecurityContextHolder.getContext().authentication
+        if (auth == null) {
+            throw AuthorizationServiceException("No authorization")
+        }
+        when {
+            auth.authorities.any { it.authority.equals("ROLE_Client")} -> {
+                return ticketRepository.findByCustomerEmail(userEmail).map { it.toDTO() }
+            }
+            auth.authorities.any { it.authority.equals("ROLE_Expert")} -> {
+                return ticketRepository.findByActualExpert_Email(userEmail).map { it.toDTO() }
+            }
+//            auth.authorities.any { it.authority.equals("ROLE_Manager")} -> {
+//                return ticketRepository.findAll().map { it.toDTO() }
+//            }
+            else -> return ticketRepository.findAll().map { it.toDTO() }
+        }
     }
 
 

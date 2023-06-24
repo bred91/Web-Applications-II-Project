@@ -35,5 +35,10 @@ class PurchaseController(private val purchaseService:PurchaseService) {
         return purchaseService.updatePurchase(id, purchase)
     }
 
+    @PostMapping("/API/purchases/verify")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun verifyPurchase(@Valid @RequestBody verifyPurchase: VerifyPurchaseDTO): PurchaseDTO?{
+        return purchaseService.verifyPurchase(verifyPurchase.ean, verifyPurchase.warrantyCode)
+    }
 
 }

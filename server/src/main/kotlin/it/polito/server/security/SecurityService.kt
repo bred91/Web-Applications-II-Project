@@ -1,18 +1,30 @@
 package it.polito.server.security
 
+
+import it.polito.server.employees.EmployeeDTO
+import it.polito.server.employees.EmployeeService
+import it.polito.server.employees.RoleService
+import it.polito.server.profiles.ProfileDTO
+import it.polito.server.profiles.ProfileService
+import org.keycloak.admin.client.Keycloak
 import org.keycloak.representations.idm.CredentialRepresentation
 import org.keycloak.representations.idm.UserRepresentation
 import org.springframework.http.*
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
+import org.springframework.util.LinkedMultiValueMap
+import org.springframework.util.MultiValueMap
+import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestTemplate
-import org.keycloak.admin.client.Keycloak
-import org.springframework.web.ErrorResponse
-import org.springframework.web.ErrorResponseException
 
 
 @Service
-class SecurityService(private val keycloak: Keycloak) : ISecurityService {
+class SecurityService(
+    private val keycloak: Keycloak,
+    private val employeeService: EmployeeService,
+    private val profileService: ProfileService,
+    private val roleService: RoleService
+) : ISecurityService {
 
     override fun login(loginRequestDTO: LoginRequestDTO): ResponseEntity<Any> {
         val url = "http://144.24.191.138:8081/realms/SpringBootKeycloak/protocol/openid-connect/token"
@@ -27,7 +39,9 @@ class SecurityService(private val keycloak: Keycloak) : ISecurityService {
 
         return try {
             val response = restTemplate.exchange(url, HttpMethod.POST, entity, TokenResponse::class.java)
-            ResponseEntity.ok(response.body?.access_token)
+            /*val json = Json
+            buildJsonObject { put("token", json.encodeToString(response.body?.access_token)) }*/
+            ResponseEntity.ok(response.body)
         } catch (ex: Exception) {
             ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials")
         }
@@ -37,8 +51,8 @@ class SecurityService(private val keycloak: Keycloak) : ISecurityService {
         val userRepresentation = UserRepresentation().apply {
             this.username = signUpRequestDTO.username
             this.email = signUpRequestDTO.email
-            this.firstName = signUpRequestDTO.firstName
-            this.lastName = signUpRequestDTO.lastName
+            this.firstName = signUpRequestDTO.name
+            this.lastName = signUpRequestDTO.surname
             isEnabled = true
             isEmailVerified = true
         }
@@ -60,6 +74,15 @@ class SecurityService(private val keycloak: Keycloak) : ISecurityService {
             return ResponseEntity.status(statusCode).body(responseBody)
         }
 
+        profileService.createProfile(
+            ProfileDTO(
+                email = signUpRequestDTO.email,
+                username = signUpRequestDTO.username,
+                name = signUpRequestDTO.name,
+                surname = signUpRequestDTO.surname,
+                phoneNumber = signUpRequestDTO.phoneNumber
+            )
+        )
 
         return try {
             val id = keycloak.realm("SpringBootKeycloak").users().search(signUpRequestDTO.username).first().id
@@ -71,6 +94,26 @@ class SecurityService(private val keycloak: Keycloak) : ISecurityService {
         }
     }
 
+    override fun logout(logoutRequestDTO: LogoutRequestDTO): ResponseEntity<Any> {
+        val url = "http://144.24.191.138:8081/realms/SpringBootKeycloak/protocol/openid-connect/logout"
+        val restTemplate = RestTemplate()
+
+        val headerValues: MultiValueMap<String, String> = LinkedMultiValueMap<String, String>()
+        headerValues.add("Authorization", "Bearer ${logoutRequestDTO.accessToken}")
+        val headers = HttpHeaders(headerValues)
+        headers.contentType = MediaType.APPLICATION_FORM_URLENCODED
+
+        val body = "grant_type=password&client_id=springboot-keycloak-client&refresh_token=${logoutRequestDTO.refreshToken}"
+        val entity = HttpEntity(body, headers)
+
+        return try {
+            restTemplate.postForEntity(url, entity, Object::class.java)
+            ResponseEntity.ok(Unit)
+        } catch (e: RestClientException) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.message!!)
+        }
+    }
+
 
     @PreAuthorize("hasRole('ROLE_Manager')")
     override fun createExpert(signUpRequestDTO: SignUpRequestDTO): ResponseEntity<Any> {
@@ -78,8 +121,8 @@ class SecurityService(private val keycloak: Keycloak) : ISecurityService {
         val expertRepresentation = UserRepresentation().apply {
             this.username = signUpRequestDTO.username
             this.email = signUpRequestDTO.email
-            this.firstName = signUpRequestDTO.firstName
-            this.lastName = signUpRequestDTO.lastName
+            this.firstName = signUpRequestDTO.name
+            this.lastName = signUpRequestDTO.surname
             isEnabled = true
             isEmailVerified = true
         }
@@ -101,6 +144,16 @@ class SecurityService(private val keycloak: Keycloak) : ISecurityService {
             return ResponseEntity.status(statusCode).body(responseBody)
         }
 
+        employeeService.createEmployee(
+            EmployeeDTO(
+                id = null,
+                name = signUpRequestDTO.name,
+                surname = signUpRequestDTO.surname,
+                email = signUpRequestDTO.email,
+                role = roleService.getRoleById(2)
+            )
+        )
+
         return try {
             val id = keycloak.realm("SpringBootKeycloak").users().search(signUpRequestDTO.username).first().id
             val userResource =  keycloak.realm("SpringBootKeycloak").users().get(id)
@@ -109,8 +162,5 @@ class SecurityService(private val keycloak: Keycloak) : ISecurityService {
         }catch (e: Exception){
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.message!!)
         }
-
-
     }
-
 }
