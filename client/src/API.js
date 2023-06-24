@@ -242,8 +242,30 @@ const verifyPurchase = async(token, ean, warrantyCode) => {
 }
 
 
+const fetchMessages = async(token, ticketId) => {
+    const res = await fetch(`/chat/${ticketId}/messages`,{
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        }
+    );
+    const allMessages = await res.json();
+    if(res.ok){
+        return allMessages;
+    }else{
+        throw allMessages;
+    }
+}
+
+
 export{
     updateProfile, getProfiles, createProfile, getProfileByEmail,
     getProducts, getProductByEan, createProduct, updateProduct,
-    login, logout, getTickets, createExpert, createTicket, verifyPurchase
+    login, logout, getTickets, createExpert, createTicket, verifyPurchase,
+    fetchMessages
 }
+
+
+
+
