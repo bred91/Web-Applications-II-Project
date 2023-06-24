@@ -44,7 +44,7 @@ function App() {
                     {isLoggedIn && role==='Manager' ? <Route path="/createProduct" element={<CreateProduct token={accessToken} />} /> : null}
                     {isLoggedIn && role==='Manager' ? <Route path="/updateProduct" element={<UpdateProductForm token={accessToken} product={product} setProduct={setProduct}/>} /> : null}
                     {isLoggedIn ? <Route path="/tickets" element={<Tickets accessToken={accessToken} role={role}/>}/> : null}
-                    {isLoggedIn ? <Route path="/ticket/:ticketId" element={<Chat accessToken={accessToken} profile={profile} role={role}/>}/> : null}
+                    {isLoggedIn ? <Route path="/ticket/:ticketId" element={<Chat accessToken={accessToken} user={user} role={role}/>}/> : null}
                     {isLoggedIn && role==='Client' ? <Route path="/createTicket" element={<CreateTicket token={accessToken}/>} /> : null}
                     <Route path='*' element={<NotFoundRoute />} />
                 </Routes>

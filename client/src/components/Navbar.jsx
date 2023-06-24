@@ -43,6 +43,7 @@ function TSNavbar(props) {
             {props.isLoggedIn ?
                 <>
                   <Navbar.Text className="mx-2"> Signed in as: {props.user.name} </Navbar.Text>
+                  <Navbar.Text className="mx-2">Role: {props.role}</Navbar.Text>
                   <Button className="btn btn-danger mx-1" onClick={() => handleLogout()}>
                     Logout
                   </Button>

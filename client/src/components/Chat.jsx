@@ -33,9 +33,9 @@ function Chat(props){
         <div>
             {messages.map((message) => {
                 return <MessageBox key={message.sentTS}
-                    position={message.senderId === props.profile.email ? 'right' : 'left'}
+                    position={message.senderId === props.user.email ? 'right' : 'left'}
                     text={message.content.text}
-                    title={message.senderId === props.profile.email ? 'You' : message.senderId}
+                    title={message.senderId === props.user.email ? 'You' : message.senderId}
                     date={message.sentTS}
                     type={'text'}
 

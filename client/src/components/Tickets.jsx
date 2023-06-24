@@ -1,149 +1,164 @@
-import React, { useState, useEffect, Component } from "react";
-import { Container, Table} from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Container, Spinner } from "react-bootstrap";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { DataTable, Text, Box, Select } from "grommet";
+import { FormDown } from "grommet-icons";
+import { CircleSpinner } from "react-spinners-kit";
 import * as API from "../API";
-import {toast} from "react-toastify";
-import {useNavigate} from "react-router-dom";
-import { DataTable, Box, Meter, Text } from 'grommet';
-
-
-
-/*function Ticket(props) {
-    const [tickets, setTickets] = useState([]);
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        API.getTickets(props.accessToken)
-            .then((tick) => setTickets(tick))
-            .catch((err) => toast.error(err.message));
-    }, []);
-
-    const handleClick = (id) => {
-        navigate('/ticket/' + id);
-    }
-
-    const size = props.role !== 'Client' ? "col-sm-8" : "col-sm-7";
-    return (
-        <Container className="mt-5">
-                <Table striped bordered hover className={size}>
-                    <thead>
-                    <tr>
-                        <th>Product</th>
-                        <th>Creation Date</th>
-                        <th>State</th>
-                        <th>Last Modification</th>
-                        {props.role !== 'Client' ?
-                            <th>Priority</th>
-                            : null}
-                        <th>Assigned To</th>
-                        <th>Warranty Expiration Date</th>
-                        <th>Open</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {tickets.map((ticket) =>
-                        <tr key={ticket.id} onClick={handleClick(ticket.id)}>
-                            <td>{ticket.purchase.product.name}</td>
-                            <td>{ticket.creationDate}</td>
-                            <td>{ticket.state.name.replace("_"," ")}</td>
-                            <td>{ticket.lastModification.replace("T","  ").split(".")[0].split(":").slice(0,-1).join().replace(",",":")}</td>
-                            {props.role !== 'Client' ?
-                                <td>{ticket.priorityLevel ? ticket.priorityLevel.name : ''}</td>
-                                : null}
-                            <td>{ticket.actualExpert ? ticket.actualExpert.name + " " + ticket.actualExpert.surname : ''}</td>
-                            <td>{ticket.purchase.expiringDate}</td>
-                            <td>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="cornflowerblue"
-                                     className="bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
-                                    <path
-                                        d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
-                                </svg>
-                                {/!*<Button variant={"outline-light"}><i className="bi bi-arrow-right" style={{color: "cornflowerblue"}}></i></Button>*!/}
-                            </td>
-                        </tr>
-                    )}
-                    </tbody>
-                </Table>
-        </Container>
-    );
-}*/
 
 const columns = [
     {
-        property: 'id',
+        property: "id",
         header: <Text>ID</Text>,
         primary: true,
         visible: false,
     },
     {
-        property: 'product',
-        header: 'Product',
+        property: "product",
+        header: "Product",
     },
     {
-        property: 'creationDate',
+        property: "creationDate",
         header: <Text>Creation Date</Text>,
     },
     {
-        property: 'name',
-        header: 'Name',
+        property: "name",
+        header: "State",
+        render: (data) => (
+            <Box
+                pad="small"
+                background="light-4"
+                round="small"
+                style={{ pointerEvents: "none" }}
+            >
+                <Text>{data.name}</Text>
+            </Box>
+        ),
     },
     {
-        property: 'lastModification',
-        header: 'Last Modification Date',
+        property: "lastModification",
+        header: "Last Modified",
     },
     {
-        property: 'priorityLevel',
-        header: 'Priority Level',
+        property: "priorityLevel",
+        header: "Priority Level",
+        render: (data) => (
+            <Text color={getPriorityColor(data.priorityLevel)}>{data.priorityLevel}</Text>
+        ),
     },
     {
-        property: 'actualExpert',
-        header: 'Actual Expert',
+        property: "actualExpert",
+        header: "Expert",
     },
     {
-        property: 'expiringDate',
-        header: 'Warranty Expiration Date',
+        property: "expiringDate",
+        header: "Warranty Expiration",
     },
 ];
 
-function Tickets(props){
+const getPriorityColor = (priority) => {
+    switch (priority) {
+        case "HIGH":
+            return "red";
+        case "MEDIUM":
+            return "orange";
+        case "LOW":
+            return "green";
+        default:
+            return "black";
+    }
+};
+
+const stateOptions = [
+    { value: "", label: "All" },
+    { value: "OPEN", label: "Open" },
+    { value: "IN_PROGRESS", label: "In Progress" },
+    { value: "RESOLVED", label: "Resolved" },
+    { value: "CLOSED", label: "Closed" },
+    { value: "REOPENED", label: "Reopened" },
+];
+
+function Tickets(props) {
     const [tickets, setTickets] = useState([]);
+    const [filter, setFilter] = useState("");
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
         API.getTickets(props.accessToken)
-            .then((tick) => setTickets(tick))
-            .catch((err) => toast.error(err.message));
+            .then((tick) => {
+                setTickets(tick);
+                setLoading(false);
+            })
+            .catch((err) => {
+                toast.error(err.message);
+                setLoading(false);
+            });
     }, []);
 
     const handleClick = (id) => {
-        //console.log(id)
-        navigate('/ticket/' + id);
-    }
-        return (
-            <Container className="mt-5">
+        navigate("/ticket/" + id);
+    };
+
+    const handleFilterChange = (event) => {
+        setFilter(event.option.value);
+    };
+
+    const filteredTickets = filter
+        ? tickets.filter((ticket) => ticket.state.name === filter)
+        : tickets;
+
+    return (
+        <Container className="mt-5">
+            <Box align="end" margin={{ bottom: "medium" }}>
+                <Select
+                    placeholder="Filter by State"
+                    value={filter}
+                    options={stateOptions}
+                    onChange={handleFilterChange}
+                    icon={<FormDown />}
+                    style={{ minWidth: "200px" }}
+                />
+            </Box>
+
+            {loading ? (
+                <Box align="center" margin={{ vertical: "medium" }}>
+                    <CircleSpinner size={60} color="#5f8dd3" />
+                </Box>
+            ) : (
                 <DataTable
-                    onClickRow={({datum}) => handleClick(datum.id)}
+                    onClickRow={({ datum }) => handleClick(datum.id)}
                     sortable={true}
                     search={true}
-                    size='big'
+                    size="medium"
                     columns={columns}
-                    data={
-                        tickets.map((ticket) => {
-                            return {
-                                id: ticket.id,
-                                product: ticket.purchase.product.name,
-                                creationDate: ticket.creationDate,
-                                name: ticket.state.name.replace("_"," "),
-                                lastModification: ticket.lastModification.replace("T","  ").split(".")[0].split(":").slice(0,-1).join().replace(",",":"),
-                                priorityLevel: ticket.priorityLevel ? ticket.priorityLevel.name : '',
-                                actualExpert: ticket.actualExpert ? ticket.actualExpert.name + " " + ticket.actualExpert.surname : '',
-                                expiringDate: ticket.purchase.expiringDate
-                            }
-                        })
-                    }
+                    data={filteredTickets.map((ticket) => {
+                        return {
+                            id: ticket.id,
+                            product: ticket.purchase.product.name,
+                            creationDate: ticket.creationDate,
+                            name: ticket.state.name.replace("_", " "),
+                            lastModification: ticket.lastModification
+                                .replace("T", "  ")
+                                .split(".")[0]
+                                .split(":")
+                                .slice(0, -1)
+                                .join()
+                                .replace(",", ":"),
+                            priorityLevel: ticket.priorityLevel
+                                ? ticket.priorityLevel.name
+                                : "",
+                            actualExpert: ticket.actualExpert
+                                ? ticket.actualExpert.name + " " + ticket.actualExpert.surname
+                                : "",
+                            expiringDate: ticket.purchase.expiringDate,
+                        };
+                    })}
                 />
-            </Container>
-        );
-
+            )}
+        </Container>
+    );
 }
 
 export default Tickets;

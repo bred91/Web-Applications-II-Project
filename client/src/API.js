@@ -68,6 +68,22 @@ const login = async(username, password) => {
     else return res.json();
 }
 
+const getInfo = async(token) => {
+    const res = await fetch('/info',
+        {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+    const user = await res.json();
+    if(res.ok){
+        return user;
+    }else{
+        throw user;
+    }
+}
+
 const logout = async(accessToken, refreshToken) => {
     const res = await fetch( "/logout2", {
         method: "POST",
@@ -259,11 +275,12 @@ const fetchMessages = async(token, ticketId) => {
 }
 
 
+
 export{
     updateProfile, getProfiles, createProfile, getProfileByEmail,
     getProducts, getProductByEan, createProduct, updateProduct,
     login, logout, getTickets, createExpert, createTicket, verifyPurchase,
-    fetchMessages
+    fetchMessages, getInfo
 }
 
 
