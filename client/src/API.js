@@ -274,13 +274,39 @@ const fetchMessages = async(token, ticketId) => {
     }
 }
 
+const createMessage = async(token, ticketId, formData) => {
+    const res = await fetch(`/chat/${ticketId}/messages`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type":"multipart/form-data"
+            },
+            body:formData
+        }
+    );
+    //const allMessages = await res.json();
+    if(res.ok){
+        return true;
+    }else{
+        throw false;
+    }
+}
+
+
+
+
+
+
+
+
+
 
 
 export{
     updateProfile, getProfiles, createProfile, getProfileByEmail,
     getProducts, getProductByEan, createProduct, updateProduct,
     login, logout, getTickets, createExpert, createTicket, verifyPurchase,
-    fetchMessages, getInfo
+    fetchMessages, getInfo, createMessage
 }
 
 
