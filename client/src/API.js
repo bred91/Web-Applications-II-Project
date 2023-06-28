@@ -279,7 +279,7 @@ const createMessage = async(token, ticketId, formData) => {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${token}`,
-                "Content-Type":"multipart/form-data"
+                //"Content-Type":"multipart/form-data"
             },
             body:formData
         }
@@ -288,7 +288,7 @@ const createMessage = async(token, ticketId, formData) => {
     if(res.ok){
         return true;
     }else{
-        throw false;
+        throw res;
     }
 }
 

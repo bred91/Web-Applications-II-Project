@@ -44,7 +44,8 @@ class MessageService(private val messageRepository: IMessageRepository,
             throw AuthorizationServiceException("The customer logged in is not the customer who has opened the ticket")
         }
 
-        val attachmentDTO = AttachmentDTO(file?.bytes, file?.name, file?.contentType)
+        
+        val attachmentDTO = AttachmentDTO(file?.bytes, file?.originalFilename, file?.contentType)
         val contentDTO = ContentDTO(text, attachmentDTO)
 
         val messageDTO = MessageDTO(Date(), contentDTO,userEmail, ticketId )
