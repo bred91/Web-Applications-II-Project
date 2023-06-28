@@ -49,6 +49,8 @@ dependencies {
 	implementation ("io.zipkin.reporter2:zipkin-reporter-brave")
 	// send logs by log Appender through URL
 	implementation ("com.github.loki4j:loki-logback-appender:1.4.0-rc2")
+	//implementation("org.webjars:stomp-websocket:2.3.4")
+	//implementation("org.springframework.boot:spring-boot-starter-websocket")
 	testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
 	testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
