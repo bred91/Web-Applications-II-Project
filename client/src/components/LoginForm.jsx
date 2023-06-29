@@ -47,7 +47,7 @@ function LoginForm(props) {
                     <h3>Login</h3>
                     <Form.Group controlId="email">
                         <Form.Label>Email</Form.Label>
-                        <Form.Control type='email' onChange={(event) => setEmail(event.target.value)} />
+                        <Form.Control  onChange={(event) => setEmail(event.target.value)} />
                     </Form.Group>
                     <Form.Group controlId="password">
                         <Form.Label>Password</Form.Label>

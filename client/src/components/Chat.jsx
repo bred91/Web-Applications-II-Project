@@ -177,30 +177,31 @@ function Chat(props){
                 </div>
             })
             }
-            <div>
-            <textarea
-                placeholder={"Type a message..."}
-                rows={3}
+            {
+                props.role!='Manager' && <div>
+                    <textarea
+                        placeholder={"Type a message..."}
+                        rows={3}
 
-                //type = 'text'
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-            />
-            <p></p>
-            <input
-                className={"input_file"}
-                type='file'
-               // referance={file}
-               // clear={()=> setFile(null)}
-                //value={file? file.name: ''}
-                onChange={(e) => setFile(e.target.files[0])}
+                        //type = 'text'
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
+                    />
+                    <p></p>
+                    <input
+                        className={"input_file"}
+                        type='file'
+                       // referance={file}
+                       // clear={()=> setFile(null)}
+                        //value={file? file.name: ''}
+                        onChange={(e) => setFile(e.target.files[0])}
 
-            />
-            </div>
-            <p></p>
-            <Button className={"sendButton"} text="Send" onClick={(e) => createMessage(e)} />
+                    />
 
-
+                    <p></p>
+                    <Button className={"sendButton"} text="Send" onClick={(e) => createMessage(e)} />
+                </div>
+            }
         </div>
     )
 }
