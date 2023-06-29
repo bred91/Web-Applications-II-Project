@@ -35,7 +35,7 @@ function Chat(props){
                 if(text) {
                     formData.append('text', text)
                 }
-                console.log(formData)
+
                 await API.createMessage(props.accessToken, ticketId, formData)
                 setText('')
                 setFile(null)
@@ -43,18 +43,16 @@ function Chat(props){
                 if (fileInput) {
                     fileInput.value = null;
                 }
-                console.log("FIN QUA CI SONO")
-                console.log(text)
-                console.log(file)
+
                 fetchMessages(props.accessToken, ticketId)
                     .then( allMessages => setMessages([...allMessages]))
-                    .catch((err) => toast.error(err.message));
+                    .catch((err) => toast.error(err, {position: "bottom-center", autoClose: 2000}));
             }
 
 
         }
          catch (error) {
-            console.log(error)
+             toast.error(error, {position: "bottom-center", autoClose: 2000});
          }
 
 
@@ -67,27 +65,7 @@ function Chat(props){
 
         <div>
             {messages.map((message) => {
-              /*  let blob = new Blob([message.content.attachment.content], {type:message.content.attachment.contentType})
-                let file =
-                    //URL.createObjectURL(
-                    new File([blob], `application`, {type:blob.type})
-            //)
 
-                if(message.content.attachment){
-                    let uri = message.content.attachment.content
-                    let type = message.content.attachment.contentType
-                    let t = "data:"+ type+";base64,"
-
-                    let x = t+uri
-                    let z = ''
-
-                    if(type.startsWith("image")){
-                        z = 'photo'
-                    } else {
-                        z = 'file'
-                    }
-                }
-*/
                 function base64ToBytes(base64) {
                     const binString = atob(base64);
                     return Uint8Array.from(binString, (m) => m.codePointAt(0));
@@ -113,7 +91,7 @@ function Chat(props){
 
                 return <div>
                     { message.content.attachment && <div>{
-                        (type=='file' || type=='photo') && <MessageBox key={message.sentTS}
+                        (type=='file' || type=='photo') && <MessageBox key={message.sentTS+message.content.attachment.contentType}
                     position={message.senderId === props.user.email ? 'right' : 'left'}
                     text={message.content.attachment.contentType.startsWith("image") || message.content.attachment.contentType.startsWith("video")? '' : message.content.attachment.filename}
                     title={message.senderId === props.user.email ? 'You' : message.senderId}
@@ -156,11 +134,7 @@ function Chat(props){
                             data={{
                                 //uri: "data:"+ message.content.attachment.contentType+";base64,"+message.content.attachment.content,
                                 audioURL: uri,
-                                // status: {
-                                //     click: true,
-                                //     loading: 0.5,
-                                //     download: true,
-                                // },
+
                             }}
                         />
                     }
@@ -187,8 +161,6 @@ function Chat(props){
                     <textarea
                         placeholder={"Type a message..."}
                         rows={3}
-
-                        //type = 'text'
                         value={text}
                         onChange={(e) => setText(e.target.value)}
                     />
@@ -196,9 +168,6 @@ function Chat(props){
                     <input
                         className={"input_file"}
                         type='file'
-                       // referance={file}
-                       // clear={()=> setFile(null)}
-                        //value={file? file.name: ''}
                         onChange={(e) => setFile(e.target.files[0])}
 
                     />

@@ -14,6 +14,11 @@ import org.springframework.web.bind.annotation.*
 @Observed
 class TicketController(private val ticketService: ITicketService) {
 
+    @GetMapping("/API/tickets/{id}")
+    fun getTicket(@PathVariable id: Long):TicketDTO? {
+        return ticketService.getTicketById(id)
+    }
+
     @GetMapping("/API/tickets")
     fun getTickets():List<TicketDTO> {
         // We left this log just to test the custom log message functionality
@@ -21,10 +26,6 @@ class TicketController(private val ticketService: ITicketService) {
         return ticketService.getTickets()
     }
 
-    @GetMapping("/API/tickets/{id}")
-    fun getTicket(@PathVariable id: Long):TicketDTO? {
-        return ticketService.getTicketById(id)
-    }
 
     /*@PostMapping("/API/tickets/createIssue")
     @ResponseStatus(HttpStatus.CREATED)

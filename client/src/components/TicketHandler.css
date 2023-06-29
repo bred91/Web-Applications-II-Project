@@ -1,0 +1,38 @@
+.similar-button {
+    border-radius: 10px;
+    text-align: center;
+    width: 80%;
+    border-bottom: 1px #ccc solid;
+    padding: .5rem 1rem;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    background-color: #D3D3D3;
+}
+
+.action-button {
+    border-radius: 10px;
+    color: white;
+    text-align: center;
+    width: 80%;
+    border-bottom: 1px #ccc solid;
+    padding: .5rem 1rem;
+    padding-top: 1rem;
+    margin: 1rem auto;
+    margin-top: 1rem;
+    background-color: #5480e7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.action-button:hover {
+    background-color: #275fe1;
+}
+
+.form-select {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+}

@@ -274,6 +274,21 @@ const fetchMessages = async(token, ticketId) => {
     }
 }
 
+const fetchExperts = async(token) => {
+    const res = await fetch(`/API/employees`,{
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        }
+    );
+    const allEmployees = await res.json();
+    if(res.ok){
+        return allEmployees;
+    }else{
+        throw allEmployees;
+    }
+}
 const createMessage = async(token, ticketId, formData) => {
     const res = await fetch(`/chat/${ticketId}/messages`, {
             method: "POST",
@@ -291,8 +306,109 @@ const createMessage = async(token, ticketId, formData) => {
         throw res;
     }
 }
+const fetchTicket = async(token, ticketId) => {
+    const res = await fetch(`/API/tickets/${ticketId}`,{
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        }
+    );
+    const ticket = await res.json();
+    if(res.ok){
+        return ticket;
+    }else{
+        throw ticket;
+    }
+}
 
+const priorityLevelMap = {0: "LOW", 1: "MEDIUM", 2:"HIGH"};
 
+const startProgress = async(token, ticketId, employee_id, priorityLevelId) => {
+    const res = await fetch( "/API/tickets/startProgress/"+ticketId, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ employee_id: employee_id, priorityLevel: {id: priorityLevelId, name: priorityLevelMap[priorityLevelId]}}),
+    });
+
+    if(!res.ok){
+        const errorMessage = await res.json();
+        //console.log(errorMessage);
+        throw errorMessage.detail;
+    }
+    else return null;
+}
+
+const stopProgress = async(token, ticketId) => {
+    const res = await fetch( "/API/tickets/stopProgress/"+ticketId, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+
+    });
+
+    if(!res.ok){
+        const errorMessage = await res.json();
+        throw errorMessage.detail;
+    }
+    else return null;
+}
+
+const reopenIssue = async(token, ticketId) => {
+    const res = await fetch( "/API/tickets/reopenIssue/"+ticketId, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+
+    });
+
+    if(!res.ok){
+        const errorMessage = await res.json();
+        throw errorMessage.detail;
+    }
+    else return null;
+}
+
+const resolveIssue = async(token, ticketId) => {
+    const res = await fetch( "/API/tickets/resolveIssue/"+ticketId, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+
+    });
+
+    if(!res.ok){
+        const errorMessage = await res.json();
+        throw errorMessage.detail;
+    }
+    else return null;
+}
+
+const closeIssue = async(token, ticketId) => {
+    const res = await fetch( "/API/tickets/closeIssue/"+ticketId, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+
+    });
+
+    if(!res.ok){
+        const errorMessage = await res.json();
+        throw errorMessage.detail;
+    }
+    else return null;
+}
 
 
 
@@ -306,7 +422,8 @@ export{
     updateProfile, getProfiles, createProfile, getProfileByEmail,
     getProducts, getProductByEan, createProduct, updateProduct,
     login, logout, getTickets, createExpert, createTicket, verifyPurchase,
-    fetchMessages, getInfo, createMessage
+    fetchMessages, getInfo, createMessage, fetchTicket, fetchExperts, startProgress, stopProgress,
+    reopenIssue, resolveIssue, closeIssue
 }
 
 
