@@ -6,12 +6,12 @@ import {useNavigate} from "react-router-dom";
 import { DataTable, Box, Meter, Text } from 'grommet';
 
 const columns = [
-    /*{
+    {
         property: 'id',
         header: <Text>ID</Text>,
         primary: true,
         visible: false,
-    },*/
+    },
     {
         property: 'product',
         header: 'Product',
@@ -69,7 +69,7 @@ function Tickets(props){
                     data={
                         tickets.map((ticket) => {
                             return {
-                                /*id: ticket.id,*/
+                                id: ticket.id,
                                 product: ticket.purchase.product.name,
                                 creationDate: ticket.creationDate,
                                 name: ticket.state.name.replace("_"," "),
