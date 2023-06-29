@@ -24,28 +24,33 @@ function Chat(props){
     const createMessage = async(e) => {
         e.preventDefault()
         try {
-            const formData = new FormData()
 
-            if(file) {
-                formData.append('file', file)
+            if(!(!file && !text)){
+
+                const formData = new FormData()
+
+                if(file) {
+                    formData.append('file', file)
+                }
+                if(text) {
+                    formData.append('text', text)
+                }
+                console.log(formData)
+                await API.createMessage(props.accessToken, ticketId, formData)
+                setText('')
+                setFile(null)
+                const fileInput = document.querySelector('.input_file');
+                if (fileInput) {
+                    fileInput.value = null;
+                }
+                console.log("FIN QUA CI SONO")
+                console.log(text)
+                console.log(file)
+                fetchMessages(props.accessToken, ticketId)
+                    .then( allMessages => setMessages([...allMessages]))
+                    .catch((err) => toast.error(err.message));
             }
-            if(text) {
-                formData.append('text', text)
-            }
-            console.log(formData)
-            await API.createMessage(props.accessToken, ticketId, formData)
-            setText('')
-            setFile(null)
-            const fileInput = document.querySelector('.input_file');
-            if (fileInput) {
-                fileInput.value = null;
-            }
-            console.log("FIN QUA CI SONO")
-            console.log(text)
-            console.log(file)
-            fetchMessages(props.accessToken, ticketId)
-                .then( allMessages => setMessages([...allMessages]))
-                .catch((err) => toast.error(err.message));
+
 
         }
          catch (error) {

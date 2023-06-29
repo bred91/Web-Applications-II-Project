@@ -8,6 +8,9 @@ import it.polito.server.tickets.exception.TicketNotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import it.polito.server.tickets.messages.IMessageRepository
+import org.springframework.http.HttpStatus
+import org.springframework.http.ProblemDetail
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.jwt.Jwt
@@ -31,6 +34,10 @@ class MessageService(private val messageRepository: IMessageRepository,
 
     @PreAuthorize("hasAnyRole('ROLE_Client', 'ROLE_Expert')")
     override fun createMessage(file: MultipartFile?, text: String?, ticketId: Long) {
+
+//        if (file==null && text==null){
+//            throw
+//        }
 
         val ticket = ticketRepository.findByIdOrNull(ticketId) ?: throw TicketNotFoundException("Ticket with id $ticketId not found!")
 
