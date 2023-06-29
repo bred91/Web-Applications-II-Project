@@ -102,6 +102,38 @@ const getProfileByEmail = async(token, email) => {
     }
 }
 
+const getPerformance = async(token) => {
+    const res = await fetch('/API/performance',{
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+    });
+
+    const performances = await res.json();
+    if(res.ok){
+        return performances;
+    }else{
+        throw performances;
+    }
+}
+
+const getExpertsPerformance = async(token) => {
+    const res = await fetch('/API/performance/experts',{
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    });
+
+    const employees = await res.json();
+    if(res.ok){
+        return employees;
+    }else{
+        throw employees;
+    }
+}
+
 // Products API
 const getProducts = async(token) => {
     const res = await fetch('/API/products', {
@@ -243,7 +275,7 @@ const verifyPurchase = async(token, ean, warrantyCode) => {
 
 
 export{
-    updateProfile, getProfiles, createProfile, getProfileByEmail,
-    getProducts, getProductByEan, createProduct, updateProduct,
+    updateProfile, getProfiles, createProfile, getProfileByEmail, getExpertsPerformance,
+    getProducts, getProductByEan, createProduct, updateProduct, getPerformance,
     login, logout, getTickets, createExpert, createTicket, verifyPurchase
 }

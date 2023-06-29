@@ -29,7 +29,7 @@ function CreateExpert(props) {
         <Container className="pt-3">
             <Container className="container-wrapper">
                 <Form className='p-5' onSubmit={handleSubmit}>
-                    <h3>Sign Up</h3>
+                    <h3>Create an Expert</h3>
                     <Form.Group controlId="email">
                         <Form.Label>Email</Form.Label>
                         <Form.Control type='email' onChange={(event) => setEmail(event.target.value)} />

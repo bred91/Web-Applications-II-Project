@@ -32,6 +32,11 @@ function ManagerNavbar(){
                     Create Expert
                 </Nav.Link>
             </Nav.Item>
+            <Nav.Item>
+                <Nav.Link as={Link} to="/monitoring">
+                    Monitoring
+                </Nav.Link>
+            </Nav.Item>
         </Nav>
     )
 }

@@ -1,12 +1,9 @@
 package it.polito.server.employees.performance
 
-import it.polito.server.employees.EmployeeDTO
-import it.polito.server.employees.EmployeeService
 import it.polito.server.employees.IEmployeeService
 import it.polito.server.tickets.ITicketRepository
 import it.polito.server.tickets.enums.TimeEnum
 import it.polito.server.tickets.enums.toDate
-import jakarta.persistence.EntityManager
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 
@@ -15,7 +12,7 @@ class PerformanceService(
     private val ticketRepository: ITicketRepository,
     private val employeeService: IEmployeeService
 ): IPerformanceService {
-    private val timeslot = TimeEnum.LAST_MONTH.toDate()
+    private val timeslot = TimeEnum.LAST_QUARTER.toDate()
 
     @PreAuthorize("hasRole('ROLE_Manager')")
     override fun getPerformance(): PerformanceDTO {
@@ -36,11 +33,14 @@ class PerformanceService(
     private fun getPerformanceDTO(expertId: Long? = null): PerformanceDTO{
         val stateCount: Any
         val ticketsCounter: Any
+        val name: String
         if (expertId == null){
+            name = "Created"
             stateCount = ticketRepository.getStateCountFromDate()
             ticketsCounter = ticketRepository.getTicketsCounters(timeslot)
         }
         else{
+            name = "In Progress"
             stateCount = ticketRepository.getStateCountFromDate(expertId)
             ticketsCounter = ticketRepository.getTicketsCounters(timeslot, expertId)
         }
@@ -56,10 +56,10 @@ class PerformanceService(
             (ticketsCounter as Array<out Any>).mapIndexed { id, v ->
                 StateCount(
                     when(id){
-                        0 -> "ticketsCreated"
-                        1 -> "ticketsClosed"
-                        2 -> "ticketsResolved"
-                        else -> "ticketsReopened"
+                        0 -> name
+                        1 -> "Closed"
+                        2 -> "Resolved"
+                        else -> "Reopened"
                     },
                     v as Long
                 )

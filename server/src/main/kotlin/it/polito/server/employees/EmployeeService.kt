@@ -1,11 +1,11 @@
 package it.polito.server.employees
 
-import it.polito.server.Exception.NotFoundException
 import it.polito.server.employees.exception.EmployeeNotFoundException
 import it.polito.server.tickets.ITicketRepository
 import it.polito.server.tickets.TicketDTO
 import it.polito.server.tickets.toDTO
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 
 @Service
@@ -40,6 +40,7 @@ class EmployeeService(
         return ticketRepository.findByActualExpertId(id).map { it.toDTO() }
     }
 
+    @PreAuthorize("hasRole('ROLE_Manager')")
     override fun getAllExperts(): List<EmployeeDTO> {
         return employeeRepository.getEmployeesByRole_Id(RoleEnum.EXPERT.toLong()).map { it.toDTO() }
     }

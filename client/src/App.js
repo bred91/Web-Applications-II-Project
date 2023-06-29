@@ -8,7 +8,7 @@ import UpdateProfileForm from './components/UpdateProfileForm';
 import SearchProduct from './components/SearchProduct';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
-import {createContext, useState} from 'react';
+import {useState} from 'react';
 import CreateProduct from "./components/CreateProduct";
 import UpdateProductForm from "./components/UpdateProductForm";
 import LoginForm from "./components/LoginForm";
@@ -16,6 +16,7 @@ import Tickets from "./components/Tickets";
 import CreateExpert from "./components/CreateExpert";
 import CreateTicket from "./components/CreateTicket"
 import NotFoundRoute from "./components/NotFound";
+import Monitoring from "./components/Monitoring";
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -42,6 +43,7 @@ function App() {
                     {isLoggedIn && role==='Manager' ? <Route path="/createExpert" element={<CreateExpert token={accessToken} />} /> : null}
                     {isLoggedIn && role==='Manager' ? <Route path="/createProduct" element={<CreateProduct token={accessToken} />} /> : null}
                     {isLoggedIn && role==='Manager' ? <Route path="/updateProduct" element={<UpdateProductForm token={accessToken} product={product} setProduct={setProduct}/>} /> : null}
+                    {isLoggedIn && role==='Manager' ? <Route path="/monitoring" element={<Monitoring accessToken={accessToken} user={user}/>} /> : null}
                     {isLoggedIn ? <Route path="/tickets" element={<Tickets accessToken={accessToken} role={role}/>}/> : null}
                     {isLoggedIn && role==='Client' ? <Route path="/createTicket" element={<CreateTicket token={accessToken}/>} /> : null}
                     <Route path='*' element={<NotFoundRoute />} />
