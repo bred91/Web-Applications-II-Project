@@ -9,4 +9,5 @@ interface IEmployeeService {
     fun updateEmployee(id: Long, employee: EmployeeDTO): EmployeeDTO?
 
     fun getTickets(id: Long) : List<TicketDTO>
+    fun getAllExperts(): List<EmployeeDTO>
 }

@@ -39,4 +39,8 @@ class EmployeeService(
         }
         return ticketRepository.findByActualExpertId(id).map { it.toDTO() }
     }
+
+    override fun getAllExperts(): List<EmployeeDTO> {
+        return employeeRepository.getEmployeesByRole_Id(RoleEnum.EXPERT.toLong()).map { it.toDTO() }
+    }
 }

@@ -20,11 +20,13 @@ interface ITicketRepository : JpaRepository<Ticket, Long> {
 
     @Query("select s.name as state, count(t.id) as count " +
             "from state s " +
-            "left join (select * from ticket t where t.last_modification > :fromDate) " +
-            "t on s.id = t.state_id " +
-            "group by s.id",
+            "left join ticket t " +
+            "on s.id = t.state_id " +
+            "where s.name <> 'CLOSED' " +
+            "group by s.id " +
+            "order by s.id",
         nativeQuery = true)
-    fun getStateCountFromDate(fromDate: Date): List<Any>
+    fun getStateCountFromDate(): List<Any>
 
     @Query("select " +
             "(select count(*) as ticketsClosed " +
@@ -48,10 +50,35 @@ interface ITicketRepository : JpaRepository<Ticket, Long> {
             nativeQuery = true)
     fun getTicketsCounters(fromDate: Date): Any
 
-    @Query("select (select count(*) as ticketsClosed " +
+    @Query("select s.name as state, count(t.id) as count " +
+            "from state s " +
+            "left join (select * from ticket t where t.actual_expert_id = :expertId) " +
+            "t on s.id = t.state_id " +
+            "where s.name <> 'CLOSED' " +
+            "group by s.id " +
+            "order by s.id",
+        nativeQuery = true)
+    fun getStateCountFromDate(expertId: Long): List<Any>
+
+    @Query("select " +
+            "(select count(*) as ticketsClosed " +
             "from ticket t " +
-            "inner join state s on t.state_id = s.id " +
-            "where t.last_modification > :fromDate and s.name NOT IN ('CLOSED','RESOLVED')) as ticketsWorking",
-            nativeQuery = true)
-    fun getTicketsWorking(fromDate: Date): Any
+            "where creation_date > :fromDate and t.actual_expert_id = :expertId) as ticketsCreated, " +
+            "(select count(*) as ticketsClosed " +
+            "from ticket t " +
+            "inner join history h on t.id = h.ticket_id " +
+            "inner join state s on h.state_id = s.id " +
+            "where h.timestamp > :fromDate and s.name = 'CLOSED' and t.actual_expert_id = :expertId) as ticketsClosed, " +
+            "(select count(*) as ticketsResolved " +
+            "from ticket t " +
+            "inner join history h on t.id = h.ticket_id " +
+            "inner join state s on h.state_id = s.id " +
+            "where h.timestamp > :fromDate and s.name = 'RESOLVED' and t.actual_expert_id = :expertId) as ticketsResolved, " +
+            "(select count(*) as ticketsResolved " +
+            "from ticket t " +
+            "inner join history h on t.id = h.ticket_id " +
+            "inner join state s on h.state_id = s.id " +
+            "where h.timestamp > :fromDate and s.name = 'REOPENED' and t.actual_expert_id = :expertId) as ticketsReopened",
+        nativeQuery = true)
+    fun getTicketsCounters(fromDate: Date, expertId: Long): Any
 }

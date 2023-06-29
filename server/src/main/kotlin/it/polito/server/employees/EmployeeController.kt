@@ -42,5 +42,8 @@ class EmployeeController(private val employeeService: EmployeeService) {
         return employeeService.getTickets(id)
     }
 
-
+    @GetMapping("/API/employees/experts")
+    fun getAllExperts(): List<EmployeeDTO>{
+        return employeeService.getAllExperts()
+    }
 }

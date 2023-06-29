@@ -5,4 +5,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface IEmployeeRepository: JpaRepository<Employee, Long> {
+    fun getEmployeesByRole_Id(id: Long): List<Employee>
 }
