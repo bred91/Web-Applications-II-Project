@@ -56,7 +56,7 @@ function Monitoring(props){
                             .filter(x => (selectedExpert != 0 && x.state !== 'OPEN')
                                 || (selectedExpert == 0 && x.state !== 'CLOSED'))
                                 .map((element,idx) =>
-                                <Col>
+                                <Col key={idx}>
                                     <Card className="d-flex max-w-xs mx-auto mb-2 align-items-center" decoration="top"
                                           decorationColor={element.state === 'REOPENED' ? "red"
                                               : element.state === 'OPEN' ? "yellow"
@@ -72,30 +72,33 @@ function Monitoring(props){
                 </Row>
                 <Row className="mb-3">
                     <Col className="align-content-center mx-auto mb-3">
-                        <Card className="max-w-lg mx-auto">
-                            <Title>Last Quarter Analysis</Title>
-                            <Flex className="mt-4">
-                                <Text>
-                                    <Bold>State</Bold>
-                                </Text>
-                                <Text>
-                                    <Bold>Count</Bold>
-                                </Text>
-                            </Flex>
-                            <BarList data={
-                                performance && experts ?
-                                    [{employeeDTO: {id: 0, name: "All"}, performanceDTO: performance}, ...experts]
-                                        .filter(x => x.employeeDTO.id === parseInt(selectedExpert))[0].performanceDTO
-                                        .ticketsCounter
-                                        .map((element,idx) =>
-                                        Object.create({
-                                            name: element.state.replace("tickets","").toUpperCase(),
-                                            value: element.count,
-                                            key: idx
-                                        })
-                                    ) : []
-                            } className="mt-2" />
-                        </Card>
+                        {performance && experts ?
+                            <Card className="max-w-lg mx-auto">
+                                <Title>Last Quarter Analysis</Title>
+                                <Flex className="mt-4">
+                                    <Text>
+                                        <Bold>State</Bold>
+                                    </Text>
+                                    <Text>
+                                        <Bold>Count</Bold>
+                                    </Text>
+                                </Flex>
+                                <BarList data={
+                                    performance && experts ?
+                                        [{employeeDTO: {id: 0, name: "All"}, performanceDTO: performance}, ...experts]
+                                            .filter(x => x.employeeDTO.id === parseInt(selectedExpert))[0].performanceDTO
+                                            .ticketsCounter
+                                            .map((element,idx) =>
+                                                Object.create({
+                                                    name: element.state.replace("tickets","").toUpperCase(),
+                                                    value: element.count,
+                                                    key: idx
+                                                })
+                                            ) : []
+                                } className="mt-2" />
+                            </Card>
+                            : null
+                        }
                     </Col>
                 </Row>
             </Container>
