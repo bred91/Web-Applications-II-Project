@@ -30,6 +30,7 @@ class WebSecurityConfig @Autowired constructor(private val jwtAuthConverter: Jwt
             .requestMatchers(HttpMethod.GET, "/manager").hasAnyRole(MANAGER)
             .requestMatchers(HttpMethod.GET, "/expert").hasAnyRole(MANAGER, EXPERT)
             .requestMatchers(HttpMethod.GET, "/customer").hasAnyRole(CLIENT)
+            .requestMatchers(HttpMethod.GET, "/ws").hasAnyRole(CLIENT, MANAGER, EXPERT)
             .anyRequest().permitAll()
             //.and().oauth2Login()
 

@@ -33,7 +33,7 @@ class MessageService(private val messageRepository: IMessageRepository,
     }
 
     @PreAuthorize("hasAnyRole('ROLE_Client', 'ROLE_Expert')")
-    override fun createMessage(file: MultipartFile?, text: String?, ticketId: Long) {
+    override fun createMessage(file: MultipartFile?, text: String?, ticketId: Long) : MessageDTO{
 
 //        if (file==null && text==null){
 //            throw
@@ -56,7 +56,7 @@ class MessageService(private val messageRepository: IMessageRepository,
         val contentDTO = ContentDTO(text, attachmentDTO)
 
         val messageDTO = MessageDTO(Date(), contentDTO,userEmail, ticketId )
-        messageRepository.save(messageDTO.toEntity())
+        return messageRepository.save(messageDTO.toEntity()).toDTO()
     }
 
     override fun updateMessage(id: Long, message: MessageDTO): MessageDTO? {

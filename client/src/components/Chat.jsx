@@ -6,7 +6,11 @@ import {toast} from 'react-toastify';
 import * as API from "../API";
 import 'react-chat-elements/dist/main.css'
 import './Chat.css'
+import SockJS from 'sockjs-client';
+import { Stomp } from '@stomp/stompjs';
+import {over} from "stompjs";
 
+var stompClient =null;
 
 function Chat(props){
     const [messages, setMessages] = useState([])
@@ -14,6 +18,38 @@ function Chat(props){
     const [file, setFile] = useState(null)
     const {ticketId} = useParams()
 
+
+
+    useEffect(() => {
+        let Sock = new SockJS('http://localhost:8080/ws');
+        stompClient = Stomp.over(Sock);
+        stompClient.connect({},onConnected, onError);
+
+        // Clean up the WebSocket connection
+        return () => {
+            disconnect();
+        };
+    }, [ticketId]);
+
+    const onConnected = () => {
+        stompClient.subscribe('/chat/'+ticketId+'/messages', onReceived);
+    }
+
+    const onReceived = (message) => {
+        console.log("Received message:", message);
+        const receivedMessage = JSON.parse(message.body);
+        setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+    }
+
+    const onError = (error) => {
+        console.error('Error during WebSocket connection:', error);
+    }
+
+    const disconnect = () => {
+        if (stompClient) {
+            stompClient.disconnect();
+        }
+    };
 
     useEffect(() => {
         fetchMessages(props.accessToken, ticketId)
@@ -43,10 +79,9 @@ function Chat(props){
                 if (fileInput) {
                     fileInput.value = null;
                 }
-
-                fetchMessages(props.accessToken, ticketId)
-                    .then( allMessages => setMessages([...allMessages]))
-                    .catch((err) => toast.error(err, {position: "bottom-center", autoClose: 2000}));
+                // fetchMessages(props.accessToken, ticketId)
+                //     .then( allMessages => setMessages([...allMessages]))
+                //     .catch((err) => toast.error(err, {position: "bottom-center", autoClose: 2000}));
             }
 
 

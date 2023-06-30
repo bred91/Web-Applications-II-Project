@@ -16,6 +16,7 @@ import Tickets from "./components/Tickets";
 import CreateExpert from "./components/CreateExpert";
 import CreateTicket from "./components/CreateTicket"
 import NotFoundRoute from "./components/NotFound";
+import ChatRoom from "./components/ChatRoom";
 import Chat from "./components/Chat";
 import Ticket from "./components/Ticket";
 
@@ -46,6 +47,7 @@ function App() {
                     {isLoggedIn && role==='Manager' ? <Route path="/updateProduct" element={<UpdateProductForm token={accessToken} product={product} setProduct={setProduct}/>} /> : null}
                     {isLoggedIn ? <Route path="/tickets" element={<Tickets accessToken={accessToken} role={role}/>}/> : null}
                     {isLoggedIn ? <Route path="/ticket/:ticketId" element={<Ticket accessToken={accessToken} user={user} role={role}/>}/> : null}
+                    {/*{isLoggedIn ? <Route path="/ticket/:ticketId" element={<ChatRoom accessToken={accessToken} user={user} role={role}/>}/> : null}*/}
                     {isLoggedIn && role==='Client' ? <Route path="/createTicket" element={<CreateTicket token={accessToken}/>} /> : null}
                     <Route path='*' element={<NotFoundRoute />} />
                 </Routes>
