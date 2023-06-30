@@ -64,7 +64,7 @@ function Chat(props){
     return (
 
         <div>
-            {messages.map((message) => {
+            {messages.map((message, index) => {
 
                 function base64ToBytes(base64) {
                     const binString = atob(base64);
@@ -89,7 +89,7 @@ function Chat(props){
 
 
 
-                return <div>
+                return <div key={index}>
                     { message.content.attachment && <div>{
                         (type=='file' || type=='photo') && <MessageBox key={message.sentTS+message.content.attachment.contentType}
                     position={message.senderId === props.user.email ? 'right' : 'left'}

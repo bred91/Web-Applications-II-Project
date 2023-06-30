@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import * as API from "../API";
 import {toast} from "react-toastify";
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -13,6 +13,7 @@ function TicketHandler(props) {
     const [experts, setExperts] = useState([])
     const [selectedExpert, setSelectedExpert] = useState(null)
     const [selectedPriority, setSelectedPriority] = useState(null)
+    const navigate = useNavigate();
 
     useEffect(() => {
 
@@ -28,8 +29,14 @@ function TicketHandler(props) {
     const assignExpert = () => {
 
         API.startProgress(props.accessToken, ticketId, selectedExpert, selectedPriority)
-            .then( ()=> toast.success("Expert assigned successfully!", {position: "bottom-center", autoClose: 2000}))
+            .then( ()=> {
+                toast.success("Expert assigned successfully!", {position: "bottom-center", autoClose: 2000})
+                API.fetchTicket(props.accessToken, ticketId)
+                    .then( ticket => setTicketDetails(ticket))
+                    .catch((err) => toast.error(err.message));
+            })
             .catch((err) => toast.error(err, {position: "bottom-center", autoClose: 2000}));
+
     }
 
     const stopProgress = () => {
@@ -37,26 +44,44 @@ function TicketHandler(props) {
         API.stopProgress(props.accessToken, ticketId)
             .then( ()=> toast.success("Progress stopped", {position: "bottom-center", autoClose: 2000}))
             .catch((err) => toast.error(err, {position: "bottom-center", autoClose: 2000}));
+        navigate('/tickets');
     }
 
     const reopenIssue = () => {
 
         API.reopenIssue(props.accessToken, ticketId)
-            .then( ()=> toast.success("Issue reopened", {position: "bottom-center", autoClose: 2000}))
+            .then( ()=> {
+                toast.success("Issue reopened", {position: "bottom-center", autoClose: 2000});
+                API.fetchTicket(props.accessToken, ticketId)
+                    .then( ticket => setTicketDetails(ticket))
+                    .catch((err) => toast.error(err.message));
+            })
             .catch((err) => toast.error(err, {position: "bottom-center", autoClose: 2000}));
+
     }
 
     const resolveIssue = () => {
 
         API.resolveIssue(props.accessToken, ticketId)
-            .then( ()=> toast.success("Issue resolved", {position: "bottom-center", autoClose: 2000}))
+            .then( ()=> {
+                toast.success("Issue resolved", {position: "bottom-center", autoClose: 2000});
+                API.fetchTicket(props.accessToken, ticketId)
+                    .then( ticket => setTicketDetails(ticket))
+                    .catch((err) => toast.error(err.message));
+            })
             .catch((err) => toast.error(err, {position: "bottom-center", autoClose: 2000}));
+
     }
 
     const closeIssue = () => {
 
         API.closeIssue(props.accessToken, ticketId)
-            .then( ()=> toast.success("Issue closed", {position: "bottom-center", autoClose: 2000}))
+            .then( ()=> {
+                toast.success("Issue closed", {position: "bottom-center", autoClose: 2000});
+                API.fetchTicket(props.accessToken, ticketId)
+                    .then( ticket => setTicketDetails(ticket))
+                    .catch((err) => toast.error(err.message));
+            })
             .catch((err) => toast.error(err, {position: "bottom-center", autoClose: 2000}));
     }
 
@@ -87,16 +112,17 @@ function TicketHandler(props) {
                 {ticketDetails.actualExpert && <center><div className="col" style={{ height: '4em' }}>
                     <button className="button rounded-corners disabled mb-5"><strong>Expert: </strong>{ticketDetails.actualExpert.email}</button>
                 </div></center>}
-                {ticketDetails.priorityLevel && <center><div className="col" style={{ height: '4em' }}>
+                {ticketDetails.priorityLevel && props.role!='Client' && <center><div className="col" style={{ height: '4em' }}>
                     <button className="button rounded-corners disabled mb-5"><strong>Priority Level: </strong>{ticketDetails.priorityLevel.name}</button>
                 </div></center>}
-            <center><div div className="col">
+            <center><div className="col">
             <Dropdown>
                 <Dropdown.Toggle variant="custom" className="similar-button" id="dropdown-history">
                    <strong> Ticket History </strong>
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                    {ticketDetails.history.map((h, index) => (
+                    {ticketDetails.history.sort((a,b)=> a.timestamp > b.timestamp)
+                        .map((h, index) => (
                         <Dropdown.Item key={h.timestamp}>
                         <span className="ticket-history-timestamp">
                         {h.timestamp.replace('T', ' ').split('.')[0].split(':').slice(0, -1).join(':')}
@@ -139,7 +165,7 @@ function TicketHandler(props) {
                                 <Form.Select onChange={e => setSelectedExpert(e.target.value)} aria-label="Default select example">
                                     <option>Select an expert</option>
                                     {
-                                        experts.map(expert => {return <option value={expert.id}>{expert.email}</option>} )
+                                        experts.map(expert => {return <option key={expert.id} value={expert.id}>{expert.email}</option>} )
                                     }
                                 </Form.Select>
 
