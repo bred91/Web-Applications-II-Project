@@ -36,7 +36,7 @@ function LoginForm(props) {
             navigate('/');
 
         }catch(err){
-            toast.error('Wrong email and/or password', {position: "bottom-center", autoClose: 2000});
+            toast.error('Wrong email/username and/or password', {position: "bottom-center", autoClose: 2000});
         }
     };
 
@@ -46,7 +46,7 @@ function LoginForm(props) {
                 <Form className='p-5' onSubmit={handleSubmit}>
                     <h3>Login</h3>
                     <Form.Group controlId="email">
-                        <Form.Label>Email</Form.Label>
+                        <Form.Label>Email/Username</Form.Label>
                         <Form.Control  onChange={(event) => setEmail(event.target.value)} />
                     </Form.Group>
                     <Form.Group controlId="password">
