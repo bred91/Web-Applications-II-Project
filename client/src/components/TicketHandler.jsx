@@ -9,7 +9,7 @@ import './TicketHandler.css'
 
 function TicketHandler(props) {
     const {ticketId} = useParams()
-    const [ticketDetails, setTicketDetails] = useState(null)
+    //const [ticketDetails, setTicketDetails] = useState(null)
     const [experts, setExperts] = useState([])
     const [selectedExpert, setSelectedExpert] = useState(null)
     const [selectedPriority, setSelectedPriority] = useState(null)
@@ -17,9 +17,9 @@ function TicketHandler(props) {
 
     useEffect(() => {
 
-        API.fetchTicket(props.accessToken, ticketId)
-            .then( ticket => setTicketDetails(ticket))
-            .catch((err) => toast.error(err.message));
+        // API.fetchTicket(props.accessToken, ticketId)
+        //     .then( ticket => setTicketDetails(ticket))
+        //     .catch((err) => toast.error(err.message));
 
         API.fetchExperts(props.accessToken)
         .then( experts => setExperts(experts))
@@ -31,9 +31,9 @@ function TicketHandler(props) {
         API.startProgress(props.accessToken, ticketId, selectedExpert, selectedPriority)
             .then( ()=> {
                 toast.success("Expert assigned successfully!", {position: "bottom-center", autoClose: 2000})
-                API.fetchTicket(props.accessToken, ticketId)
-                    .then( ticket => setTicketDetails(ticket))
-                    .catch((err) => toast.error(err.message));
+                // API.fetchTicket(props.accessToken, ticketId)
+                //     .then( ticket => setTicketDetails(ticket))
+                //     .catch((err) => toast.error(err.message));
             })
             .catch((err) => toast.error(err, {position: "bottom-center", autoClose: 2000}));
 
@@ -52,9 +52,9 @@ function TicketHandler(props) {
         API.reopenIssue(props.accessToken, ticketId)
             .then( ()=> {
                 toast.success("Issue reopened", {position: "bottom-center", autoClose: 2000});
-                API.fetchTicket(props.accessToken, ticketId)
-                    .then( ticket => setTicketDetails(ticket))
-                    .catch((err) => toast.error(err.message));
+                // API.fetchTicket(props.accessToken, ticketId)
+                //     .then( ticket => setTicketDetails(ticket))
+                //     .catch((err) => toast.error(err.message));
             })
             .catch((err) => toast.error(err, {position: "bottom-center", autoClose: 2000}));
 
@@ -65,9 +65,9 @@ function TicketHandler(props) {
         API.resolveIssue(props.accessToken, ticketId)
             .then( ()=> {
                 toast.success("Issue resolved", {position: "bottom-center", autoClose: 2000});
-                API.fetchTicket(props.accessToken, ticketId)
-                    .then( ticket => setTicketDetails(ticket))
-                    .catch((err) => toast.error(err.message));
+                // API.fetchTicket(props.accessToken, ticketId)
+                //     .then( ticket => setTicketDetails(ticket))
+                //     .catch((err) => toast.error(err.message));
             })
             .catch((err) => toast.error(err, {position: "bottom-center", autoClose: 2000}));
 
@@ -78,27 +78,27 @@ function TicketHandler(props) {
         API.closeIssue(props.accessToken, ticketId)
             .then( ()=> {
                 toast.success("Issue closed", {position: "bottom-center", autoClose: 2000});
-                API.fetchTicket(props.accessToken, ticketId)
-                    .then( ticket => setTicketDetails(ticket))
-                    .catch((err) => toast.error(err.message));
+                // API.fetchTicket(props.accessToken, ticketId)
+                //     .then( ticket => setTicketDetails(ticket))
+                //     .catch((err) => toast.error(err.message));
             })
             .catch((err) => toast.error(err, {position: "bottom-center", autoClose: 2000}));
     }
 
     return (
         <>
-        { ticketDetails && <div>
+        { props.ticketDetails && <div>
                 <center><div className="col">
-                    <button className="button rounded-corners disabled"><strong>TicketId: </strong>{ticketDetails.id}</button>
+                    <button className="button rounded-corners disabled"><strong>TicketId: </strong>{props.ticketDetails.id}</button>
                 </div></center>
                 <center><div className="col">
-                    <button className="button rounded-corners disabled"><strong>State: </strong>{ticketDetails.state.name.replace("_", " ")}</button>
+                    <button className="button rounded-corners disabled"><strong>State: </strong>{props.ticketDetails.state.name.replace("_", " ")}</button>
                 </div></center>
                 <center><div className="col">
-                    <button className="button rounded-corners disabled"><strong>Creation Date: </strong>{ticketDetails.creationDate}</button>
+                    <button className="button rounded-corners disabled"><strong>Creation Date: </strong>{props.ticketDetails.creationDate}</button>
                 </div></center>
                 <center><div className="col">
-                    <button className="button rounded-corners disabled"><strong>Last Modification: </strong>{ticketDetails.lastModification
+                    <button className="button rounded-corners disabled"><strong>Last Modification: </strong>{props.ticketDetails.lastModification
                         .replace("T", "  ")
                         .split(".")[0]
                         .split(":")
@@ -107,13 +107,13 @@ function TicketHandler(props) {
                         .replace(",", ":")}</button>
                 </div></center>
                 <center><div className="col">
-                    <button className="button rounded-corners disabled"><strong>Customer: </strong>{ticketDetails.customer.email}</button>
+                    <button className="button rounded-corners disabled"><strong>Customer: </strong>{props.ticketDetails.customer.email}</button>
                 </div></center>
-                {ticketDetails.actualExpert && <center><div className="col" style={{ height: '4em' }}>
-                    <button className="button rounded-corners disabled mb-5"><strong>Expert: </strong>{ticketDetails.actualExpert.email}</button>
+                {props.ticketDetails.actualExpert && <center><div className="col" style={{ height: '4em' }}>
+                    <button className="button rounded-corners disabled mb-5"><strong>Expert: </strong>{props.ticketDetails.actualExpert.email}</button>
                 </div></center>}
-                {ticketDetails.priorityLevel && props.role!='Client' && <center><div className="col" style={{ height: '4em' }}>
-                    <button className="button rounded-corners disabled mb-5"><strong>Priority Level: </strong>{ticketDetails.priorityLevel.name}</button>
+                {props.ticketDetails.priorityLevel && props.role!='Client' && <center><div className="col" style={{ height: '4em' }}>
+                    <button className="button rounded-corners disabled mb-5"><strong>Priority Level: </strong>{props.ticketDetails.priorityLevel.name}</button>
                 </div></center>}
             <center><div className="col">
             <Dropdown>
@@ -121,7 +121,7 @@ function TicketHandler(props) {
                    <strong> Ticket History </strong>
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                    {ticketDetails.history.sort((a,b)=> a.timestamp > b.timestamp)
+                    {props.ticketDetails.history.sort((a,b)=> a.timestamp > b.timestamp)
                         .map((h, index) => (
                         <Dropdown.Item key={h.timestamp}>
                         <span className="ticket-history-timestamp">
@@ -134,33 +134,33 @@ function TicketHandler(props) {
             </Dropdown>
             </div></center>
                 {
-                    props.role=='Client' && (ticketDetails.state.name == "CLOSED" || ticketDetails.state.name == "RESOLVED") &&
+                    props.role=='Client' && (props.ticketDetails.state.name == "CLOSED" || props.ticketDetails.state.name == "RESOLVED") &&
                     <center><div className="col">
                         <button onClick={reopenIssue} className="action-button" type="button"><strong>Reopen Issue</strong></button>
                     </div></center>
                 }
                 {
-                    (props.role=='Client' || props.role=='Expert') && ticketDetails.state.name != "CLOSED" && ticketDetails.state.name != "RESOLVED" &&
+                    (props.role=='Client' || props.role=='Expert') && props.ticketDetails.state.name != "CLOSED" && props.ticketDetails.state.name != "RESOLVED" &&
                     <center><div className="col">
                         <button onClick={resolveIssue} className="action-button" type="button"><strong>Resolve Issue</strong></button>
                     </div></center>
                 }
 
                 {
-                    (props.role=='Client' || props.role=='Expert' || props.role=='Manager') && ticketDetails.state.name != "CLOSED" &&
+                    (props.role=='Client' || props.role=='Expert' || props.role=='Manager') && props.ticketDetails.state.name != "CLOSED" &&
                     <center><div className="col">
                         <button onClick={closeIssue} className="action-button" type="button"><strong>Close Issue</strong></button>
                     </div></center>
                 }
 
                 {
-                    (props.role=='Expert' || props.role=='Manager') && ticketDetails.state.name == "IN_PROGRESS" &&
+                    (props.role=='Expert' || props.role=='Manager') && props.ticketDetails.state.name == "IN_PROGRESS" &&
                     <center><div className="col">
                         <button onClick={stopProgress} className="action-button" type="button"><strong>Stop Progress</strong></button>
                     </div></center>
                 }
                 {
-                    props.role=='Manager' && ticketDetails.state.name == "OPEN" &&
+                    props.role=='Manager' && props.ticketDetails.state.name == "OPEN" &&
                             <Form>
                                 <Form.Select onChange={e => setSelectedExpert(e.target.value)} aria-label="Default select example">
                                     <option>Select an expert</option>

@@ -19,7 +19,7 @@ class WebSocketConfig:WebSocketMessageBrokerConfigurer {
 
     override fun configureMessageBroker(registry:MessageBrokerRegistry) {
         registry.setApplicationDestinationPrefixes("/app");
-        registry.enableSimpleBroker("/chat");
-        registry.setUserDestinationPrefix("/chat");
+        registry.enableSimpleBroker("/topics");
+        registry.setUserDestinationPrefix("/topics");
     }
 }

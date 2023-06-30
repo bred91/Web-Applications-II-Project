@@ -13,49 +13,49 @@ import {over} from "stompjs";
 var stompClient =null;
 
 function Chat(props){
-    const [messages, setMessages] = useState([])
+    //const [messages, setMessages] = useState([])
     const [text, setText] = useState('')
     const [file, setFile] = useState(null)
     const {ticketId} = useParams()
 
 
 
-    useEffect(() => {
-        let Sock = new SockJS('http://localhost:8080/ws');
-        stompClient = Stomp.over(Sock);
-        stompClient.connect({},onConnected, onError);
+    // useEffect(() => {
+    //     let Sock = new SockJS('http://localhost:8080/ws');
+    //     stompClient = Stomp.over(Sock);
+    //     stompClient.connect({},onConnected, onError);
+    //
+    //     // Clean up the WebSocket connection
+    //     return () => {
+    //         disconnect();
+    //     };
+    // }, [ticketId]);
+    //
+    // const onConnected = () => {
+    //     stompClient.subscribe('/chat/'+ticketId+'/messages', onReceived);
+    // }
+    //
+    // const onReceived = (message) => {
+    //     console.log("Received message:", message);
+    //     const receivedMessage = JSON.parse(message.body);
+    //     setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+    // }
+    //
+    // const onError = (error) => {
+    //     console.error('Error during WebSocket connection:', error);
+    // }
+    //
+    // const disconnect = () => {
+    //     if (stompClient) {
+    //         stompClient.disconnect();
+    //     }
+    // };
 
-        // Clean up the WebSocket connection
-        return () => {
-            disconnect();
-        };
-    }, [ticketId]);
-
-    const onConnected = () => {
-        stompClient.subscribe('/chat/'+ticketId+'/messages', onReceived);
-    }
-
-    const onReceived = (message) => {
-        console.log("Received message:", message);
-        const receivedMessage = JSON.parse(message.body);
-        setMessages((prevMessages) => [...prevMessages, receivedMessage]);
-    }
-
-    const onError = (error) => {
-        console.error('Error during WebSocket connection:', error);
-    }
-
-    const disconnect = () => {
-        if (stompClient) {
-            stompClient.disconnect();
-        }
-    };
-
-    useEffect(() => {
-        fetchMessages(props.accessToken, ticketId)
-            .then( allMessages => setMessages([...allMessages]))
-            .catch((err) => toast.error(err.message));
-    }, []);
+    // useEffect(() => {
+    //     fetchMessages(props.accessToken, ticketId)
+    //         .then( allMessages => setMessages([...allMessages]))
+    //         .catch((err) => toast.error(err.message));
+    // }, []);
 
     const createMessage = async(e) => {
         e.preventDefault()
@@ -99,7 +99,7 @@ function Chat(props){
     return (
 
         <div>
-            {messages.map((message, index) => {
+            {props.messages.map((message, index) => {
 
                 function base64ToBytes(base64) {
                     const binString = atob(base64);
