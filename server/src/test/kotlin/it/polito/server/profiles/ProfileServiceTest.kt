@@ -70,7 +70,9 @@ class ProfileServiceTest {
                 email = "baba@gmail.com",
                 username = "asd",
                 name = "John",
-                surname = "Smith"), ProfileDTO::class.java);
+                surname = "Smith",
+                phoneNumber = "1234567890"
+            ), ProfileDTO::class.java);
         Assertions.assertEquals(HttpStatus.CREATED, responseCreateProfile.statusCode)
 
     }
@@ -86,7 +88,9 @@ class ProfileServiceTest {
                 email = "baba@gmail.com",
                 username = "asd",
                 name = "John",
-                surname = "Smith"), ProblemDetail::class.java);
+                surname = "Smith",
+                phoneNumber = "1234567890"
+            ), ProblemDetail::class.java);
         Assertions.assertEquals(HttpStatus.CONFLICT, responseCreateProfile.statusCode)
 
     }
@@ -135,7 +139,8 @@ class ProfileServiceTest {
                     email = "baba@gmail.com",
                     username = "john",
                     name = "John",
-                    surname = "Smith")),
+                    surname = "Smith",
+                    phoneNumber = "1234567890")),
                 ProfileDTO::class.java
             )
         Assertions.assertEquals(HttpStatus.OK, responseUpdateProfile.statusCode)
@@ -157,7 +162,8 @@ class ProfileServiceTest {
                     email = "amanda@gmail.com",
                     username = "john",
                     name = "John",
-                    surname = "Smith")),
+                    surname = "Smith",
+                    phoneNumber = "1234567890")),
             ProblemDetail::class.java
         )
         Assertions.assertEquals(HttpStatus.NOT_FOUND, responseUpdateProfile.statusCode)
