@@ -6,12 +6,12 @@ import {useNavigate} from "react-router-dom";
 import { DataTable, Box, Meter, Text } from 'grommet';
 
 const columns = [
-    {
+    /*{
         property: 'id',
         header: <Text>ID</Text>,
         primary: true,
         visible: false,
-    },
+    },*/
     {
         property: 'product',
         header: 'Product',
@@ -66,6 +66,7 @@ function Tickets(props){
                     search={true}
                     size='big'
                     columns={columns}
+                    primaryKey='id'
                     data={
                         tickets.map((ticket) => {
                             return {
