@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.min.css';
 import {createProduct, createTicket, getProducts, getProductByEan, verifyPurchase} from './../API';
 import { useNavigate } from "react-router-dom";
 import CsvDownloadButton from "react-json-to-csv";
+import * as API from "../API";
 
 function CreateTicket(props) {
     const [isVerified, setIsVerified] = useState(false)
@@ -111,6 +112,12 @@ function CreateTicketComponent(props){
         try{
             const res = await createTicket(props.token, props.purchase.id)
             toast.success('Ticket submitted successfully', {position: "bottom-center", autoClose: 2000});
+            const formData = new FormData()
+            if(note) {
+                formData.append('text', note)
+            }
+            console.log(res)
+            await API.createMessage(props.token, res.id, formData)
             props.navigate(`/tickets/${res.id}`)
         }catch(err){
             toast.error(err, {position: "bottom-center", autoClose: 2000});

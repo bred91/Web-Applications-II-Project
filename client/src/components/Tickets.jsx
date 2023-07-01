@@ -110,7 +110,7 @@ function Tickets(props) {
         : tickets;
 
     return (
-        <Container className="mt-5">
+        <Container className="mt-5" >
             <Box align="end" margin={{ bottom: "medium" }}>
                 <Select
                     placeholder="Filter by State"
@@ -131,6 +131,7 @@ function Tickets(props) {
                     onClickRow={({ datum }) => handleClick(datum.id)}
                     sortable={true}
                     search={true}
+
                     size="medium"
                     columns={columns}
                     data={filteredTickets.map((ticket) => {

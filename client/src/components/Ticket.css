@@ -19,4 +19,6 @@
     flex: 1;
     margin-left: 25%;
     padding: 20px;
+    min-height: 98vh;
+    background-color: aliceblue;
 }

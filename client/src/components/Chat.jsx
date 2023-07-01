@@ -9,6 +9,8 @@ import './Chat.css'
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 import {over} from "stompjs";
+import {CircleSpinner} from "react-spinners-kit";
+import {Box} from "grommet";
 
 var stompClient =null;
 
@@ -99,6 +101,9 @@ function Chat(props){
     return (
 
         <div>
+            {props.loading && <Box align="center" margin={{ vertical: "medium" }}>
+                <CircleSpinner size={60} color="#5f8dd3" />
+            </Box>}
             {props.messages.map((message, index) => {
 
                 function base64ToBytes(base64) {

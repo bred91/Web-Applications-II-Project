@@ -14,6 +14,9 @@ function Ticket(props) {
     const {ticketId} = useParams()
     const [messages, setMessages] = useState([])
     const [ticketDetails, setTicketDetails] = useState(null)
+    const [loading, setLoading] = useState(true);
+    const [subscriptions, setSubscriptions] = useState(new Map());
+
 
 
 
@@ -29,9 +32,14 @@ function Ticket(props) {
     }, [ticketId]);
 
     const onConnected = () => {
-        stompClient.subscribe('/topics/'+ticketId+'/messages', onReceivedMessage);
-        stompClient.subscribe('/topics/'+ticketId+'/ticket', onUpdateTicket);
-    }
+        const messagesSubscription = stompClient.subscribe('/topics/'+ticketId+'/messages', onReceivedMessage);
+        const ticketSubscription = stompClient.subscribe('/topics/'+ticketId+'/ticket', onUpdateTicket);
+        const newSubscriptions = new Map(subscriptions);
+        newSubscriptions.set('messages', messagesSubscription);
+        newSubscriptions.set('ticket', ticketSubscription);
+        setSubscriptions(newSubscriptions);
+    };
+
     const onUpdateTicket = (updatedTicket) => {
         const receivedMessage = JSON.parse(updatedTicket.body);
         setTicketDetails(receivedMessage);
@@ -47,9 +55,19 @@ function Ticket(props) {
 
     const disconnect = () => {
         if (stompClient) {
+            unsubscribe()
             stompClient.disconnect();
         }
     };
+
+    const unsubscribe = () => {
+
+        subscriptions.forEach((subscription) => {
+            subscription.unsubscribe();
+        });
+        setSubscriptions(new Map());
+    };
+
 
     useEffect(() => {
         API.fetchTicket(props.accessToken, ticketId)
@@ -57,17 +75,19 @@ function Ticket(props) {
             .catch((err) => toast.error(err.message));
 
             API.fetchMessages(props.accessToken, ticketId)
-                .then( allMessages => setMessages([...allMessages]))
+                .then( allMessages =>{ setMessages([...allMessages]); setLoading(false);})
                 .catch((err) => toast.error(err.message));
+
         }, []);
 
     return (
+
         <div className="ticket-container">
             <div className="left-container">
                 <TicketHandler accessToken={props.accessToken} user={props.user} role={props.role} ticketDetails={ticketDetails}/>
             </div>
             <div className="right-container">
-                <Chat accessToken={props.accessToken} user={props.user} role={props.role} messages={messages} />
+                <Chat accessToken={props.accessToken} user={props.user} role={props.role} messages={messages} loading={loading} />
             </div>
         </div>
     );
