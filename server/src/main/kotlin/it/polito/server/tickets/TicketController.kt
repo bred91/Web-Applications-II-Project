@@ -41,8 +41,14 @@ class TicketController(private val ticketService: ITicketService) {
     @PostMapping("/API/tickets/createIssue")
     @ResponseStatus(HttpStatus.CREATED)
     fun createIssue(@RequestParam purchaseId: Long ) : TicketDTO? {
-        return ticketService.createTicket(purchaseId)
+        var ticket =  ticketService.createTicket(purchaseId);
+        if(ticket!=null){
+            messagingTemplate?.convertAndSendToUser("manager", "/tickets",ticket)
+        }
+        return ticket;
     }
+
+
 
 
     @PutMapping("/API/tickets/startProgress/{id}")
@@ -50,6 +56,8 @@ class TicketController(private val ticketService: ITicketService) {
         var ticketUpdated =  ticketService.startProgress(id, startProgressRequestDTO.employee_id, startProgressRequestDTO.priorityLevel.id)
         if (ticketUpdated != null) {
             messagingTemplate?.convertAndSendToUser(id.toString(), "/ticket",ticketUpdated)
+            ticketUpdated.customer?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticketUpdated) }
+            ticketUpdated.actualExpert?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticketUpdated) }
         }
         return ticketUpdated
 
@@ -57,10 +65,18 @@ class TicketController(private val ticketService: ITicketService) {
 
     @PutMapping("/API/tickets/stopProgress/{id}")
     fun stopProgress(@PathVariable id:Long):TicketDTO? {
+        var ticketPrev = ticketService.getTicketById(id);
         var ticketUpdated = ticketService.stopProgress(id)
         if (ticketUpdated != null) {
             messagingTemplate?.convertAndSendToUser(id.toString(), "/ticket",ticketUpdated)
+            ticketUpdated.actualExpert?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticketUpdated) }
+            ticketUpdated.customer?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticketUpdated) }
+            messagingTemplate?.convertAndSendToUser("manager", "/tickets",ticketUpdated)
+            if(ticketPrev != null){
+                ticketPrev.actualExpert?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets", ticketUpdated) }
+            }
         }
+
         return ticketUpdated
     }
 
@@ -69,6 +85,8 @@ class TicketController(private val ticketService: ITicketService) {
         var ticketUpdated = ticketService.reopenIssue(id)
         if (ticketUpdated != null) {
             messagingTemplate?.convertAndSendToUser(id.toString(), "/ticket",ticketUpdated)
+            ticketUpdated.actualExpert?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticketUpdated) }
+            messagingTemplate?.convertAndSendToUser("manager", "/tickets",ticketUpdated)
         }
         return ticketUpdated
     }
@@ -78,6 +96,9 @@ class TicketController(private val ticketService: ITicketService) {
         var ticketUpdated = ticketService.resolveIssue(id)
         if (ticketUpdated != null) {
             messagingTemplate?.convertAndSendToUser(id.toString(), "/ticket",ticketUpdated)
+            ticketUpdated.actualExpert?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticketUpdated) }
+            ticketUpdated.customer?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticketUpdated) }
+            messagingTemplate?.convertAndSendToUser("manager", "/tickets",ticketUpdated)
         }
         return ticketUpdated
     }
@@ -87,6 +108,9 @@ class TicketController(private val ticketService: ITicketService) {
         var ticketUpdated =  ticketService.closeIssue(id)
         if (ticketUpdated != null) {
             messagingTemplate?.convertAndSendToUser(id.toString(), "/ticket",ticketUpdated)
+            ticketUpdated.actualExpert?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticketUpdated) }
+            ticketUpdated.customer?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticketUpdated) }
+            messagingTemplate?.convertAndSendToUser("manager", "/tickets",ticketUpdated)
         }
         return ticketUpdated
     }

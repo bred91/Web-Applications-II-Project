@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { Container, Spinner } from "react-bootstrap";
-import { toast } from "react-toastify";
+import React, { useState} from "react";
+import { Container} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { DataTable, Text, Box, Select } from "grommet";
 import { FormDown } from "grommet-icons";
 import { CircleSpinner } from "react-spinners-kit";
-import * as API from "../API";
+
 
 const columns = [
     {
@@ -80,25 +79,25 @@ const stateOptions = [
 ];
 
 function Tickets(props) {
-    const [tickets, setTickets] = useState([]);
+    //const [tickets, setTickets] = useState([]);
     const [filter, setFilter] = useState("");
-    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        API.getTickets(props.accessToken)
-            .then((tick) => {
-                setTickets(tick);
-                setLoading(false);
-            })
-            .catch((err) => {
-                toast.error(err.message);
-                setLoading(false);
-            });
-    }, []);
+    // useEffect(() => {
+    //     API.getTickets(props.accessToken)
+    //         .then((tick) => {
+    //             props.setTickets(tick);
+    //             setLoading(false);
+    //         })
+    //         .catch((err) => {
+    //             toast.error(err.message);
+    //             setLoading(false);
+    //         });
+    // }, []);
 
     const handleClick = (id) => {
-        navigate("/ticket/" + id);
+        props.setTicketId(id);
+        navigate("/tickets/" + id);
     };
 
     const handleFilterChange = (event) => {
@@ -106,8 +105,8 @@ function Tickets(props) {
     };
 
     const filteredTickets = filter
-        ? tickets.filter((ticket) => ticket.state.name === filter)
-        : tickets;
+        ? props.tickets.filter((ticket) => ticket.state.name === filter)
+        : props.tickets;
 
     return (
         <Container className="mt-5" >
@@ -122,7 +121,7 @@ function Tickets(props) {
                 />
             </Box>
 
-            {loading ? (
+            {props.loading ? (
                 <Box align="center" margin={{ vertical: "medium" }}>
                     <CircleSpinner size={60} color="#5f8dd3" />
                 </Box>

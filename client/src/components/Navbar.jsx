@@ -39,11 +39,11 @@ function TSNavbar(props) {
               Ticketing Platform
             </Navbar.Brand>
             {props.role === "Manager" ? (
-                <ManagerNavbar />
+                <ManagerNavbar setTicketId={props.setTicketId}/>
             ) : props.role === "Client" ? (
-                <ClientNavbar />
+                <ClientNavbar setTicketId={props.setTicketId}/>
             ) : props.role === "Expert" ? (
-                <ExpertNavbar />
+                <ExpertNavbar setTicketId={props.setTicketId}/>
             ) : null}
             <Navbar.Collapse className="justify-content-end">
               {props.isLoggedIn ? (

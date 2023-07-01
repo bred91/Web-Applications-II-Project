@@ -1,5 +1,5 @@
 
-package it.polito.server.tickets.messages
+package it.polito.server.tickets
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

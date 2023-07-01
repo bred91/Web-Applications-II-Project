@@ -9,17 +9,12 @@ import './TicketHandler.css'
 
 function TicketHandler(props) {
     const {ticketId} = useParams()
-    //const [ticketDetails, setTicketDetails] = useState(null)
     const [experts, setExperts] = useState([])
     const [selectedExpert, setSelectedExpert] = useState(null)
     const [selectedPriority, setSelectedPriority] = useState(null)
     const navigate = useNavigate();
 
     useEffect(() => {
-
-        // API.fetchTicket(props.accessToken, ticketId)
-        //     .then( ticket => setTicketDetails(ticket))
-        //     .catch((err) => toast.error(err.message));
 
         API.fetchExperts(props.accessToken)
         .then( experts => setExperts(experts))
@@ -44,7 +39,13 @@ function TicketHandler(props) {
         API.stopProgress(props.accessToken, ticketId)
             .then( ()=> toast.success("Progress stopped", {position: "bottom-center", autoClose: 2000}))
             .catch((err) => toast.error(err, {position: "bottom-center", autoClose: 2000}));
-        navigate('/tickets');
+        if(props.role=='Expert'){
+            props.setTickets((prevTickets) => {
+                return prevTickets.filter((t)=>t.id!=ticketId);
+            });
+            navigate('/tickets');
+        }
+
     }
 
     const reopenIssue = () => {
@@ -160,7 +161,7 @@ function TicketHandler(props) {
                     </div></center>
                 }
                 {
-                    props.role=='Manager' && props.ticketDetails.state.name == "OPEN" &&
+                    props.role=='Manager' && (props.ticketDetails.state.name == "OPEN" || props.ticketDetails.state.name == "REOPENED") &&
                             <Form>
                                 <Form.Select onChange={e => setSelectedExpert(e.target.value)} aria-label="Default select example">
                                     <option>Select an expert</option>
