@@ -137,7 +137,7 @@ function Tickets(props) {
                         return {
                             id: ticket.id,
                             product: ticket.purchase.product.name,
-                            creationDate: ticket.creationDate,
+                            creationDate: ticket.creationDate.split('T')[0],
                             name: ticket.state.name.replace("_", " "),
                             lastModification: ticket.lastModification
                                 .replace("T", "  ")

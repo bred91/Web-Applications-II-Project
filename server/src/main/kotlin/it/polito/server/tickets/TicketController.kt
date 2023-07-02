@@ -53,11 +53,15 @@ class TicketController(private val ticketService: ITicketService) {
 
     @PutMapping("/API/tickets/startProgress/{id}")
     fun startProgress(@PathVariable id: Long, @Valid @RequestBody startProgressRequestDTO: StartProgressRequestDTO): TicketDTO? {
+        var ticketPrev = ticketService.getTicketById(id);
         var ticketUpdated =  ticketService.startProgress(id, startProgressRequestDTO.employee_id, startProgressRequestDTO.priorityLevel.id)
         if (ticketUpdated != null) {
             messagingTemplate?.convertAndSendToUser(id.toString(), "/ticket",ticketUpdated)
             ticketUpdated.customer?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticketUpdated) }
             ticketUpdated.actualExpert?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticketUpdated) }
+            if(ticketPrev != null){
+                ticketPrev.actualExpert?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets", ticketUpdated) }
+            }
         }
         return ticketUpdated
 

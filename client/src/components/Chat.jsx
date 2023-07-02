@@ -134,7 +134,7 @@ function Chat(props){
                         (type=='file' || type=='photo') && <MessageBox key={message.sentTS+message.content.attachment.contentType}
                     position={message.senderId === props.user.email ? 'right' : 'left'}
                     text={message.content.attachment.contentType.startsWith("image") || message.content.attachment.contentType.startsWith("video")? '' : message.content.attachment.filename}
-                    title={message.senderId === props.user.email ? 'You' : message.senderId}
+                    title={message.senderId === props.user.email ? 'You' : message.senderId.split('@')[0]}
                     date={message.sentTS}
 
                     type={type}
@@ -152,7 +152,7 @@ function Chat(props){
                             position={message.senderId === props.user.email ? 'right' : 'left'}
                             type={"video"}
                             date={message.sentTS}
-                            title={message.senderId === props.user.email ? 'You' : message.senderId}
+                            title={message.senderId === props.user.email ? 'You' : message.senderId.split('@')[0]}
                             data={{
                                 //uri: "data:"+ message.content.attachment.contentType+";base64,"+message.content.attachment.content,
                                 videoURL: uri,
@@ -170,7 +170,7 @@ function Chat(props){
                             position={message.senderId === props.user.email ? 'right' : 'left'}
                             type={"audio"}
                             date={message.sentTS}
-                            title={message.senderId === props.user.email ? 'You' : message.senderId}
+                            title={message.senderId === props.user.email ? 'You' : message.senderId.split('@')[0]}
                             data={{
                                 //uri: "data:"+ message.content.attachment.contentType+";base64,"+message.content.attachment.content,
                                 audioURL: uri,
@@ -185,7 +185,7 @@ function Chat(props){
                 message.content.text && <MessageBox key={message.sentTS}
                                                           position={message.senderId === props.user.email ? 'right' : 'left'}
                                                           text={message.content.text}
-                                                          title={message.senderId === props.user.email ? 'You' : message.senderId}
+                                                          title={message.senderId === props.user.email ? 'You' : message.senderId.split('@')[0]}
                                                           date={message.sentTS}
 
                                                           type={'text'}
