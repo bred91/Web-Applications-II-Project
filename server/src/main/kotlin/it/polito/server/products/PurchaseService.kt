@@ -1,12 +1,10 @@
 package it.polito.server.products
 
-import it.polito.server.Exception.NotFoundException
 import it.polito.server.products.exception.PurchaseNotFoundException
 import it.polito.server.profiles.ProfileService
 import it.polito.server.profiles.toEntity
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.PathVariable
 import java.util.*
 @Service
 class PurchaseService(private val purchaseRepository: IPurchaseRepository,
@@ -39,6 +37,7 @@ class PurchaseService(private val purchaseRepository: IPurchaseRepository,
         purchaseEntity.purchaseDate = purchase.purchaseDate
         purchaseEntity.expiringDate=purchase.expiringDate
         purchaseEntity.warrantyCode=purchase.warrantyCode
+        purchaseEntity.customer = purchase.customerEmail?.let { profileService.getProfileByEmail(it)?.toEntity() }
         purchaseEntity.product = purchase.product?.toEntity()
         return purchaseRepository.save(purchaseEntity).toDTO()
     }

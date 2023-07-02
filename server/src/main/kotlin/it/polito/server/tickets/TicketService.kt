@@ -4,7 +4,7 @@ import it.polito.server.employees.IEmployeeRepository
 import it.polito.server.employees.exception.EmployeeNotFoundException
 import it.polito.server.employees.toDTO
 import it.polito.server.products.PurchaseService
-import it.polito.server.products.exception.PurchaseNotAssociatedException
+import it.polito.server.products.exception.PurchaseNotFoundException
 import it.polito.server.profiles.ProfileService
 import it.polito.server.tickets.enums.StateEnum
 import it.polito.server.tickets.enums.toLong
@@ -20,12 +20,9 @@ import it.polito.server.tickets.states.toEntity
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.oauth2.jwt.Jwt
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.security.Principal
 import java.util.*
 
 @Service
@@ -109,10 +106,18 @@ class TicketService (private val ticketRepository: ITicketRepository,
         val userEmail = jwt.getClaim("email") as String
 
         val customer = profileService.getProfileByEmail(userEmail)
-        val purchase = purchaseService.getPurchaseById(purchaseId)
-        if(purchase?.customerEmail != userEmail){
-            throw PurchaseNotAssociatedException("The purchase $purchaseId does not belong to $userEmail")
+        var purchase = purchaseService.getPurchaseById(purchaseId)
+
+        if (purchase != null) {
+            purchase.customerEmail = userEmail
+            purchase = purchaseService.updatePurchase(purchaseId, purchase)
         }
+        else
+            throw PurchaseNotFoundException("The purchase $purchaseId does not exist")
+
+        /*if(purchase?.customerEmail != userEmail){
+            throw PurchaseNotAssociatedException("The purchase $purchaseId does not belong to $userEmail")
+        }*/
         val currentTimeMillis = Date()
         val newStateDTO = stateService.getStateById(StateEnum.OPEN.toLong())
         val historyDTO = HistoryDTO(null, newStateDTO, null, currentTimeMillis, null)

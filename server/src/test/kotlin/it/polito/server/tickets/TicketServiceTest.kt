@@ -78,7 +78,7 @@ class TicketServiceTest {
      */
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
-    fun `create issue`() {
+    fun `create issue`() { // this one is just used for supporting the other tests
 
         dataInsert()
 
@@ -103,6 +103,39 @@ class TicketServiceTest {
         Assertions.assertEquals("OPEN", responseCreateIssue.body?.state?.name)
     }
 
+    /**
+     * Test the API for "create issue
+     */
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    @Test
+    fun `new create issue`() {
+
+        dataInsert()    // in data insertion we have already created a purchase with customer email of customer1
+
+        // login
+        val token = loginFun(customer2)
+        Assertions.assertNotNull(token)
+
+        // test the API for "create issue"
+        val responseCreateIssue = restTemplate.exchange(
+            "/API/tickets/createIssue?purchaseId=1",
+            HttpMethod.POST,
+            HttpEntity(
+                null,
+                HttpHeaders().apply {
+                    if (token != null) {
+                        setBearerAuth(token)
+                    }
+                }
+            ),
+            TicketDTO::class.java)
+        Assertions.assertEquals(HttpStatus.CREATED, responseCreateIssue.statusCode)
+        Assertions.assertEquals("OPEN", responseCreateIssue.body?.state?.name)
+        Assertions.assertEquals(customer2.first, responseCreateIssue.body?.customer?.email)
+        Assertions.assertEquals(customer2.first, responseCreateIssue.body?.purchase?.customerEmail)
+    }
+
+    /*
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     fun `create issue with invalid customer`() {
@@ -128,7 +161,7 @@ class TicketServiceTest {
             ProblemDetail::class.java)
         Assertions.assertEquals(HttpStatus.NOT_FOUND, responseCreateIssue.statusCode)
         Assertions.assertEquals("Profile with email customer1@mail.com not found", responseCreateIssue.body?.detail)
-    }
+    }*/
 
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
@@ -157,7 +190,7 @@ class TicketServiceTest {
         Assertions.assertEquals("Purchase with id 100 does not exist", responseCreateIssue.body?.detail)
     }
 
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+   /* @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     fun `create issue with purchase not belonging to customer`() {
 
@@ -190,7 +223,7 @@ class TicketServiceTest {
         Assertions.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseCreateIssue.statusCode)
         Assertions.assertEquals("The purchase 1 does not belong to customer1@mail.com", responseCreateIssue.body?.detail)
 
-    }
+    }*/
 
 
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
@@ -1404,5 +1437,12 @@ class TicketServiceTest {
             phoneNumber = "123456789";
             surname = "Smith";
             username = "johnsmith";})
+
+        profileRepository.save(Profile().apply {
+            email = "customer1@mail.com";
+            name = "Customer1";
+            phoneNumber = "123456789";
+            surname = "SurCustomer1";
+            username = "customer111"})
     }
 }
