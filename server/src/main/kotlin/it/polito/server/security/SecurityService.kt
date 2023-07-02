@@ -150,9 +150,12 @@ class SecurityService(
                 name = signUpRequestDTO.name,
                 surname = signUpRequestDTO.surname,
                 email = signUpRequestDTO.email,
+                username = signUpRequestDTO.username,
                 role = roleService.getRoleById(2)
             )
         )
+
+        println("QUA CI SONO ")
 
         return try {
             val id = keycloak.realm("SpringBootKeycloak").users().search(signUpRequestDTO.username).first().id

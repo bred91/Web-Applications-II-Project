@@ -186,14 +186,14 @@ const updateProduct = async(token, ean, name, brand) => {
     else return null;
 }
 
-const createExpert = async(email, username, firstName, lastName, password, token) => {
+const createExpert = async(email, username, name, surname, password, token) => {
     const res = await fetch( "/createExpert", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify({ username, email, lastName, firstName, password }),
+        body: JSON.stringify({ username, email, surname, name, password, phoneNumber: ""}),
     });
 
     if(!res.ok){

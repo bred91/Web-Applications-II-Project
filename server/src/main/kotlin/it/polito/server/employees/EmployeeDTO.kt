@@ -15,11 +15,13 @@ data class EmployeeDTO(
     @field:NotBlank(message="Not a valid email")
     @field:Size(max = 255, message = "Email too long")
     val email: String,
+    //@field:NotBlank(message="Not a valid username")
+    val username: String,
     //@field:NotNull(message = "Not a valid role")
     val role: RoleDTO?
 ){
-    constructor(name: String, surname: String, email: String, role: RoleDTO?)
-        :this(null, name, surname, email, role)
+    constructor(name: String, surname: String, email: String, role: RoleDTO?, username: String)
+        :this(null, name, surname, email, username, role)
 }
 
 fun EmployeeDTO.toEntity(): Employee{
@@ -28,11 +30,12 @@ fun EmployeeDTO.toEntity(): Employee{
     employee.name = name
     employee.surname = surname
     employee.email = email
+    employee.username = username
     employee.role = role?.toEntity()
     return employee
 }
 
 fun Employee.toDTO() : EmployeeDTO {
-    return EmployeeDTO(id, name, surname, email, role?.toDTO())
+    return EmployeeDTO(id, name, surname, email, username, role?.toDTO())
 }
 

@@ -21,7 +21,10 @@ class SecurityController(private val securityService: ISecurityService, private 
 
     @PostMapping("/createExpert")
     fun createExpert(@RequestBody @Valid signUpRequestDTO: SignUpRequestDTO): ResponseEntity<Any> {
-        return securityService.createExpert(signUpRequestDTO)
+
+        var res =  securityService.createExpert(signUpRequestDTO)
+        println(res)
+        return res
     }
 
     @PostMapping("/signup")

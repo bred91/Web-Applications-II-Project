@@ -78,6 +78,7 @@ class EmployeeServiceTest {
                 email = "baba@gmail.com",
                 name = "John",
                 surname = "Smith",
+                username = "johnny",
                 role=RoleDTO(id = 1, name = "EXPERT")
             ), EmployeeDTO::class.java);
         Assertions.assertEquals(HttpStatus.CREATED, responseCreateEmployee.statusCode)
@@ -130,6 +131,7 @@ class EmployeeServiceTest {
                     email = "john@gmail.com",
                     name = "John",
                     surname = "Smith",
+                    username = "john",
                     role=RoleDTO(id = 1, name = "EXPERT")
                 )),
             EmployeeDTO::class.java
@@ -155,6 +157,7 @@ class EmployeeServiceTest {
                     email = "john@gmail.com",
                     name = "John",
                     surname = "Smith",
+                    username = "john",
                     role=RoleDTO(id = 1, name = "EXPERT")
                 )),
             ProblemDetail::class.java

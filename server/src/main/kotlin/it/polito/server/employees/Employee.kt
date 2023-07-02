@@ -13,6 +13,7 @@ class Employee : EntityBase<Long>(){
     var name: String = ""
     var surname: String = ""
     var email: String = ""
+    var username: String = ""
 
     @ManyToOne
     var role: Role? = null

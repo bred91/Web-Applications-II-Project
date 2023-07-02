@@ -15,6 +15,5 @@ data class SignUpRequestDTO (
     val name: String,
     @field:NotBlank(message="Not a valid lastName")
     val surname: String,
-    @field:NotBlank(message="Not a valid firstName")
     val phoneNumber: String,
 )
