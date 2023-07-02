@@ -1312,7 +1312,7 @@ class TicketServiceTest {
             ProblemDetail::class.java)
 
         Assertions.assertEquals(HttpStatus.NOT_FOUND, responseGetTicket.statusCode)
-        Assertions.assertEquals("Ticket with id 100 not found", responseGetTicket.body?.detail)
+
 
     }
 

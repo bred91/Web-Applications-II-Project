@@ -39,8 +39,8 @@ class Ticket : EntityBase<Long>() {
     @ManyToOne
     var actualExpert: Employee? = null
 
-    @OneToMany(mappedBy = "id")
-    var chat: List<Message>? = null
+//    @OneToMany(mappedBy = "id")
+//    var chat: List<Message>? = null
 
     @OneToMany(mappedBy = "ticket", cascade = [CascadeType.ALL])
     var history: MutableList<History>? = null

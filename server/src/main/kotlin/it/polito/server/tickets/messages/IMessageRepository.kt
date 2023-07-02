@@ -1,8 +1,8 @@
 package it.polito.server.tickets.messages
 
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.stereotype.Repository
+import org.bson.types.ObjectId
+import org.springframework.data.mongodb.repository.MongoRepository
 
-@Repository
-interface IMessageRepository : JpaRepository<Message, Long> {
+interface IMessageRepository : MongoRepository<Message, ObjectId> {
+    fun getAllMessagesByTicketId(ticketId:Long):List<Message>
 }

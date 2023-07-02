@@ -3,7 +3,7 @@ import { Button, Container, Form } from "react-bootstrap";
 import './SignUpForm.css';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
-import { login,getProfileByEmail } from '../API';
+import { login,getProfileByEmail, getInfo } from '../API';
 import { useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 
@@ -21,18 +21,22 @@ function LoginForm(props) {
             props.setRefreshToken(json.refresh_token);
             const decodedToken = jwt_decode(json.access_token);
             //console.log(decodedToken.resource_access["springboot-keycloak-client"].roles[0]);
-            props.setUser(decodedToken.name);
-            props.setIsLoggedIn(true);
+            //props.setUser(decodedToken.name);
             props.setRole(decodedToken.resource_access["springboot-keycloak-client"].roles[0]);
-            toast.success('Login successfully', {position: "bottom-center", autoClose: 2000});
-            navigate('/');
+            const user = await getInfo(json.access_token);
+            props.setUser(user);
+            props.setIsLoggedIn(true);
             if (decodedToken.resource_access["springboot-keycloak-client"].roles[0] === 'Client') {
-                const profile = await getProfileByEmail(json.access_token, email);
+                const profile = await getProfileByEmail(json.access_token, user.email);
                 //console.log(profile)
                 props.setProfile(profile);
+                //props.setUser(profile.email);
             }
+            toast.success('Login successfully', {position: "bottom-center", autoClose: 2000});
+            navigate('/');
+
         }catch(err){
-            toast.error('Wrong email and/or password', {position: "bottom-center", autoClose: 2000});
+            toast.error('Wrong email/username and/or password', {position: "bottom-center", autoClose: 2000});
         }
     };
 
@@ -42,8 +46,8 @@ function LoginForm(props) {
                 <Form className='p-5' onSubmit={handleSubmit}>
                     <h3>Login</h3>
                     <Form.Group controlId="email">
-                        <Form.Label>Email</Form.Label>
-                        <Form.Control type='email' onChange={(event) => setEmail(event.target.value)} />
+                        <Form.Label>Email/Username</Form.Label>
+                        <Form.Control  onChange={(event) => setEmail(event.target.value)} />
                     </Form.Group>
                     <Form.Group controlId="password">
                         <Form.Label>Password</Form.Label>

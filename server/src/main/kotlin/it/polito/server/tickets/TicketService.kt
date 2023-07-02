@@ -37,11 +37,19 @@ class TicketService (private val ticketRepository: ITicketRepository,
                      private val stateService: StateService
 ) : ITicketService {
 
-    @PreAuthorize("hasRole('ROLE_Manager')")
+    @PreAuthorize("hasAnyRole('ROLE_Manager', 'ROLE_Expert', 'ROLE_Client')")
     override fun getTicketById(id: Long): TicketDTO? {
-        val t = ticketRepository.findByIdOrNull(id)
-            ?: throw TicketNotFoundException("Ticket with id $id not found")
-        return t.toDTO()
+        val ticket = ticketRepository.findByIdOrNull(id) ?: throw TicketNotFoundException("Ticket with id $id not found!")
+        val jwt = SecurityContextHolder.getContext().authentication.principal as Jwt
+        val userEmail = jwt.getClaim("email") as String
+        val auth = SecurityContextHolder.getContext().authentication
+        if (auth != null && auth.authorities.any { it.authority.equals("ROLE_Expert")} && ticket.actualExpert?.email != userEmail) {
+            throw AuthorizationServiceException("The expert logged in is not the expert assigned to ticket")
+        }else if (auth != null && auth.authorities.any { it.authority.equals("ROLE_Client")} && ticket.customer?.email != userEmail) {
+            throw AuthorizationServiceException("The customer logged in is not the customer who has opened the ticket")
+        }
+
+        return ticket.toDTO()
     }
 
 

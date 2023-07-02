@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.min.css';
 import {createProduct, createTicket, getProducts, getProductByEan, verifyPurchase} from './../API';
 import { useNavigate } from "react-router-dom";
 import CsvDownloadButton from "react-json-to-csv";
+import * as API from "../API";
 
 function CreateTicket(props) {
     const [isVerified, setIsVerified] = useState(false)
@@ -15,7 +16,7 @@ function CreateTicket(props) {
     return(
         <>
             {isVerified ?
-                <CreateTicketComponent token={props.token} purchase={purchase} navigate={navigate}/>
+                <CreateTicketComponent token={props.token} setTicketId={props.setTicketId} setTickets={props.setTickets} purchase={purchase} navigate={navigate}/>
             :
                 <VerifyPurchaseComponent token={props.token} setIsVerified={setIsVerified} setPurchase={setPurchase}/>
             }
@@ -104,14 +105,22 @@ function VerifyPurchaseComponent(props){
 
 function CreateTicketComponent(props){
     const [note, setNote] = useState("");
-
+    const navigate = useNavigate();
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         try{
             const res = await createTicket(props.token, props.purchase.id)
             toast.success('Ticket submitted successfully', {position: "bottom-center", autoClose: 2000});
-            props.navigate(`/tickets/${res.id}`)
+            props.setTickets((prevTickets)=>[...prevTickets, res]);
+            const formData = new FormData()
+            if(note) {
+                formData.append('text', note)
+            }
+            await API.createMessage(props.token, res.id, formData)
+            props.setTicketId(res.id);
+            navigate("/tickets/" + res.id);
+
         }catch(err){
             toast.error(err, {position: "bottom-center", autoClose: 2000});
         }
