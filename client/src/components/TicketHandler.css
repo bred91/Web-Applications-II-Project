@@ -36,3 +36,41 @@
     border-radius: 5px;
     width: 100%;
 }
+.ticket-history-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ticket-history-header {
+    font-weight: bold;
+    text-align: left;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+.ticket-history-state {
+    color: #870a30;
+}
+
+.ticket-history-expert {
+    color: #8A8AFF;
+}
+
+
+.ticket-history-row:nth-child(even) {
+    background-color: #f1f1f1;
+}
+
+.ticket-history-cell {
+    padding: 10px;
+}
+
+.ticket-history-cell:first-child {
+    width: 200px;
+}
+
+.ticket-history-cell:last-child {
+    width: 150px;
+}
+
+
+

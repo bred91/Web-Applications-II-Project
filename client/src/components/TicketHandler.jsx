@@ -122,15 +122,36 @@ function TicketHandler(props) {
                    <strong> Ticket History </strong>
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                    {props.ticketDetails.history.sort((a,b)=> a.timestamp > b.timestamp)
-                        .map((h, index) => (
-                        <Dropdown.Item key={h.timestamp}>
-                        <span className="ticket-history-timestamp">
-                        {h.timestamp.replace('T', ' ').split('.')[0].split(':').slice(0, -1).join(':')}
-                        </span>
-                            <span> {h.state.name.replace("_", " ")}</span>
-                        </Dropdown.Item>
-                    ))}
+                    <table className="ticket-history-table">
+                        <thead>
+                        <tr>
+                            <th className="ticket-history-header">Timestamp</th>
+                            <th className="ticket-history-header">State</th>
+                            <th className="ticket-history-header">Expert</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {props.ticketDetails.history
+                            .sort((a, b) => a.timestamp > b.timestamp)
+                            .map((h, index) => (
+                                <tr key={h.timestamp} className="ticket-history-row">
+                                    <td className="ticket-history-cell">
+                                        {h.timestamp.replace("T", " ").split(".")[0].split(":").slice(0, -1).join(":")}
+                                    </td>
+                                    <td className="ticket-history-cell">
+                                      <span className="ticket-history-state">
+                                        {h.state.name.replace("_", " ")}
+                                      </span>
+                                                            </td>
+                                                            <td className="ticket-history-cell">
+                                      <span className="ticket-history-expert">
+                                        {h.expert && h.expert.username}
+                                      </span>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </Dropdown.Menu>
             </Dropdown>
             </div></center>
