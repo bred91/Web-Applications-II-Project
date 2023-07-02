@@ -8,6 +8,7 @@ import it.polito.server.profiles.exception.ProfileNotFoundException
 import it.polito.server.tickets.ITicketRepository
 import it.polito.server.tickets.TicketDTO
 import it.polito.server.tickets.toDTO
+import org.keycloak.admin.client.Keycloak
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
@@ -15,10 +16,12 @@ import org.springframework.transaction.annotation.Transactional
 
 
 @Service
-class ProfileService(private val profileRepository: IProfileRepository,
-                     private val addressRepository: IAddressRepository,
-                     private val purchaseRepository: IPurchaseRepository,
-                     private val ticketRepository: ITicketRepository)
+class ProfileService(
+    private val keycloak: Keycloak,
+    private val profileRepository: IProfileRepository,
+    private val addressRepository: IAddressRepository,
+    private val purchaseRepository: IPurchaseRepository,
+    private val ticketRepository: ITicketRepository)
     :IProfileService {
 
     @PreAuthorize("hasRole('ROLE_Manager')")
@@ -48,6 +51,16 @@ class ProfileService(private val profileRepository: IProfileRepository,
         return when (profileRepository.findByIdOrNull(email)?.toDTO()) {
             null -> {throw ProfileNotFoundException("Profile with email $email not found")}
             else -> {
+
+                val userRepresentation = keycloak.realm("SpringBootKeycloak").users().search(profile.username).firstOrNull()
+                    ?: throw throw ProfileNotFoundException("Profile with email $email not found")
+
+                // Update the user representation with the new profile data
+                userRepresentation.firstName = profile.name
+                userRepresentation.lastName = profile.surname
+
+                // Save the updated user representation
+                keycloak.realm("SpringBootKeycloak").users().get(userRepresentation.id).update(userRepresentation)
                 profileRepository.save(profile.toEntity()).toDTO()
             }
         }

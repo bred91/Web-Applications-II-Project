@@ -76,7 +76,7 @@ function UpdateProfileForm(props) {
                 </Form.Group>
                 <Form.Group controlId="username">
                     <Form.Label>Username</Form.Label>
-                    <Form.Control type='username' value={username} onChange={(event) => setUsername(event.target.value)} />
+                    <Form.Control type='username' value={username} disabled onChange={(event) => setUsername(event.target.value)} />
                 </Form.Group> 
                 <Form.Group controlId="name">
                     <Form.Label>Name</Form.Label>
