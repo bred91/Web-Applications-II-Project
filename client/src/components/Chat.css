@@ -1,10 +1,11 @@
 .input_file{
-    margin-left: 3em;
+    margin-left: 10em;
 }
 .sendButton{
     width: 30em;
     margin-left: 32em;
 }
+
 textarea {
     width: 50%;
     height: 100px;
@@ -23,4 +24,14 @@ textarea {
 textarea:focus {
     outline: none;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.my-margin-left {
+    margin-left: 8em;
+}
+
+.my-fixed-bottom {
+    position: absolute;
+    bottom: 50px;
+    width: 65%; /* Make the fixed div span the entire width */
 }
