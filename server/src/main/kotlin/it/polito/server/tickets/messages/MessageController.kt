@@ -20,7 +20,7 @@ class MessageController(private val messageService: IMessageService) {
     }
 
     @PostMapping("/chat/{ticketId}/messages")
-    fun createAttachment(@PathVariable ticketId: Long, @RequestPart file: MultipartFile?, @RequestPart text: String?): MessageDTO {
+    fun createMessage(@PathVariable ticketId: Long, @RequestPart file: MultipartFile?, @RequestPart text: String?): MessageDTO {
         val message = messageService.createMessage(file, text, ticketId)
         messagingTemplate?.convertAndSendToUser(message.ticketId.toString(), "/messages",message)
         return message

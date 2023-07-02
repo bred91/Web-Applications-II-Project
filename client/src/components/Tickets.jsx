@@ -6,55 +6,7 @@ import { FormDown } from "grommet-icons";
 import { CircleSpinner } from "react-spinners-kit";
 
 
-const columns = [
-    {
-        property: "id",
-        header: <Text>ID</Text>,
-        primary: true,
-        visible: false,
-    },
-    {
-        property: "product",
-        header: "Product",
-    },
-    {
-        property: "creationDate",
-        header: <Text>Creation Date</Text>,
-    },
-    {
-        property: "name",
-        header: "State",
-        render: (data) => (
-            <Box
-                pad="small"
-                background="light-4"
-                round="small"
-                style={{ pointerEvents: "none" }}
-            >
-                <Text>{data.name}</Text>
-            </Box>
-        ),
-    },
-    {
-        property: "lastModification",
-        header: "Last Modified",
-    },
-    {
-        property: "priorityLevel",
-        header: "Priority Level",
-        render: (data) => (
-            <Text color={getPriorityColor(data.priorityLevel)}>{data.priorityLevel}</Text>
-        ),
-    },
-    {
-        property: "actualExpert",
-        header: "Expert",
-    },
-    {
-        property: "expiringDate",
-        header: "Warranty Expiration",
-    },
-];
+
 
 const getPriorityColor = (priority) => {
     switch (priority) {
@@ -69,16 +21,73 @@ const getPriorityColor = (priority) => {
     }
 };
 
+
+
 const stateOptions = [
-    { value: "", label: "All" },
-    { value: "OPEN", label: "Open" },
-    { value: "IN_PROGRESS", label: "In Progress" },
-    { value: "RESOLVED", label: "Resolved" },
-    { value: "CLOSED", label: "Closed" },
-    { value: "REOPENED", label: "Reopened" },
+    { label: "All", value: "" },
+    { label: "Open", value: "OPEN" },
+    { label: "In Progress", value: "IN_PROGRESS" },
+    { label: "Resolved", value: "RESOLVED" },
+    { label: "Closed", value: "CLOSED" },
+    { label: "Reopened", value: "REOPENED" },
 ];
 
+
 function Tickets(props) {
+
+    const columns = [
+        {
+            property: "id",
+            header: <Text>ID</Text>,
+            primary: true,
+            visible: false,
+        },
+        {
+            property: "product",
+            header: "Product",
+        },
+        {
+            property: "creationDate",
+            header: <Text>Creation Date</Text>,
+        },
+        {
+            property: "name",
+            header: "State",
+            render: (data) => (
+                <Box
+                    pad="small"
+                    background="light-4"
+                    round="small"
+                    style={{ pointerEvents: "none" }}
+                >
+                    <Text>{data.name}</Text>
+                </Box>
+            ),
+        },
+        {
+            property: "lastModification",
+            header: "Last Modified",
+        },
+        props.role !== "Client" && {
+            property: "priorityLevel",
+            header: "Priority Level",
+            render: (data) => (
+                <Text color={getPriorityColor(data.priorityLevel)}>
+                    {data.priorityLevel}
+                </Text>
+            ),
+        },
+        {
+            property: "actualExpert",
+            header: "Expert",
+        },
+        {
+            property: "expiringDate",
+            header: "Warranty Expiration",
+        },
+    ].filter(Boolean);
+
+
     //const [tickets, setTickets] = useState([]);
     const [filter, setFilter] = useState("");
     const navigate = useNavigate();

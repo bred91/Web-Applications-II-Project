@@ -22,8 +22,18 @@ class MessageService(private val messageRepository: IMessageRepository,
     private val ticketRepository: ITicketRepository) : IMessageService {
 
 
-
+    @PreAuthorize("hasAnyRole('ROLE_Client', 'ROLE_Expert', 'ROLE_Manager')")
     override fun getAllMessages(ticketId:Long): List<MessageDTO> {
+        val ticket = ticketRepository.findByIdOrNull(ticketId) ?: throw TicketNotFoundException("Ticket with id $ticketId not found!")
+
+        val jwt = SecurityContextHolder.getContext().authentication.principal as Jwt
+        val auth = SecurityContextHolder.getContext().authentication
+        val userEmail = jwt.getClaim("email") as String
+        if (auth != null && auth.authorities.any { it.authority.equals("ROLE_Expert")} && ticket.actualExpert?.email != userEmail) {
+            throw AuthorizationServiceException("The expert logged in is not the expert assigned to ticket")
+        }else if(auth != null && auth.authorities.any { it.authority.equals("ROLE_Client")} && ticket.customer?.email != userEmail) {
+            throw AuthorizationServiceException("The customer logged in is not the customer who has opened the ticket")
+        }
         return messageRepository.getAllMessagesByTicketId(ticketId).map { it.toDTO() }
     }
 
