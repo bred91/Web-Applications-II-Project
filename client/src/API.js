@@ -45,7 +45,7 @@ const createProfile = async(email, password, username, name, surname, phoneNumbe
     if(!res.ok){
         const errorMessage = await res.json();
         console.log(errorMessage);
-        throw errorMessage.detail;
+        throw errorMessage.errorMessage;
     }
     else return null;
 
@@ -199,7 +199,7 @@ const createExpert = async(email, username, name, surname, password, token) => {
     if(!res.ok){
         const errorMessage = await res.json();
         console.log(errorMessage);
-        throw errorMessage.detail;
+        throw errorMessage.detail? errorMessage.detail : errorMessage.errorMessage;
     }
     else return null;
 }

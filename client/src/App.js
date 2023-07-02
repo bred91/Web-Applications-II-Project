@@ -21,6 +21,7 @@ import Ticket from "./components/Ticket";
 import SockJS from "sockjs-client";
 import {Stomp} from "@stomp/stompjs";
 import * as API from "./API";
+import Monitoring from "./components/Monitoring";
 
 
 var stompClient =null;
@@ -179,6 +180,7 @@ function App() {
                     {isLoggedIn && role==='Manager' ? <Route path="/createExpert" element={<CreateExpert token={accessToken} />} /> : null}
                     {isLoggedIn && role==='Manager' ? <Route path="/createProduct" element={<CreateProduct token={accessToken} />} /> : null}
                     {isLoggedIn && role==='Manager' ? <Route path="/updateProduct" element={<UpdateProductForm token={accessToken} product={product} setProduct={setProduct}/>} /> : null}
+                    {isLoggedIn && role==='Manager' ? <Route path="/monitoring" element={<Monitoring accessToken={accessToken} user={user}/>} /> : null}
                     {isLoggedIn ? <Route path="/tickets" element={<Tickets accessToken={accessToken} tickets={tickets} loading={loading} setTicketId={setTicketId} setTickets={setTickets} role={role}/>}/> : null}
                     {isLoggedIn ? <Route path="/tickets/:ticketId" element={<Ticket accessToken={accessToken} user={user}  ticketID={ticketId} loading={loading} role={role} messages={messages} ticketDetails={ticketDetails} setTicketDetails={setTicketDetails} setTickets={setTickets} setMessages={setMessages}/>}/> : null}
                     {isLoggedIn && role==='Client' ? <Route path="/createTicket" element={<CreateTicket token={accessToken} setTicketId={setTicketId} setTickets={setTickets}/>} /> : null}
