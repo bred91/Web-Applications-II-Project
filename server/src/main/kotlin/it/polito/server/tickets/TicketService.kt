@@ -65,38 +65,10 @@ class TicketService (private val ticketRepository: ITicketRepository,
             auth.authorities.any { it.authority.equals("ROLE_Expert")} -> {
                 return ticketRepository.findByActualExpert_Email(userEmail).map { it.toDTO() }
             }
-//            auth.authorities.any { it.authority.equals("ROLE_Manager")} -> {
-//                return ticketRepository.findAll().map { it.toDTO() }
-//            }
             else -> return ticketRepository.findAll().map { it.toDTO() }
         }
     }
 
-
-    /**
-     * Method to create a new ticket
-     * @param customerEmail email of the customer that creates the ticket
-     * @param purchaseId id of the purchase associated to the ticket
-     */
-    /*@PreAuthorize("hasRole('ROLE_Client')")
-    @Transactional
-    override fun createTicket(purchaseId: Long) : TicketDTO? {
-
-        val userEmail = SecurityContextHolder.getContext().authentication.name
-
-        val customer = profileService.getProfileByEmail(userEmail)
-        val purchase = purchaseService.getPurchaseById(purchaseId)
-        if(purchase?.customerEmail != userEmail){
-            throw PurchaseNotAssociatedException("The purchase $purchaseId does not belong to $customerEmail")
-        }
-        val currentTimeMillis = Date()
-        val newStateDTO = stateService.getStateById(StateEnum.OPEN.toLong())
-        val historyDTO = HistoryDTO(null, newStateDTO, null, currentTimeMillis, null)
-        val ticket = TicketDTO(null, purchase, currentTimeMillis, currentTimeMillis, newStateDTO, customer, null, null, null)
-        val ticketEntity = ticket.toEntity()
-
-        return ticketRepository.save(ticketEntity.addHistory(historyDTO.toEntity(ticketEntity))).toDTO()
-    }*/
 
     @PreAuthorize("hasRole('ROLE_Client')")
     @Transactional

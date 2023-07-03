@@ -32,18 +32,13 @@ class TicketController(private val ticketService: ITicketService) {
     }
 
 
-    /*@PostMapping("/API/tickets/createIssue")
-    @ResponseStatus(HttpStatus.CREATED)
-    fun createIssue(@Valid @RequestBody customer: ProfileDTO, @RequestParam purchaseId: Long ) : TicketDTO? {
-        return ticketService.createTicket(customer.email, purchaseId)
-    }*/
-
     @PostMapping("/API/tickets/createIssue")
     @ResponseStatus(HttpStatus.CREATED)
     fun createIssue(@RequestParam purchaseId: Long ) : TicketDTO? {
         var ticket =  ticketService.createTicket(purchaseId);
         if(ticket!=null){
             messagingTemplate?.convertAndSendToUser("manager", "/tickets",ticket)
+            ticket.customer?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticket) }
         }
         return ticket;
     }
@@ -56,7 +51,6 @@ class TicketController(private val ticketService: ITicketService) {
         var ticketPrev = ticketService.getTicketById(id);
         var ticketUpdated =  ticketService.startProgress(id, startProgressRequestDTO.employee_id, startProgressRequestDTO.priorityLevel.id)
         if (ticketUpdated != null) {
-            messagingTemplate?.convertAndSendToUser(id.toString(), "/ticket",ticketUpdated)
             ticketUpdated.customer?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticketUpdated) }
             ticketUpdated.actualExpert?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticketUpdated) }
             messagingTemplate?.convertAndSendToUser("manager", "/tickets",ticketUpdated)
@@ -73,7 +67,6 @@ class TicketController(private val ticketService: ITicketService) {
         var ticketPrev = ticketService.getTicketById(id);
         var ticketUpdated = ticketService.stopProgress(id)
         if (ticketUpdated != null) {
-            messagingTemplate?.convertAndSendToUser(id.toString(), "/ticket",ticketUpdated)
             ticketUpdated.actualExpert?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticketUpdated) }
             ticketUpdated.customer?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticketUpdated) }
             messagingTemplate?.convertAndSendToUser("manager", "/tickets",ticketUpdated)
@@ -89,8 +82,8 @@ class TicketController(private val ticketService: ITicketService) {
     fun reopenIssue(@PathVariable id:Long):TicketDTO? {
         var ticketUpdated = ticketService.reopenIssue(id)
         if (ticketUpdated != null) {
-            messagingTemplate?.convertAndSendToUser(id.toString(), "/ticket",ticketUpdated)
             ticketUpdated.actualExpert?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticketUpdated) }
+            ticketUpdated.customer?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticketUpdated) }
             messagingTemplate?.convertAndSendToUser("manager", "/tickets",ticketUpdated)
         }
         return ticketUpdated
@@ -100,7 +93,6 @@ class TicketController(private val ticketService: ITicketService) {
     fun resolveIssue(@PathVariable id:Long):TicketDTO? {
         var ticketUpdated = ticketService.resolveIssue(id)
         if (ticketUpdated != null) {
-            messagingTemplate?.convertAndSendToUser(id.toString(), "/ticket",ticketUpdated)
             ticketUpdated.actualExpert?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticketUpdated) }
             ticketUpdated.customer?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticketUpdated) }
             messagingTemplate?.convertAndSendToUser("manager", "/tickets",ticketUpdated)
@@ -112,7 +104,6 @@ class TicketController(private val ticketService: ITicketService) {
     fun closeIssue(@PathVariable id:Long):TicketDTO? {
         var ticketUpdated =  ticketService.closeIssue(id)
         if (ticketUpdated != null) {
-            messagingTemplate?.convertAndSendToUser(id.toString(), "/ticket",ticketUpdated)
             ticketUpdated.actualExpert?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticketUpdated) }
             ticketUpdated.customer?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticketUpdated) }
             messagingTemplate?.convertAndSendToUser("manager", "/tickets",ticketUpdated)

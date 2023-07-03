@@ -75,10 +75,8 @@ function App() {
     useEffect(() =>{
         if(ticketId){
             const messagesSubscription = stompClient.subscribe('/topics/'+ticketId+'/messages', onReceivedMessage);
-            const ticketSubscription = stompClient.subscribe('/topics/'+ticketId+'/ticket', onUpdateTicket);
             const newSubscriptions = new Map(subscriptions);
             newSubscriptions.set('messages', messagesSubscription);
-            newSubscriptions.set('ticket', ticketSubscription);
             setSubscriptions(newSubscriptions);
 
         }else{
@@ -86,10 +84,6 @@ function App() {
             if(newSubscriptions.get('messages')){
                 newSubscriptions.get('messages').unsubscribe()
                 newSubscriptions.delete('messages');
-            }
-            if(newSubscriptions.get('ticket')){
-                newSubscriptions.get('ticket').unsubscribe()
-                newSubscriptions.delete('ticket');
             }
             setSubscriptions(newSubscriptions);
             setTicketId(null);
@@ -112,16 +106,18 @@ function App() {
 
     };
 
-    const onUpdateTicket = (updatedTicket) => {
-        const receivedMessage = JSON.parse(updatedTicket.body);
-        setTicketDetails(receivedMessage);
-    }
     const onReceivedMessage = (message) => {
         const receivedMessage = JSON.parse(message.body);
         setMessages((prevMessages) => [...prevMessages, receivedMessage]);
     }
     const onReceivedTicket = (ticket) => {
         const receivedTicket = JSON.parse(ticket.body);
+        setTicketDetails((prevTicket) => {
+            if(prevTicket && prevTicket.id===receivedTicket.id){
+                return receivedTicket;
+            }else return prevTicket;
+        })
+
         if(role==='Expert' && (receivedTicket.actualExpert==null || receivedTicket.actualExpert.email != user.email) ){
             setTicketId(null);
             setTickets((prevTickets) => {

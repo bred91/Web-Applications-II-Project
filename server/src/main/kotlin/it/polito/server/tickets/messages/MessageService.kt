@@ -37,17 +37,9 @@ class MessageService(private val messageRepository: IMessageRepository,
         return messageRepository.getAllMessagesByTicketId(ticketId).map { it.toDTO() }
     }
 
-    override fun getMessage(id: Long): MessageDTO? {
-        //return messageRepository.findByIdOrNull(id)?.toDTO()
-        TODO()
-    }
 
     @PreAuthorize("hasAnyRole('ROLE_Client', 'ROLE_Expert')")
     override fun createMessage(file: MultipartFile?, text: String?, ticketId: Long) : MessageDTO{
-
-//        if (file==null && text==null){
-//            throw
-//        }
 
         val ticket = ticketRepository.findByIdOrNull(ticketId) ?: throw TicketNotFoundException("Ticket with id $ticketId not found!")
 
@@ -69,8 +61,5 @@ class MessageService(private val messageRepository: IMessageRepository,
         return messageRepository.save(messageDTO.toEntity()).toDTO()
     }
 
-    override fun updateMessage(id: Long, message: MessageDTO): MessageDTO? {
-        TODO("Not yet implemented")
-    }
 
 }
