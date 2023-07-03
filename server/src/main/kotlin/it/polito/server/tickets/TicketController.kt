@@ -59,6 +59,7 @@ class TicketController(private val ticketService: ITicketService) {
             messagingTemplate?.convertAndSendToUser(id.toString(), "/ticket",ticketUpdated)
             ticketUpdated.customer?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticketUpdated) }
             ticketUpdated.actualExpert?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets",ticketUpdated) }
+            messagingTemplate?.convertAndSendToUser("manager", "/tickets",ticketUpdated)
             if(ticketPrev != null){
                 ticketPrev.actualExpert?.let { messagingTemplate?.convertAndSendToUser(it.email, "/tickets", ticketUpdated) }
             }
