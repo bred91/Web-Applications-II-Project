@@ -50,7 +50,7 @@ function CreateExpert(props) {
                         <Form.Label>Password</Form.Label>
                         <Form.Control type='password' minLength={0} onChange={(event) => setPassword(event.target.value)}/>
                     </Form.Group>
-                    <Button variant="primary" className="w-100" type="submit">Sign Up</Button>
+                    <Button variant="primary" className="w-100" type="submit">Create expert</Button>
                 </Form>
             </Container>
         </Container>
