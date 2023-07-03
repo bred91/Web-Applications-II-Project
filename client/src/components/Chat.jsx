@@ -197,8 +197,8 @@ function Chat(props){
             })
             }
             {
-                props.role!='Manager' && <div className="my-fixed-bottom">
-                    <textarea className={"my-margin-left"}
+                props.role!='Manager' && <div>
+                    <textarea
                         placeholder={"Type a message..."}
                         rows={3}
                         value={text}
