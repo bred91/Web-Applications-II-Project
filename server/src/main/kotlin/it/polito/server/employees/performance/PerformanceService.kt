@@ -6,6 +6,7 @@ import it.polito.server.tickets.enums.TimeEnum
 import it.polito.server.tickets.enums.toDate
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
 
 @Service
 class PerformanceService(
@@ -33,20 +34,23 @@ class PerformanceService(
     private fun getPerformanceDTO(expertId: Long? = null): PerformanceDTO{
         val stateCount: Any
         val ticketsCounter: Any
+        val percentageCounter: Any
         val name: String
         if (expertId == null){
             name = "Created"
             stateCount = ticketRepository.getStateCountFromDate()
             ticketsCounter = ticketRepository.getTicketsCounters(timeslot)
+            percentageCounter = ticketRepository.getPercentageCounters()
         }
         else{
             name = "In Progress"
             stateCount = ticketRepository.getStateCountFromDate(expertId)
             ticketsCounter = ticketRepository.getTicketsCounters(timeslot, expertId)
+            percentageCounter = ticketRepository.getPercentageCounters(expertId)
         }
 
         return PerformanceDTO(
-            stateCount.map {it ->
+            stateCount.map {
                 val element = it as Array<out Any>
                 StateCount(
                     element[0] as String,
@@ -55,7 +59,7 @@ class PerformanceService(
             },
             (ticketsCounter as Array<out Any>).mapIndexed { id, v ->
                 StateCount(
-                    when(id){
+                    when (id) {
                         0 -> name
                         1 -> "Closed"
                         2 -> "Resolved"
@@ -63,6 +67,20 @@ class PerformanceService(
                     },
                     v as Long
                 )
+            }.toList(),
+            (percentageCounter as Array<out Any>).mapIndexed { id, v ->
+                    val count = when (v) {
+                        is Long -> v
+                        is BigDecimal -> v.toLong()
+                        else -> throw IllegalArgumentException("Unsupported type: ${v.javaClass}")
+                    }
+                    StateCount(
+                        when (id) {
+                            0 -> "Closed"
+                            else -> "Resolved"
+                        },
+                        count
+                    )
             }.toList()
         )
     }

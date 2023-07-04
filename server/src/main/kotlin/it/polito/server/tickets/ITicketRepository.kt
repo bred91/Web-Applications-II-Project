@@ -44,6 +44,75 @@ interface ITicketRepository : JpaRepository<Ticket, Long> {
             nativeQuery = true)
     fun getTicketsCounters(fromDate: Date): Any
 
+    @Query(
+        /*"SELECT" +
+                "(SELECT " +
+                "  CASE " +
+                "    WHEN (SELECT COUNT(*) FROM ticket) = 0 THEN 0.00" +
+                "    ELSE CAST(100.0 * COUNT(*) / (SELECT COUNT(*) FROM ticket) AS numeric(10, 2))" +
+                "  END AS closed_perc_week" +
+                " FROM (SELECT * " +
+                            "FROM ticket t " +
+                            "INNER JOIN history h ON t.id = h.ticket_id " +
+                            "INNER JOIN state s ON h.state_id = s.id " +
+                            "INNER JOIN state s2 ON t.state_id = s2.id " +
+                            "WHERE s.name = 'CLOSED' AND s2.name = 'CLOSED' " +
+                                "AND CAST(h.timestamp AS DATE) - t.creation_date < 7" +
+                            " ) closed_tickets) AS closed_perc_week," +
+                " (SELECT CAST(100.0 * COUNT(*) / (SELECT COUNT(*)" +
+                            "FROM ticket ) AS numeric(10, 2)) AS resolved_perc_week" +
+                            " FROM (SELECT *" +
+                            "FROM ticket t " +
+                            "INNER JOIN history h ON t.id = h.ticket_id " +
+                            "INNER JOIN state s ON h.state_id = s.id " +
+                            "INNER JOIN state s2 ON t.state_id = s2.id " +
+                            "WHERE s.name = 'RESOLVED' AND s2.name = 'CLOSED' " +
+                                "AND CAST(h.timestamp AS DATE) - t.creation_date < 7" +
+                            " ) resolved_tickets) AS resolved_perc_week"*/
+        """
+        SELECT
+            (SELECT
+                CASE
+                    WHEN (SELECT COUNT(*) FROM ticket) = 0 THEN 0.00
+                    ELSE CAST(100.0 * COUNT(*) / (SELECT COUNT(*) FROM ticket) AS numeric(10, 2))
+                END AS closed_perc_week
+            FROM
+                (SELECT *
+                FROM (
+                    SELECT
+                        t.*,
+                        h.*,
+                        ROW_NUMBER() OVER (PARTITION BY t.id ORDER BY h.timestamp DESC) AS row_number
+                    FROM ticket t
+                    INNER JOIN history h ON t.id = h.ticket_id
+                    INNER JOIN state s ON h.state_id = s.id
+                    INNER JOIN state s2 on s2.id = t.state_id
+                    WHERE s.name = 'CLOSED' AND s2.name = 'CLOSED' 
+                        AND CAST(h.timestamp AS DATE) - t.creation_date < 7
+                ) AS ticket_history
+                WHERE ticket_history.row_number = 1) closed_tickets) AS closed_perc_week,
+            (SELECT CAST(100.0 * COUNT(*) / (SELECT COUNT(*) FROM ticket) AS numeric(10, 2)) AS resolved_perc_week
+            FROM
+                (SELECT *
+                FROM (
+                    SELECT
+                        t.*,
+                        h.*,
+                        ROW_NUMBER() OVER (PARTITION BY t.id ORDER BY h.timestamp DESC) AS row_number
+                    FROM ticket t
+                    INNER JOIN history h ON t.id = h.ticket_id
+                    INNER JOIN state s ON h.state_id = s.id
+                    INNER JOIN state s2 on s2.id = t.state_id
+                    WHERE s.name = 'RESOLVED' AND s2.name IN ('CLOSED', 'RESOLVED')
+                        AND CAST(h.timestamp AS DATE) - t.creation_date < 7
+                ) AS ticket_history
+                WHERE ticket_history.row_number = 1) resolved_tickets) AS resolved_perc_week
+        """
+        ,
+        nativeQuery = true
+    )
+    fun getPercentageCounters(): Any
+
     @Query("select s.name as state, count(t.id) as count " +
             "from state s " +
             "left join (select * from ticket t where t.actual_expert_id = :expertId) " +
@@ -76,4 +145,84 @@ interface ITicketRepository : JpaRepository<Ticket, Long> {
             "where h.timestamp > :fromDate and s.name = 'REOPENED' and t.actual_expert_id = :expertId) as ticketsReopened",
         nativeQuery = true)
     fun getTicketsCounters(fromDate: Date, expertId: Long): Any
+
+    @Query(
+        /*"SELECT " +
+                "(SELECT CASE " +
+                "    WHEN (SELECT COUNT(*) FROM ticket t WHERE t.actual_expert_id = :expertId) = 0 THEN 0.00 " +
+                "    ELSE CAST(100.0 * COUNT(*) / (SELECT COUNT(*) FROM ticket t WHERE t.actual_expert_id = :expertId) AS numeric(10, 2))" +
+                "  END AS closed_perc_week" +
+                " FROM (SELECT * " +
+                        "FROM ticket t " +
+                        "INNER JOIN history h ON t.id = h.ticket_id " +
+                        "INNER JOIN state s ON h.state_id = s.id " +
+                        "WHERE s.name = 'RESOLVED'" +
+                        "AND CAST(h.timestamp AS DATE) - t.creation_date < 7" +
+                        " AND t.actual_expert_id = :expertId) as closed_tickets) AS closed_perc_week," +
+                "(SELECT CASE " +
+                "    WHEN (SELECT COUNT(*) FROM ticket t WHERE t.actual_expert_id = :expertId) = 0 THEN 0.00 " +
+                "    ELSE CAST(100.0 * COUNT(*) / (SELECT COUNT(*) FROM ticket t WHERE t.actual_expert_id = :expertId) AS numeric(10, 2))" +
+                "  END AS resolved_perc_week" +
+                " FROM (SELECT *" +
+                        "FROM ticket t " +
+                        "INNER JOIN history h ON t.id = h.ticket_id " +
+                        "INNER JOIN state s ON h.state_id = s.id " +
+                        "WHERE s.name = 'RESOLVED'" +
+                        "AND CAST(h.timestamp AS DATE) - t.creation_date < 7" +
+                        " AND t.actual_expert_id = :expertId) as resolved_tickets) AS resolved_perc_week"*/
+        """
+        SELECT
+            (SELECT
+                CASE
+                    WHEN (SELECT COUNT(DISTINCT t.id) FROM ticket t
+                                INNER JOIN history h on t.id = h.ticket_id
+                                WHERE h.expert_id = :expertId) = 0 THEN 0.00
+                    ELSE CAST(100.0 * COUNT(*) / (SELECT COUNT(DISTINCT t.id) FROM ticket t
+                                                    INNER JOIN history h on t.id = h.ticket_id
+                                                    WHERE h.expert_id = :expertId) AS numeric(10, 2))
+                END AS closed_perc_week
+            FROM
+                (SELECT *
+                FROM (
+                    SELECT
+                        t.*,
+                        h.*,
+                        ROW_NUMBER() OVER (PARTITION BY t.id ORDER BY h.timestamp DESC) AS row_number
+                    FROM ticket t
+                    INNER JOIN history h ON t.id = h.ticket_id
+                    INNER JOIN state s ON h.state_id = s.id
+                    INNER JOIN state s2 on s2.id = t.state_id
+                    WHERE s.name = 'CLOSED' AND s2.name = 'CLOSED'
+                        AND CAST(h.timestamp AS DATE) - t.creation_date < 7 AND t.actual_expert_id = :expertId
+                ) AS ticket_history
+                WHERE ticket_history.row_number = 1) closed_tickets) AS closed_perc_week,
+            (SELECT
+                CASE
+                    WHEN (SELECT COUNT(DISTINCT t.id) FROM ticket t
+                            INNER JOIN history h on t.id = h.ticket_id
+                            WHERE h.expert_id = :expertId) = 0 THEN 0.00
+                    ELSE CAST(100.0 * COUNT(*) / (SELECT COUNT(DISTINCT t.id) FROM ticket t
+                                                    INNER JOIN history h on t.id = h.ticket_id
+                                                    WHERE h.expert_id = :expertId) AS numeric(10, 2))
+                END AS resolved_perc_week
+            FROM
+                (SELECT *
+                FROM (
+                    SELECT
+                        t.*,
+                        h.*,
+                        ROW_NUMBER() OVER (PARTITION BY t.id ORDER BY h.timestamp DESC) AS row_number
+                    FROM ticket t
+                    INNER JOIN history h ON t.id = h.ticket_id
+                    INNER JOIN state s ON h.state_id = s.id
+                    INNER JOIN state s2 on s2.id = t.state_id
+                    WHERE s.name = 'RESOLVED' AND s2.name IN ('RESOLVED', 'CLOSED')
+                        AND CAST(h.timestamp AS DATE) - t.creation_date < 7 AND t.actual_expert_id = :expertId
+                ) AS ticket_history
+                WHERE ticket_history.row_number = 1) resolved_tickets) AS resolved_perc_week
+        """
+        ,
+        nativeQuery = true
+    )
+    fun getPercentageCounters(expertId: Long): Any
 }

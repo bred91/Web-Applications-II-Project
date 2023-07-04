@@ -71,6 +71,23 @@ function Monitoring(props){
                     }
                 </Row>
                 <Row className="mb-3">
+                    {performance && experts ?
+                            [{employeeDTO: {id: 0, name: "All"}, performanceDTO: performance}, ...experts]
+                            .filter(x => x.employeeDTO.id === parseInt(selectedExpert))[0].performanceDTO
+                            .percentageCounter
+                            .map((element,idx) =>
+                                <Col key={idx}>
+                                    <Card className="d-flex max-w-xs mx-auto mb-2 align-items-center" decoration="top"
+                                            decorationColor={"indigo"} key={idx}>
+                                        <Text>{element.state.replace("_"," ") + " % in a week"}</Text>
+                                        <Metric className="mx-auto">{element.count + " %"}</Metric>
+                                    </Card>
+                                </Col>
+                            )
+                        : null
+                    }
+                </Row>
+                <Row className="mb-3">
                     <Col className="align-content-center mx-auto mb-3">
                         {performance && experts ?
                             <Card className="max-w-lg mx-auto">
