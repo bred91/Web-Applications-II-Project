@@ -26,9 +26,6 @@ function TicketHandler(props) {
         API.startProgress(props.accessToken, ticketId, selectedExpert, selectedPriority)
             .then( ()=> {
                 toast.success("Expert assigned successfully!", {position: "bottom-center", autoClose: 2000})
-                // API.fetchTicket(props.accessToken, ticketId)
-                //     .then( ticket => setTicketDetails(ticket))
-                //     .catch((err) => toast.error(err.message));
             })
             .catch((err) => toast.error(err, {position: "bottom-center", autoClose: 2000}));
 
@@ -53,9 +50,6 @@ function TicketHandler(props) {
         API.reopenIssue(props.accessToken, ticketId)
             .then( ()=> {
                 toast.success("Issue reopened", {position: "bottom-center", autoClose: 2000});
-                // API.fetchTicket(props.accessToken, ticketId)
-                //     .then( ticket => setTicketDetails(ticket))
-                //     .catch((err) => toast.error(err.message));
             })
             .catch((err) => toast.error(err, {position: "bottom-center", autoClose: 2000}));
 
@@ -66,9 +60,6 @@ function TicketHandler(props) {
         API.resolveIssue(props.accessToken, ticketId)
             .then( ()=> {
                 toast.success("Issue resolved", {position: "bottom-center", autoClose: 2000});
-                // API.fetchTicket(props.accessToken, ticketId)
-                //     .then( ticket => setTicketDetails(ticket))
-                //     .catch((err) => toast.error(err.message));
             })
             .catch((err) => toast.error(err, {position: "bottom-center", autoClose: 2000}));
 
@@ -79,9 +70,6 @@ function TicketHandler(props) {
         API.closeIssue(props.accessToken, ticketId)
             .then( ()=> {
                 toast.success("Issue closed", {position: "bottom-center", autoClose: 2000});
-                // API.fetchTicket(props.accessToken, ticketId)
-                //     .then( ticket => setTicketDetails(ticket))
-                //     .catch((err) => toast.error(err.message));
             })
             .catch((err) => toast.error(err, {position: "bottom-center", autoClose: 2000}));
     }

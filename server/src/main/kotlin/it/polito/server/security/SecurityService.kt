@@ -39,8 +39,6 @@ class SecurityService(
 
         return try {
             val response = restTemplate.exchange(url, HttpMethod.POST, entity, TokenResponse::class.java)
-            /*val json = Json
-            buildJsonObject { put("token", json.encodeToString(response.body?.access_token)) }*/
             ResponseEntity.ok(response.body)
         } catch (ex: Exception) {
             ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials")

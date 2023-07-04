@@ -1,63 +1,19 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {fetchMessages} from "../API";
-import {MessageBox, Button, MessageList, Input} from "react-chat-elements";
-import {useNavigate, useParams} from "react-router-dom";
+import React, {useState} from 'react';
+import {MessageBox, Button} from "react-chat-elements";
+import {useParams} from "react-router-dom";
 import {toast} from 'react-toastify';
 import * as API from "../API";
 import 'react-chat-elements/dist/main.css'
 import './Chat.css'
-import SockJS from 'sockjs-client';
-import { Stomp } from '@stomp/stompjs';
-import {over} from "stompjs";
 import {CircleSpinner} from "react-spinners-kit";
 import {Box} from "grommet";
 
-var stompClient =null;
 
 function Chat(props){
-    //const [messages, setMessages] = useState([])
     const [text, setText] = useState('')
     const [file, setFile] = useState(null)
     const {ticketId} = useParams()
 
-
-
-    // useEffect(() => {
-    //     let Sock = new SockJS('http://localhost:8080/ws');
-    //     stompClient = Stomp.over(Sock);
-    //     stompClient.connect({},onConnected, onError);
-    //
-    //     // Clean up the WebSocket connection
-    //     return () => {
-    //         disconnect();
-    //     };
-    // }, [ticketId]);
-    //
-    // const onConnected = () => {
-    //     stompClient.subscribe('/chat/'+ticketId+'/messages', onReceived);
-    // }
-    //
-    // const onReceived = (message) => {
-    //     console.log("Received message:", message);
-    //     const receivedMessage = JSON.parse(message.body);
-    //     setMessages((prevMessages) => [...prevMessages, receivedMessage]);
-    // }
-    //
-    // const onError = (error) => {
-    //     console.error('Error during WebSocket connection:', error);
-    // }
-    //
-    // const disconnect = () => {
-    //     if (stompClient) {
-    //         stompClient.disconnect();
-    //     }
-    // };
-
-    // useEffect(() => {
-    //     fetchMessages(props.accessToken, ticketId)
-    //         .then( allMessages => setMessages([...allMessages]))
-    //         .catch((err) => toast.error(err.message));
-    // }, []);
 
     const createMessage = async(e) => {
         e.preventDefault()
@@ -81,9 +37,7 @@ function Chat(props){
                 if (fileInput) {
                     fileInput.value = null;
                 }
-                // fetchMessages(props.accessToken, ticketId)
-                //     .then( allMessages => setMessages([...allMessages]))
-                //     .catch((err) => toast.error(err, {position: "bottom-center", autoClose: 2000}));
+
             }
 
 
@@ -117,7 +71,6 @@ function Chat(props){
                     let bytes = base64ToBytes(message.content.attachment.content)
                     const blob = new Blob([bytes], {type: message.content.attachment.contentType })
                     uri = URL.createObjectURL(blob)
-                    //console.log(uri)
                     if(message.content.attachment.contentType.startsWith("image")){
                         type='photo'
                     }else if(message.content.attachment.contentType.startsWith("audio")){
@@ -139,13 +92,12 @@ function Chat(props){
 
                     type={type}
                     data={{
-                       //uri:"data:"+ message.content.attachment.contentType+";base64,"+message.content.attachment.content,
                        uri: uri,
-                        width:300,
+                       width:300,
                        height:150
                     }}
 
-                    //onClick={() => {window.open("data:"+ message.content.attachment.contentType+";base64,"+message.content.attachment.content, '_blank')}}
+
                     onClick={()=>window.open(uri,"_blank")}
                     />}{
                         type=='video' && <MessageBox
@@ -154,7 +106,7 @@ function Chat(props){
                             date={message.sentTS}
                             title={message.senderId === props.user.email ? 'You' : message.senderId.split('@')[0]}
                             data={{
-                                //uri: "data:"+ message.content.attachment.contentType+";base64,"+message.content.attachment.content,
+
                                 videoURL: uri,
                                 width: 400,
                                 height: 300,
@@ -172,7 +124,7 @@ function Chat(props){
                             date={message.sentTS}
                             title={message.senderId === props.user.email ? 'You' : message.senderId.split('@')[0]}
                             data={{
-                                //uri: "data:"+ message.content.attachment.contentType+";base64,"+message.content.attachment.content,
+
                                 audioURL: uri,
 
                             }}

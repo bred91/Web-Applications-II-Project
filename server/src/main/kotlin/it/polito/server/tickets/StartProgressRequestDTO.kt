@@ -7,8 +7,6 @@ data class StartProgressRequestDTO(
     val employee_id:Long,
     @field:NotNull(message = "Invalid priority level")
     val priorityLevel: PriorityDTO
-    /*@field:NotBlank(message = "Invalid priority level")
-    @Pattern(regexp = "^(LOW|MEDIUM|HIGH)$", message = "Invalid value!")
-    val priority_level:String*/
+
 
 )

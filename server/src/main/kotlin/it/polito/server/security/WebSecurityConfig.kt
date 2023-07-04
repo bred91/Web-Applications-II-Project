@@ -17,7 +17,7 @@ import org.springframework.security.web.SecurityFilterChain
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 class WebSecurityConfig @Autowired constructor(private val jwtAuthConverter: JwtAuthConverter){
-//private val jwtAuthConverter: JwtAuthConverter? = null
+
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
@@ -32,19 +32,16 @@ class WebSecurityConfig @Autowired constructor(private val jwtAuthConverter: Jwt
             .requestMatchers(HttpMethod.GET, "/customer").hasAnyRole(CLIENT)
             .requestMatchers(HttpMethod.GET, "/ws").hasAnyRole(CLIENT, MANAGER, EXPERT)
             .anyRequest().permitAll()
-            //.and().oauth2Login()
 
         http.oauth2ResourceServer()
             .jwt()
             .jwtAuthenticationConverter(jwtAuthConverter)
 
-        //http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         http.csrf().disable()
         return http.build()
     }
 
     companion object {
-        //const val ADMIN = "Admin"
         const val MANAGER = "Manager"
         const val EXPERT = "Expert"
         const val CLIENT = "Client"

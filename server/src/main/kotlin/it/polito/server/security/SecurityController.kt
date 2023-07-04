@@ -21,10 +21,7 @@ class SecurityController(private val securityService: ISecurityService, private 
 
     @PostMapping("/createExpert")
     fun createExpert(@RequestBody @Valid signUpRequestDTO: SignUpRequestDTO): ResponseEntity<Any> {
-
-        var res =  securityService.createExpert(signUpRequestDTO)
-        println(res)
-        return res
+        return  securityService.createExpert(signUpRequestDTO)
     }
 
     @PostMapping("/signup")
@@ -49,40 +46,5 @@ class SecurityController(private val securityService: ISecurityService, private 
         val userEmail = token.tokenAttributes["email"] as String?
         val response = Response(userName, userEmail)
         return ResponseEntity.ok(response)
-    }
-    @GetMapping("/manager")
-    fun getManager(principal: Principal): ResponseEntity<Any> {
-        val token = principal as JwtAuthenticationToken
-        val userName = token.tokenAttributes["name"] as String?
-        val userEmail = token.tokenAttributes["email"] as String?
-        val response = Response(userName, userEmail)
-        return ResponseEntity.ok(response)
-        //return ResponseEntity.ok("Hello Manager \nUser Name : $userName\nUser Email : $userEmail")
-    }
-
-    @GetMapping("/expert")
-    fun getExpert(principal: Principal): ResponseEntity<Any> {
-        val token = principal as JwtAuthenticationToken
-        val userName = token.tokenAttributes["name"] as String?
-        val userEmail = token.tokenAttributes["email"] as String?
-        val response = Response(userName, userEmail)
-        return ResponseEntity.ok(response)
-    }
-
-    @GetMapping("/customer")
-    fun getUser(principal: Principal): ResponseEntity<Any> {
-        val token = principal as JwtAuthenticationToken
-        val userName = token.tokenAttributes["name"] as String?
-        val userEmail = token.tokenAttributes["email"] as String?
-        val response = Response(userName, userEmail)
-        return ResponseEntity.ok(response)
-        //return ResponseEntity.ok("Hello Customer \nUser Name : $userName\nUser Email : $userEmail")
-    }
-
-    @GetMapping("/test")
-    fun getTest(principal: Principal) : ResponseEntity<String> {
-        val token = principal as JwtAuthenticationToken
-        val userEmail = token.tokenAttributes["email"] as String?
-        return ResponseEntity.ok("EMAIL = $userEmail")
     }
 }

@@ -17,11 +17,6 @@ data class HistoryDTO(
     @field:NotNull(message="Not a valid state")
     var state: StateDTO?,
     @field:NotNull(message="Not a valid ticket")
-    //var ticket: TicketDTO?,
-    /*@field:NotNull(message="Not a valid state")
-    var state_id: Long?,
-    @field:NotNull(message="Not a valid ticket")
-    var ticket_id: Long?,*/
     var ticket_id:Long?,
     @field:NotNull(message="Not a valid date")
     var timestamp: Date?,
@@ -49,33 +44,3 @@ fun History.toDTO(): HistoryDTO {
         expert?.toDTO()
     )
 }
-
-
-/*fun HistoryDTO.toEntity() : History{
-    val history = History()
-    history.id= id
-    history.state = state?.toEntity()
-    history.ticket=
-    ticket.history = historyIds?.mapNotNull { id ->
-        getHistoryById(id)
-    }?.toMutableList()
-    history.timestamp = timestamp
-    history.expert = expert?.toEntity()
-    return history
-}*/
-
-
-/*fun toDTO(history:History) : HistoryDTO {
-    return HistoryDTO(
-        id = history.id,
-        state = history.state?.toDTO(),
-        history.ticket?.id,
-        timestamp = history.timestamp,
-        expert = history.expert?.toDTO()
-    )
-}*/
-
-
-/*fun History.toDTO() : HistoryDTO{
-    return HistoryDTO(id, state?.toDTO(), ticket?.toDTO(), timestamp, expert?.toDTO())
-}*/

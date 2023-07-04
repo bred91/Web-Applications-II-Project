@@ -16,21 +16,16 @@ function LoginForm(props) {
         event.preventDefault();
         try{
             const json = await login(email, password);
-            //console.log(json);
             props.setAccessToken(json.access_token);
             props.setRefreshToken(json.refresh_token);
             const decodedToken = jwt_decode(json.access_token);
-            //console.log(decodedToken.resource_access["springboot-keycloak-client"].roles[0]);
-            //props.setUser(decodedToken.name);
             props.setRole(decodedToken.resource_access["springboot-keycloak-client"].roles[0]);
             const user = await getInfo(json.access_token);
             props.setUser(user);
             props.setIsLoggedIn(true);
             if (decodedToken.resource_access["springboot-keycloak-client"].roles[0] === 'Client') {
                 const profile = await getProfileByEmail(json.access_token, user.email);
-                //console.log(profile)
                 props.setProfile(profile);
-                //props.setUser(profile.email);
             }
             toast.success('Login successfully', {position: "bottom-center", autoClose: 2000});
             navigate('/');

@@ -1,33 +1,20 @@
-import React, {useState, useEffect, useContext} from "react";
+import React, {useState} from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Container, Form } from "react-bootstrap";
 import './SignUpForm.css';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
-import { getProfiles, updateProfile } from '../API';
+import { updateProfile } from '../API';
 
 function UpdateProfileForm(props) {
-    //const [allProfiles, setAllProfiles] = useState([]);
     const [email, setEmail] = useState(props.profile? props.profile.email : "");
     const [username, setUsername] = useState(props.profile? props.profile.username : "");
     const [name, setName] = useState(props.profile? props.profile.name : "");
     const [surname, setSurname] = useState(props.profile? props.profile.surname : "");
     const [phoneNumber, setPhoneNumber] = useState(props.profile? props.profile.phoneNumber : "");
-    //const [matchingProfiles, setMatchingProfiles] = useState([]);
     const navigate = useNavigate();
 
-    /*useEffect(() => {
-        const fetchProfiles = async() => {
-            try{
-                const profiles = await getProfiles();
-                setAllProfiles(profiles);
-            }catch(err){
-                console.log(err);
-            }
-        };
-        fetchProfiles();
 
-    }, []);*/
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -43,23 +30,6 @@ function UpdateProfileForm(props) {
         }
     };
 
-    /*const handleChange = (event)=>{
-        setEmail(event.target.value);
-        let matchedProfiles = allProfiles.filter((item) => item.email.toLowerCase().includes(event.target.value));
-        setMatchingProfiles(matchedProfiles);
-        if(matchedProfiles.length===1 && event.target.value===matchedProfiles[0].email){
-            setSurname(matchedProfiles[0].surname);
-            setName(matchedProfiles[0].name);
-            setUsername(matchedProfiles[0].username);
-        }else{
-            setSurname("");
-            setName("");
-            setUsername("");
-            props.setProfile(null);
-        }
-    }*/
-
-
 
     return (
         <Container className="pt-3">
@@ -70,9 +40,6 @@ function UpdateProfileForm(props) {
                     <Form.Label>Email</Form.Label>
                     <Form.Control type="email" value={email} disabled list="matching-emails"
             />
-            {/*<datalist id="matching-emails">
-              {matchingProfiles.map((profile) => (<option key={profile.email} value={profile.email} />))}
-            </datalist>*/}
                 </Form.Group>
                 <Form.Group controlId="username">
                     <Form.Label>Username</Form.Label>

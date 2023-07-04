@@ -11,12 +11,7 @@ data class PurchaseDTO(
 
 
     var id: Long?,
-    //@field:NotNull(message="Not a valid customer")
-    //var customer: Profile?,
     var customerEmail: String?,
-
-    //@field:NotNull(message="Not a valid product")
-    //var product: Product?,
     var product: ProductDTO?,
     @field:NotNull(message="Not a valid purchase date")
     var purchaseDate: Date?,
@@ -24,9 +19,6 @@ data class PurchaseDTO(
     var warrantyCode : String?,
     @field:NotNull(message="Not a valid expiring date")
     var expiringDate: Date?
-
-
-    /*var ticketList: MutableList<Ticket>?*/
 )
 
 fun Purchase.toDTO() : PurchaseDTO{

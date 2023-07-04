@@ -12,7 +12,6 @@ import jakarta.persistence.*
 import java.util.*
 
 @Entity
-//@Index(name = "idx_ticket", columnList = "customer_email")
 class Ticket : EntityBase<Long>() {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -39,9 +38,6 @@ class Ticket : EntityBase<Long>() {
     @ManyToOne
     var actualExpert: Employee? = null
 
-//    @OneToMany(mappedBy = "id")
-//    var chat: List<Message>? = null
-
     @OneToMany(mappedBy = "ticket", cascade = [CascadeType.ALL])
     var history: MutableList<History>? = null
 }
@@ -50,8 +46,6 @@ class Ticket : EntityBase<Long>() {
 fun Ticket.addHistory(history: History) : Ticket {
     if (this.history == null)
         this.history = mutableListOf()
-
-    //val historyEntity = history.toEntity()
     history.ticket = this
     this.history?.add(history)
     return this
