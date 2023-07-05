@@ -153,8 +153,6 @@ class SecurityService(
             )
         )
 
-        println("QUA CI SONO ")
-
         return try {
             val id = keycloak.realm("SpringBootKeycloak").users().search(signUpRequestDTO.username).first().id
             val userResource =  keycloak.realm("SpringBootKeycloak").users().get(id)
