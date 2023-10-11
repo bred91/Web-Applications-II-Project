@@ -1,24 +1,13 @@
 # Web Applications II - Group 15
 
+This is the group project repository for the Web Applications 2 course at the Politecnico di Torino.<br>
+It consists in the development of a web application capable of managing the ticketing flow of a hypothetical company. This includes user management (including access, authentication and authorisation policies), ticket management for the various roles, real-time chat and monitoring/auditing tools for management figures.
+
+The technologies used include: Spring, React, Kotlin, Javascript, Docker, WebSocket, Keycloak, Grafana and many others.
+
 ## Members
 - [Simran Singh](https://github.com/simrannn99)
 - [Raffaele Pane](https://github.com/bred91)
 - [Dimitri Masetta](https://github.com/dimi-it)
 - [Daniele Di Battista](https://github.com/dibbadan)
 
-
-### NOTES FOR LAB 4:<br>
-The database and the keycloak container are available online on a running server at the following link:<br>
-- postgres ->     http://144.24.191.138:5432 <br>
-- keycloak ->     http://144.24.191.138:8081 <br>
-
-To run the server container please do the following: <br>
-`cd "this-folder"` <br>
-`docker load -i wa2-g15.tar` <br>
-`docker-compose up` <br>
-
-### NOTES FOR LAB 5:<br>
-In this lab there is a file `observe-docker-compose.yml` that allows to properly deploy the monitoring and observability stack.<br>
-
-
-[//]: # (## Project)
