@@ -27,7 +27,7 @@ class SecurityService(
 ) : ISecurityService {
 
     override fun login(loginRequestDTO: LoginRequestDTO): ResponseEntity<Any> {
-        val url = "http://144.24.191.138:8081/realms/SpringBootKeycloak/protocol/openid-connect/token"
+        val url = "http://TODO_IP:8081/realms/SpringBootKeycloak/protocol/openid-connect/token"
         val restTemplate = RestTemplate()
         val headers = HttpHeaders()
 
@@ -93,7 +93,7 @@ class SecurityService(
     }
 
     override fun logout(logoutRequestDTO: LogoutRequestDTO): ResponseEntity<Any> {
-        val url = "http://144.24.191.138:8081/realms/SpringBootKeycloak/protocol/openid-connect/logout"
+        val url = "http://TODO_IP:8081/realms/SpringBootKeycloak/protocol/openid-connect/logout"
         val restTemplate = RestTemplate()
 
         val headerValues: MultiValueMap<String, String> = LinkedMultiValueMap<String, String>()
