@@ -23,9 +23,9 @@ services:
 
 docker compose di keycloak
 
-https://144.24.191.138:8443  —> admin console
+https://TODO_IP:8443  —> admin console
 
-http://144.24.191.138:8081  —> request address
+http://TODO_IP:8081  —> request address
 
 
 
