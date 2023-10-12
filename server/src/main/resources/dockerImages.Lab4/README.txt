@@ -7,5 +7,5 @@ To run the server container please do the following:
 
 
 The database and the keycloak container are available online on a running server at the following link:
-    postgres ->     http://144.24.191.138:5432
-    keycloak ->     http://144.24.191.138:8081
+    postgres ->     http://TODO_IP:5432
+    keycloak ->     http://TODO_IP:8081
