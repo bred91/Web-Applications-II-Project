@@ -622,7 +622,7 @@ class ProductServiceTest {
     fun loginFun(user: Pair<String,String>): String? {
 
         // test the API for "login"
-        val url = "http://144.24.191.138:8081/realms/SpringBootKeycloak/protocol/openid-connect/token"
+        val url = "http://TODO_IP:8081/realms/SpringBootKeycloak/protocol/openid-connect/token"
         val restTemplate = RestTemplate()
         val headers = org.springframework.http.HttpHeaders()
 
